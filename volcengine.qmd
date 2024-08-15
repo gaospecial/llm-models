@@ -1,0 +1,68 @@
+# 火山引擎
+
+[火山方舟](https://console.volcengine.com/ark/region:ark+cn-beijing/model)是面向开发者的企业级大模型服务平台，提供模型训练、推理、评测、精调等全方位功能与服务，并重点支撑大模型生态。
+
+
+## 可用的模型
+
+截止2024年08月15日，一共有 19 个模型，其中 11 个是字节跳动的豆包模型，2 个是 Meta 的 `llama3-70b`、`llama3-8b`，3 个 Moonshot 的模型，2 个智谱 AI 的模型。
+
+这些模型分为 3 类：大语言模型（对话）、语音大模型（语音合成）、视觉大模型（文生图）。
+
+这些模型都需要先开通，然后才能使用。开通后有一定的免费额度。超过额度后按照 Token（语言）或者调用次数（文生图）收费。
+
+## 模型调用实例
+
+### 调用大语言模型
+
+在火山方舟中调用语言模型可以使用火山自己的 API，另外也支持 OpenAI 的方法。
+
+在下面的代码中，`model` 的值是 **接入点名称**，而非模型名称。接入点采用的模型在创建接入点的时候选定，使用的时候对用户不可见。这里使用的 `ep-20240815100632-2m9cl` 使用的是豆包大模型 `Doubao-pro-128k 240628`。
+
+```{python}
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key = os.environ.get("ARK_API_KEY"),
+    base_url = "https://ark.cn-beijing.volces.com/api/v3",
+)
+
+# Non-streaming:
+print("----- standard request -----")
+completion = client.chat.completions.create(
+    model = "ep-20240815100632-2m9cl",  # your model endpoint ID
+    messages = [
+        {"role": "system", "content": "你是豆包，是由字节跳动开发的 AI 人工智能助手"},
+        {"role": "user", "content": "常见的十字花科植物有哪些？"},
+    ],
+)
+print(completion.choices[0].message.content)
+```
+
+流式输出。
+
+```{python}
+# Streaming:
+print("----- streaming request -----")
+stream = client.chat.completions.create(
+    model = "ep-20240815100632-2m9cl",  # your model endpoint ID
+    messages = [
+        {"role": "system", "content": "你是豆包，是由字节跳动开发的 AI 人工智能助手"},
+        {"role": "user", "content": "常见的十字花科植物有哪些？"},
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    if not chunk.choices:
+        continue
+    print(chunk.choices[0].delta.content, end="")
+print()
+```
+
+### 调用文生图模型
+
+需要用 POST 方式或者借助于自定义的访问接口模块。
+
+（略）

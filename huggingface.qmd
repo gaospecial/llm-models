@@ -1,0 +1,205 @@
+# Hugging Face
+
+【HuggingFace 10分钟快速入门（一），利用Transformers，Pipeline探索AI。】 
+
+{{< video https://www.bilibili.com/video/BV1vN41127ob/?share_source=copy_web&vd_source=d345aeeaedba2347709dc8ca7b1b5cb1 >}}
+
+
+Hugging Face 是一个专注于人工智能（AI）和机器学习（ML）的平台，特别以自然语言处理（NLP）工具和模型而闻名。它提供了一个丰富的开源生态系统，供研究人员、开发者和数据科学家使用。其中，最著名的工具之一是 **Transformers** 库，这个库包含了多种预训练的模型（如BERT、GPT、T5等），这些模型可以用于各种NLP任务，如文本生成、翻译、问答、情感分析等。
+
+Hugging Face 还提供了 **Hub**，一个模型托管平台，用户可以在上面分享和下载各种预训练的AI模型。此外，它还支持自定义训练模型和通过API进行推理。Hugging Face 的平台和社区非常活跃，是当前AI和NLP领域的重要资源之一。
+
+
+## 安装
+
+1. 安装机器学习基础库（pytorch 或者 TensorFlow）。
+    首先创建一个 Conda 环境，然后安装 Pytorch。`conda install pytorch::pytorch torchvision torchaudio -c pytorch`
+
+2. 安装 transformers：
+   `pip install transformers datasets evaluate accelerate`。
+
+```{python}
+from transformers import pipeline
+import torch
+
+# select the device for computation
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
+
+print(f"using device: {device}")
+```
+
+
+## Pipeline
+
+### 分类器
+
+调用一个分类器。
+
+```{python}
+classifier = pipeline("sentiment-analysis", device=device)
+
+results = classifier(["We are very happy to show you the 🤗 Transformers library.", "We hope you don't hate it."])
+for result in results:
+    print(f"label: {result['label']}, with score: {round(result['score'], 4)}")
+```
+
+使用 Hugging Face 的 `pipeline` 运行任务时，任务默认是在本地执行的。
+
+当你使用 `pipeline` 函数时，它会加载一个预训练的模型（可以是 Hugging Face Hub 上的模型，也可以是你本地的模型），然后在你的本地机器上执行推理任务。这意味着所有计算都是在你的本地计算机上进行的，而不是在 Hugging Face 的服务器上进行的。
+
+不过，`pipeline` 也可以访问在线的模型存储库。如果你指定了一个在线模型（例如 Hugging Face Hub 上的某个模型），那么 `pipeline` 会先从在线存储库下载模型到本地，然后在本地运行推理任务。因此，即使你访问的是在线模型，执行过程仍然是在本地完成的。
+
+总结来说，虽然模型可以从 Hugging Face Hub 下载，但任务执行是在本地进行的。
+
+### ZeroShotClassificationPipeline
+
+当你使用以下代码时：
+
+
+```{python}
+oracle = pipeline("zero-shot-classification", 
+                  model="facebook/bart-large-mnli",
+                  device=device)
+oracle(
+    "I have a problem with my iphone that needs to be resolved asap!!",
+    candidate_labels=["urgent", "not urgent", "phone", "tablet", "computer"],
+)
+```
+
+```{python}
+oracle(
+    "I have a problem with my iphone that needs to be resolved asap!!",
+    candidate_labels=["english", "german"],
+)
+```
+
+整个流程以及本地模型的安装和运行情况：
+
+1. **模型下载**：
+   - 当你指定 `model="facebook/bart-large-mnli"` 时，Hugging Face 的 `transformers` 库会从 Hugging Face Hub 下载这个预训练模型（`facebook/bart-large-mnli`）。
+   - 模型下载后，会被存储在你的本地文件系统中，默认位置通常是 `~/.cache/huggingface/transformers/` 目录下。如果你有自定义的缓存目录设置，模型将下载到指定位置。
+
+2. **模型加载**：
+   - 下载完成后，`pipeline` 会将该模型加载到内存中。这包括模型的权重、配置文件以及与之相关的词汇表（tokenizer）。
+
+3. **任务执行**：
+   - 当你使用 `oracle` 这个 `pipeline` 对象来进行零样本分类任务时，所有的计算和推理（inference）都是在你的本地机器上执行的。这包括文本的预处理、模型的前向传播计算、以及后处理和输出结果。
+
+### 本地模型的存储和管理
+
+- **存储位置**：模型的权重文件、配置文件和词汇表会存储在 `~/.cache/huggingface/hub/` 下的一个以模型名称命名的目录中。例如：`~/.cache/huggingface/hub/models--facebook--bart-large-mnli/`。
+  
+- **缓存机制**：如果你再次使用同一个模型（如 `facebook/bart-large-mnli`），`pipeline` 会直接从本地缓存中加载模型，而不会再次从 Hugging Face Hub 下载，除非你手动清除缓存或指定下载新的模型版本。
+
+### 翻译器
+
+调用一个翻译器。
+
+```{python}
+en_fr_translator = pipeline("translation_en_to_fr", device=device)
+en_fr_translator("How old are you?")
+```
+
+不过，调用 `pipeline("tranlation_en_to_zh")` 却会出错。这是因为：虽然 "translation_en_to_zh" 是一个有效的任务标识符，但它并不是直接指定模型的名称。有些错误可能是由于没有找到合适的预训练模型。你可以显式指定模型名称来避免这种情况：
+
+::: {.callout-note}
+这里还需要安装一个确实的模块：`SentencePiece`。
+
+`SentencePiece` 是一个用于文本分词和词汇生成的工具，它在自然语言处理（NLP）任务中非常有用，尤其是在训练和使用基于子词单元的模型时。`SentencePiece` 由 Google 开发，作为一种无语言依赖的方法，它可以处理几乎任何语言的文本数据。
+
+**`SentencePiece` 的主要功能**
+
+1. **子词单元（Subword Units）生成**:
+   - `SentencePiece` 不依赖于语言的特定词汇表，而是通过数据驱动的方法生成子词单元。它通过分析训练数据中的常见字符序列，生成适合该数据集的子词单元，这些子词单元可以是完整的词、词的一部分（如词缀、词根）、甚至是单个字符。
+   - 这在处理低资源语言或多语言任务时特别有用，因为它可以生成跨语言的统一词汇表，减少OOV（Out of Vocabulary，词汇表外的词）问题。
+
+2. **BPE（Byte-Pair Encoding）和 Unigram 模型**:
+   - `SentencePiece` 支持多种子词分割方法，包括 BPE（Byte-Pair Encoding）和 Unigram 模型。BPE 是一种常用的子词分割算法，通过频繁地合并字符对来生成子词单元。Unigram 模型则是一种基于概率的模型，它根据子词单元的概率来分割文本。
+
+3. **语言无关性**:
+   - 与传统的分词器不同，`SentencePiece` 不需要依赖于空格或其他特定的标记来分割词语。这使得它在处理没有明确单词边界的语言（如中文、日文、泰语等）时非常有效。
+
+4. **处理未归一化的文本**:
+   - `SentencePiece` 可以直接处理未经归一化的原始文本（如带有标点符号的文本），这在实际应用中非常有用，避免了对数据进行预处理的需求。
+
+**使用 `SentencePiece` 的场景**
+
+- **机器翻译**: 在训练机器翻译模型时，使用 `SentencePiece` 可以将输入和输出文本分割成子词单元，减少词汇表大小，并提高模型的泛化能力。
+- **预训练语言模型**: 诸如 BERT、GPT、T5 等模型在预训练时，通常使用 `SentencePiece` 生成子词单元词汇表，这些词汇表有助于处理多语言数据和稀有词汇。
+- **文本生成**: 在生成任务中，子词单元可以更好地表示稀有或长尾词汇，减少生成过程中出现的OOV问题。
+
+
+`SentencePiece` 是一个强大的分词工具，它通过生成数据驱动的子词单元词汇表，在 NLP 任务中广泛使用，特别是在处理多语言文本和训练深度学习模型时。
+:::
+
+```{python}
+translator = pipeline("translation_en_to_zh", model="Helsinki-NLP/opus-mt-en-zh", device=device)
+translator("This is a introduction to Huggingface.")
+```
+
+结果一般吧！
+
+翻译任务需要用到的功能包括分词，模型的选择等。下面的代码进行了详细的设置。
+
+```{python}
+from transformers import AutoModelWithLMHead,AutoTokenizer,pipeline
+mode_name = 'liam168/trans-opus-mt-en-zh'
+model = AutoModelWithLMHead.from_pretrained(mode_name)
+tokenizer = AutoTokenizer.from_pretrained(mode_name)
+translation = pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer, device=device)
+translation('This is a introduction to Huggingface.')
+```
+
+让我们逐行解释代码的含义：
+
+```python
+from transformers import AutoModelWithLMHead, AutoTokenizer, pipeline
+```
+
+- **`AutoModelWithLMHead`**: 这是一个自动加载语言模型（Language Model）的类，通常用于加载带有语言建模头的模型。`LMHead` 代表语言模型的输出层。
+- **`AutoTokenizer`**: 这是一个自动加载适当的分词器（tokenizer）的类。分词器用于将输入文本转换为模型可以处理的令牌（tokens）序列。
+- **`pipeline`**: 这是 Hugging Face 的高层 API，它提供了各种 NLP 任务的预定义管道（pipeline），如文本分类、翻译、文本生成等。
+
+```python
+mode_name = 'liam168/trans-opus-mt-en-zh'
+```
+
+- **`mode_name`**: 这是一个字符串变量，存储了模型的名称或路径。这里的 `liam168/trans-opus-mt-en-zh` 是在 Hugging Face 模型库中的一个模型名称，表示一个预训练的从英语到中文翻译的模型。
+
+```python
+model = AutoModelWithLMHead.from_pretrained(mode_name)
+```
+
+- **`AutoModelWithLMHead.from_pretrained(mode_name)`**: 这行代码加载了 `liam168/trans-opus-mt-en-zh` 模型的预训练权重和配置。`from_pretrained` 方法从 Hugging Face 的模型库下载（如果尚未下载）并加载该模型到内存中。
+
+```python
+tokenizer = AutoTokenizer.from_pretrained(mode_name)
+```
+
+- **`AutoTokenizer.from_pretrained(mode_name)`**: 这行代码加载了与模型配套的分词器。分词器将输入的英文句子转换为模型所需的令牌（tokens），并且会执行必要的文本预处理。
+
+```python
+translation = pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer)
+```
+
+- **`pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer)`**: 这里使用了 `pipeline` 函数来创建一个翻译管道，指定了任务类型为 `"translation_en_to_zh"`（从英语到中文的翻译），并传入了之前加载的模型和分词器。这个管道封装了翻译任务的所有步骤，使得翻译文本变得简单且易于使用。
+
+```python
+translation('This is a introduction to Huggingface.')
+```
+
+- **`translation('This is a introduction to Huggingface.')`**: 这行代码调用了翻译管道，将输入的英文句子 `"This is a introduction to Huggingface."` 翻译为中文。管道会自动执行以下步骤：
+  1. 使用 `tokenizer` 将输入的英文句子分词为令牌。
+  2. 将令牌输入到 `model` 中进行翻译。
+  3. 生成的中文令牌序列被解码成自然语言文本。
+
+最终输出会是 `"This is a introduction to Huggingface."` 的中文翻译版本，例如 `"这是对 Huggingface 的介绍。"`（具体翻译结果可能有所不同，取决于模型的性能）。
+
+这段代码通过加载 Hugging Face 提供的预训练模型和分词器，实现了从英语到中文的自动翻译任务，并且通过使用高层的 `pipeline` API，简化了翻译任务的执行。
+
+

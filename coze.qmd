@@ -1,0 +1,121 @@
+# Coze
+
+Coze 提供了对 ChatGPT、Claude、Gemini 等国外主流模型的访问。
+
+它提供了网页接口，访问方法如下：
+
+```bash
+curl --location --request POST 'https://api.coze.com/v3/chat?conversation_id=7374752000116113452' \
+--header 'Authorization: Bearer pat_OYDacMzM3WyOWV3Dtj2bHRMymzxP****' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "bot_id": "7348293334459318316",
+    "user_id": "123456789",
+    "stream": false,
+    "auto_save_history":true,
+    "additional_messages":[
+        {
+            "role":"user",
+            "content":"What a nice day",
+            "content_type":"text"
+        }
+    ]
+}'
+```
+
+## ChatGPT
+
+我们新建了一个使用 ChatGPT-4o 模型（`GPT-4o (8K)`）的机器人，进行对话。
+
+要用 Python 实现这个 `curl` 命令，可以使用 `requests` 库。以下是相应的 Python 代码：
+
+```{python}
+import requests
+import os
+
+url = "https://api.coze.com/v3/chat"
+bot_id = "7403315657221079041"
+coze_api_key = os.getenv("COZE_APE_KEY")
+if coze_api_key is None:
+    coze_api_key = "pat_YEj2OkoKUFDzmZnN9uvnlGLQnJ0bK8yqii5Zz3pQ54RI7nLcpb3qxBxvphScpZ81"
+
+headers = {
+    "Authorization": f"Bearer {coze_api_key}",
+    "Content-Type": "application/json"
+}
+
+data = {
+    "bot_id": bot_id,
+    "user_id": "0",
+    "stream": False,
+    "auto_save_history": True,
+    "additional_messages": [
+        {
+            "role": "user",
+            "content": "你是谁？",
+            "content_type": "text"
+        }
+    ]
+}
+
+response = requests.post(url, headers=headers, json=data)
+
+print(response.status_code)
+print(response.json())  # Assuming the response is JSON; otherwise use response.text
+```
+
+代码说明：
+
+1. **`url`**: 这是要发送请求的完整 URL，包括查询参数。
+2. **`headers`**: 请求头包含了授权令牌和内容类型，确保请求被正确处理。
+3. **`data`**: 这是发送的 JSON 数据，直接在 Python 中使用字典来构建。
+4. **`requests.post`**: 发送 POST 请求，传入 URL、头信息和 JSON 数据。
+5. **`response`**: 响应对象，你可以检查其状态码（`status_code`）并解析响应内容。
+
+
+根据服务器返回的信息，`status` 字段的值为 `"in_progress"`，这意味着当前操作正在进行中，尚未完成。下一步的操作通常取决于你希望如何处理这个状态。
+
+### 可能的下一步：
+
+1. **轮询状态**：
+   - 如果服务器需要时间来完成某个任务，你可以使用轮询（定期发送请求来检查状态是否发生变化）。例如，每隔几秒发送一次请求，直到 `status` 变为 `"completed"` 或其他表示任务完成的状态。
+
+   示例代码：
+
+```{python}
+import time
+import json
+
+response_json = response.json()
+
+chat_id = response_json["data"]["id"]
+conversation_id = response_json["data"]["conversation_id"]
+
+# 检查是否生成完毕
+retrieve_url = f"https://api.coze.com/v3/chat/retrieve?chat_id={chat_id}&conversation_id={conversation_id}"
+
+while True:  
+    response = requests.get(retrieve_url, headers=headers)
+    data = response.json()
+    status = data['data']['status']
+
+    if status == 'completed':
+        break
+    else:
+        print(f"Task in progress... Status: {status}")
+        time.sleep(0.5)
+```
+
+获取回答。
+
+```{python}
+# 获取回答
+message_url = f"https://api.coze.com/v3/chat/message/list?chat_id={chat_id}&conversation_id={conversation_id}"
+
+response = requests.post(message_url, headers=headers)
+data = response.json()
+ans = data['data'][1]['content']
+
+print(ans)
+```
+

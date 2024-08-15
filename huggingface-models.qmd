@@ -1,0 +1,197 @@
+# Hugging Face Model
+
+## 两种调用模型的方式
+
+查找 GPU 设备。
+
+```{python}
+import torch
+
+# select the device for computation
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
+
+print(f"using device: {device}")
+```
+
+图片数据。
+
+```{python}
+import io
+import requests
+from PIL import Image
+
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+image = Image.open(requests.get(url, stream=True).raw)
+```
+
+### 使用 Pipeline
+
+```{python}
+# Use a pipeline as a high-level helper
+from transformers import pipeline
+
+object_detector = pipeline("object-detection", model="facebook/detr-resnet-50", device=device)
+```
+
+
+```{python}
+detection_results = object_detector(image)
+print(detection_results)
+```
+
+
+```{python}
+import matplotlib.pyplot as plt
+from PIL import Image
+import matplotlib.patches as patches
+
+def random_color():
+    """Generate a random color."""
+    return np.random.rand(3,)
+
+# Create a figure and axis for plotting
+fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+
+# Display the original image
+ax.imshow(image)
+
+# Overlay bounding boxes and labels with random colors
+for result in detection_results:
+    score = result['score']
+    label = result['label']
+    box = result['box']
+    
+    # Generate a random color
+    color = random_color()
+    
+    # Draw bounding box
+    rect = patches.Rectangle(
+        (box['xmin'], box['ymin']),
+        box['xmax'] - box['xmin'],
+        box['ymax'] - box['ymin'],
+        linewidth=2,
+        edgecolor=color,
+        facecolor='none'
+    )
+    ax.add_patch(rect)
+    
+    # Draw label and score with the same color as the rectangle
+    label_text = f"{label}: {score:.2f}"
+    ax.text(
+        box['xmin'],
+        box['ymin'] - 10,
+        label_text,
+        color=color,
+        fontsize=12,
+        bbox=dict(facecolor='white', alpha=0.5, edgecolor=color, boxstyle='round,pad=0.5')
+    )
+
+
+# Hide axis
+plt.axis('off')
+
+# Show the plot with bounding boxes and labels
+plt.show()
+
+```
+
+### 直接使用模型
+
+```{python}
+# Load model directly
+from transformers import AutoImageProcessor, AutoModelForObjectDetection
+
+processor = AutoImageProcessor.from_pretrained("facebook/detr-resnet-50", device=device)
+model = AutoModelForObjectDetection.from_pretrained("facebook/detr-resnet-50")
+```
+
+
+```{python}
+# prepare image for the model
+inputs = image_processor(images=image, return_tensors="pt")
+
+# forward pass
+outputs = model(**inputs)
+
+# convert outputs (bounding boxes and class logits) to COCO API
+# let's only keep detections with score > 0.9
+target_sizes = torch.tensor([image.size[::-1]])
+results = processor.post_process_object_detection(outputs, target_sizes=target_sizes, threshold=0.9)[0]
+
+for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
+    box = [round(i, 2) for i in box.tolist()]
+    print(
+            f"Detected {model.config.id2label[label.item()]} with confidence "
+            f"{round(score.item(), 3)} at location {box}"
+    )
+```
+
+
+## YOLOv8
+
+YOLOv8 需要使用 pip 或者 conda 安装。安装后提供 cli 和 Python 等两种运行方式。详情参见：https://docs.ultralytics.com/quickstart/。
+
+
+## ViT
+
+视觉转换器（ViT）模型在 ImageNet-21k 上预训练，包含 1.4 亿张图片和 21843 个类别。其分辨率为 224x224。
+
+
+```{python}
+from transformers import ViTImageProcessor, ViTModel
+from PIL import Image
+import requests
+
+url = 'http://images.cocodataset.org/val2017/000000039769.jpg'
+image = Image.open(requests.get(url, stream=True).raw)
+
+processor = ViTImageProcessor.from_pretrained('google/vit-base-patch16-224-in21k')
+model = ViTModel.from_pretrained('google/vit-base-patch16-224-in21k')
+inputs = processor(images=image, return_tensors="pt")
+
+outputs = model(**inputs)
+last_hidden_states = outputs.last_hidden_state
+
+```
+
+`BaseModelOutputWithPooling` 是 Hugging Face 的 `transformers` 库中的一个类，用于模型输出的表示。这个类通常在模型返回的输出中包含了池化层的结果，这对于一些任务，比如文本分类或嵌入生成，特别有用。
+
+### 主要功能
+
+`BaseModelOutputWithPooling` 类是从 `BaseModelOutput` 派生而来的，它包含以下几个重要的组件：
+
+- **`last_hidden_state`**：模型在所有隐藏层的输出，这些输出通常用于获取序列的特征表示。
+- **`pooler_output`**：经过池化层（通常是池化后的第一个 token）的输出，用于获得序列的整体表示。对于 BERT 等模型，这通常是 `[CLS]` token 的输出经过池化操作的结果。
+- **`hidden_states`**（可选）：模型在每个隐藏层的输出（如果 `output_hidden_states=True` 时会返回）。
+
+### 用途
+
+- **`pooler_output`**：这个输出是用来获取序列的整体表示的，例如用于分类任务。对于很多预训练模型来说，这个输出是对 `[CLS]` token 的表示经过池化后的结果。
+- **`last_hidden_state`**：如果你需要对每个 token 的表示进行进一步的处理或分析（例如，进行序列标注任务），这个输出将是有用的。
+
+### 示例
+
+以下是如何在使用 Hugging Face 模型时，利用 `BaseModelOutputWithPooling` 获取模型输出的一个例子：
+
+```{python}
+
+# Extract the output
+last_hidden_state = outputs.last_hidden_state  # Shape: [batch_size, sequence_length, hidden_size]
+pooler_output = outputs.pooler_output  # Shape: [batch_size, hidden_size]
+
+print("Last hidden state:", last_hidden_state.shape)
+print("Pooler output:", pooler_output.shape)
+```
+
+### 说明：
+
+1. **`last_hidden_state`**：通常是三维张量，形状为 `[batch_size, sequence_length, hidden_size]`。
+2. **`pooler_output`**：通常是二维张量，形状为 `[batch_size, hidden_size]`，用于表示整个序列的特征。
+
+`BaseModelOutputWithPooling` 是一个结构化的返回对象，帮助你从模型中提取有用的特征表示，特别是当需要处理序列数据时。
+
