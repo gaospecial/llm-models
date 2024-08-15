@@ -26,13 +26,15 @@ format:
     theme: cosmo
     fig-width: 5.5
     fig-asp: 0.618
+    warning: false
   pdf:
     documentclass: scrreprt
     fig-width: 5.5
     fig-asp: 0.618
+    warning: false
     include-in-header: 
           text: |
             \usepackage{ctex}
             \usepackage{amsthm,mathrsfs}
-
-
+            \usepackage{listings}
+            \lstset{breaklines=true}
