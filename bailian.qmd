@@ -102,14 +102,14 @@ def simple_multimodal_conversation_call():
     # otherwise indicate request is failed, you can get error code
     # and message from code and message.
     if response.status_code == HTTPStatus.OK:
-        print(response)
+        return(response)
     else:
         print(response.code)  # The error code.
         print(response.message)  # The error message.
 
 
-if __name__ == '__main__':
-    simple_multimodal_conversation_call()
+response = simple_multimodal_conversation_call()
+response.output.choices[0]['message']['content'][0]['text']
 ```
 
 ## 文生图
@@ -125,17 +125,17 @@ if __name__ == '__main__':
 
 ```{python}
 #| cache: true
+#| eval: false
 from http import HTTPStatus
 from urllib.parse import urlparse, unquote
 from pathlib import PurePosixPath
 import requests
 from dashscope import ImageSynthesis
 
-
 def simple_call(prompt = 'Mouse rides elephant', out_dir = "output"):
     rsp = ImageSynthesis.call(model=ImageSynthesis.Models.wanx_v1,
                               prompt=prompt,
-                              n=4,
+                              n=1,
                               size='1024*1024')
     if rsp.status_code == HTTPStatus.OK:
         print(rsp.output)
@@ -154,15 +154,18 @@ def simple_call(prompt = 'Mouse rides elephant', out_dir = "output"):
               (rsp.status_code, rsp.code, rsp.message))
 
 
-files = simple_call()
+image_path = simple_call()
+```
 
-# 生成 Quarto 文档中的图片显示代码
-quarto_code = ''
-for img in files:
-    quarto_code += f'![Image]({img})\n\n'
+```{python}
+from PIL import Image
+import matplotlib.pyplot as plt
 
-# 打印或保存生成的 Quarto 代码
-print(quarto_code)
+# 读取所有图片文件
+image_path = "output/435e0b57-6884-4e32-9187-2ada667b0ecb-1.png"
+image = Image.open(image_path)
+
+plt.imshow(image)
 ```
 
 ## 语音识别

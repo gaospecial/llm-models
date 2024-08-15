@@ -6,8 +6,9 @@ execute:
 
 book:
   title: "大模型平台和应用实例"
-  author: "gaoch"
+  author: "高春辉"
   date: now
+  cover-image: cover.png
   chapters:
     - index.qmd
     - intro.qmd
@@ -27,14 +28,16 @@ format:
     fig-width: 5.5
     fig-asp: 0.618
     warning: false
+    message: false
   pdf:
     documentclass: scrreprt
     fig-width: 5.5
     fig-asp: 0.618
     warning: false
+    message: false
     include-in-header: 
           text: |
             \usepackage{ctex}
             \usepackage{amsthm,mathrsfs}
-            \usepackage{listings}
-            \lstset{breaklines=true}
+            \usepackage{fvextra}
+            \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
