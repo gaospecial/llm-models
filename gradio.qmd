@@ -8,6 +8,8 @@ Gradio 是一个用于快速构建和部署机器学习模型界面的 Python �
 4. **一键分享**：提供一键生成可分享链接的功能，方便他人使用和测试模型。
 5. **集成方便**：可以与现有的机器学习框架（如 TensorFlow、PyTorch）无缝集成。
 
+## 用于情感分析的 APP
+
 下面是一个简单的示例代码，展示如何使用 Gradio 创建一个可以输入文本并返回情感分析结果的界面：
 
 ```{python}
@@ -32,7 +34,93 @@ iface = gr.Interface(
 
 # 启动界面
 iface.launch()
-
 ```
 
 你可以在本地运行这个代码，并通过生成的链接访问和测试情感分析模型。
+
+## 在线服务
+
+还可以通过 `iface.launch(share=True)` 将服务发布到 gradio.live 网站上：<https://e7ce7d908c95c155b5.gradio.live/?>。
+
+注意：这个分享链接会很快失效。
+
+这时，可以使用 `gradio_client` 库中的 `Client` 类与一个远程 Gradio 应用进行交互。
+
+
+```{python}
+#| eval: false
+from gradio_client import Client
+
+client = Client("https://e7ce7d908c95c155b5.gradio.live/")
+result = client.predict(
+		text="Hello!!",
+		api_name="/predict"
+)
+print(result)
+```
+
+
+```python
+client = Client("https://e7ce7d908c95c155b5.gradio.live/")
+```
+- **创建 Client 实例**：实例化一个 `Client` 对象，连接到指定的 Gradio 应用 URL。在这个例子中，URL 是 `https://e7ce7d908c95c155b5.gradio.live/`。
+
+```python
+result = client.predict(
+    text="Hello!!",
+    api_name="/predict"
+)
+```
+- **调用 predict 方法**：
+  - `text="Hello!!"`：传递一个包含文本 `"Hello!!"` 的参数。
+  - `api_name="/predict"`：指定要调用的 API 名称。这个名称通常是在 Gradio 应用中定义的特定端点。
+  - 该方法会将参数发送到 Gradio 应用的 `/predict` 端点，并返回预测结果。
+
+```python
+print(result)
+```
+- **打印结果**：将 `predict` 方法返回的结果打印到控制台。
+
+通过这种方式，你可以方便地与远程 Gradio 应用进行交互，发送请求并获取预测结果。
+
+
+## 在 Quarto 中显示
+
+要在 Quarto 中正确显示 Gradio 的输出结果，你需要确保以下几点：
+
+1. **Gradio 服务正常运行**：你需要在本地或远程服务器上启动 Gradio 服务。
+2. **在 Quarto 文档中嵌入 Gradio 应用**：你可以在 Quarto 文档中嵌入一个 iframe 来显示 Gradio 应用的输出。
+
+下面是一个详细的步骤：
+
+### 1. 启动 Gradio 服务
+
+首先，确保你的 Gradio 服务正在运行。例如，可以使用上面的代码启动 Gradio 应用。
+
+### 2. 在 Quarto 文档中嵌入 Gradio 应用
+
+在你的 Quarto 文档中（例如，`document.qmd`），你可以通过 iframe 嵌入 Gradio 应用。确保你使用的是 `.qmd` 文件格式，并在其中嵌入 Gradio 的链接。
+
+下面是一个示例 Quarto 文档：
+
+```markdown
+# Gradio Application
+
+<iframe src="YOUR_GRADIO_LINK_HERE"></iframe>
+```
+
+将 `YOUR_GRADIO_LINK_HERE` 替换为 Gradio 应用生成的公开链接。
+
+<iframe src="https://e7ce7d908c95c155b5.gradio.live/?"></iframe>
+
+### 3. 渲染 Quarto 文档
+
+使用 Quarto 渲染文档：
+
+```sh
+quarto render document.qmd
+```
+
+这将生成一个 HTML 文件，其中嵌入了你的 Gradio 应用。打开生成的 HTML 文件，即可在浏览器中查看并与 Gradio 应用进行交互。
+
+还可以参见 Quarto 动态文档：https://quarto.org/docs/interactive/。
