@@ -15,6 +15,7 @@ book:
     - summary.qmd
     - huggingface.qmd
     - huggingface-models.qmd
+    - openai.qmd
     - coze.qmd
     - bailian.qmd
     - volcengine.qmd
