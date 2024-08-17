@@ -19,6 +19,7 @@ book:
     - coze.qmd
     - bailian.qmd
     - volcengine.qmd
+    - gradio.qmd
     - references.qmd
 
 bibliography: references.bib
