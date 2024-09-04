@@ -1,0 +1,269 @@
+# 本地知识库
+
+使用 langchain-chatchat 构建本地知识库。
+
+-   使用线上的 embeding 模型和 LLM（ChatGPT）。
+
+要在 **Langchain-Chatchat** 中使用在线的嵌入和ChatGPT服务，您可以按照以下步骤进行配置和实现：
+
+## 步骤概述
+
+### 1. 获取在线嵌入服务的 API 密钥
+
+首先，您需要注册并获取在线嵌入服务的 API 密钥，例如 OpenAI 的嵌入服务。确保您了解该服务的使用限制和费用。
+
+### 2. 安装必要的库
+
+确保您已经安装了 **Langchain** 和 **OpenAI** 的 Python 库。如果尚未安装，可以使用以下命令：
+
+```bash
+pip install langchain openai
+```
+
+### 3. 配置 Langchain-Chatchat
+
+在您的项目中，您需要配置使用在线嵌入服务。可以在配置文件（如 `config.yaml`）中添加以下内容：
+
+```yaml
+openai:
+  api_key: "YOUR_API_KEY"
+  embedding_model: "text-embedding-ada-002"  # 选择合适的嵌入模型
+```
+
+### 4. 创建嵌入实例
+
+在代码中，您可以创建一个嵌入实例，示例如下：
+
+```{python}
+from langchain_openai import OpenAIEmbeddings
+
+# 创建嵌入实例
+embedding_service = OpenAIEmbeddings(
+  openai_api_base = 'https://api.chatanywhere.tech/v1',
+  model='text-embedding-ada-002',
+  api_key = "sk-J3LQRHr9jn9w5dFgHQP61Vyd5d2IP2HY0wzQ4Ta9xrLz2Jti")
+```
+
+### 5. 生成嵌入
+
+使用嵌入实例生成知识库文档的嵌入。例如，您可以将文档内容传递给嵌入服务：
+
+```{python}
+documents = ["这是第一篇文档的内容。", "这是第二篇文档的内容。"]
+embeddings = embedding_service.embed_documents(documents)
+```
+
+### 6. 实现相似性搜索
+
+使用生成的嵌入进行相似性搜索。您可以使用 **FAISS** 或其他向量数据库来查找与用户查询最相关的文档。例如：
+
+```{python}
+import faiss
+from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_community.vectorstores import FAISS
+
+# 获取向量维度
+index = faiss.IndexFlatL2(len(embedding_service.embed_query("hi")))
+
+# 创建 FAISS 向量存储
+vector_store = FAISS(
+    embedding_function=embedding_service,
+    index=index,
+    docstore=InMemoryDocstore(),
+    index_to_docstore_id={},
+)
+```
+
+导入知识库文档。
+
+```{python}
+from uuid import uuid4
+from langchain_core.documents import Document
+
+# 添加文档嵌入到向量存储
+document_1 = Document(
+    page_content="I had chocalate chip pancakes and scrambled eggs for breakfast this morning.",
+    metadata={"source": "tweet"},
+)
+
+document_2 = Document(
+    page_content="The weather forecast for tomorrow is cloudy and overcast, with a high of 62 degrees.",
+    metadata={"source": "news"},
+)
+
+document_3 = Document(
+    page_content="Building an exciting new project with LangChain - come check it out!",
+    metadata={"source": "tweet"},
+)
+
+documents = [
+    document_1,
+    document_2,
+    document_3,
+]
+uuids = [str(uuid4()) for _ in range(len(documents))]
+
+vector_store.add_documents(documents=documents)
+```
+
+```{python}
+# 查询相似文档
+results = vector_store.similarity_search(
+    "LangChain provides abstractions to make working with LLMs easy",
+    k=2,
+    filter={"source": "tweet"},
+)
+for res in results:
+    print(f"* {res.page_content} [{res.metadata}]")
+```
+
+### 7. 结合 ChatGPT 生成回答
+
+将相似文档的内容与用户的问题一起传递给 ChatGPT，以生成更准确的回答：
+
+```{python}
+from langchain_openai import ChatOpenAI
+
+# 创建 ChatGPT 实例
+chatbot = ChatOpenAI(
+    model="gpt-4o-mini-ca",
+    temperature=0,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+    base_url = 'https://api.chatanywhere.tech/v1',
+    api_key = "sk-J3LQRHr9jn9w5dFgHQP61Vyd5d2IP2HY0wzQ4Ta9xrLz2Jti",
+)
+
+
+def answer_question(question):
+    # 查找相关文档
+    similar_docs = vector_store.similarity_search(embedding_service.embed_query(question))
+    
+    # 将相关文档内容传递给 ChatGPT
+    context = "\n".join(similar_docs)
+    response = chatbot({"prompt": f"{context}\n\n{question}"})
+    
+    return response['choices'][0]['text']
+
+# 示例提问
+question = "请解释一下机器学习的基本概念。"
+answer = answer_question(question)
+print(answer)
+```
+
+通过以上步骤，您可以在 **Langchain-Chatchat** 中成功集成在线的嵌入服务，使其能够在回答时利用知识库中的信息，从而提供更丰富和准确的回答。
+
+## 查询模型
+
+```{r}
+library(httr)
+
+# 读取 CHATANYWHERE_API_KEY 环境变量
+api_key = Sys.getenv('CHATANYWHERE_API_KEY')
+
+url = "https://api.chatanywhere.tech/v1/models"
+
+# 将 API key 添加到 headers 中
+headers = c(
+   'Authorization' = paste('Bearer', api_key),
+   'User-Agent' = 'Apifox/1.0.0 (https://apifox.com)',
+   'Content-Type' = 'application/json'
+)
+
+response = VERB("GET", url, add_headers(headers))
+
+content(response, "text") |> print()
+```
+
+将 JSON 输出为表格。
+
+```{r}
+library(jsonlite)
+
+# 将 JSON 字符串解析为字典
+data = jsonlite::fromJSON(content(response, "text"))
+
+# 显示表格
+print(data$data)
+```
+
+### ChatGPT 模型
+
+以 `gpt-*` 开头的都是文本对话模型。
+
+### 词嵌入模型
+
+所有三个词嵌入模型都是基于 Transformer 架构，这使得它们在处理自然语言时具有良好的性能。下表比较了 `text-embedding-ada-002`、`text-embedding-3-small` 和 `text-embedding-3-large` 这三个词嵌入模型的特点：
+
+| **模型名称**             | **参数量** | **嵌入维度** | **性能**           | **适用场景**                             | **优点**                             | **缺点**                           |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| `text-embedding-ada-002` | 中等       | 1536         | 高效，性能优秀     | 通用文本嵌入，适用于广泛的 NLP 任务      | 高精度嵌入，适合各种语义匹配任务     | 相比小型模型，计算资源需求较高     |
+| `text-embedding-3-small` | 小         | 512          | 较快，资源效率高   | 资源受限的应用场景，低计算成本的嵌入生成 | 计算效率高，适合实时或资源有限的场景 | 嵌入维度较低，可能影响语义表达能力 |
+| `text-embedding-3-large` | 大         | 2048         | 更高性能，精度极高 | 高端应用场景，如高精度语义搜索和推荐系统 | 嵌入维度更高，能够捕捉复杂语义关系   | 资源消耗大，适合计算资源充足的场景 |
+
+```{r}
+body = '{
+   "model": "text-embedding-ada-002",
+   "input": "The food was delicious and the waiter..."
+}';
+
+res = VERB("POST", url = "https://api.chatanywhere.tech/v1/embeddings", body = body, add_headers(headers))
+
+content = content(res, 'text', encoding = "UTF-8")
+
+embedding = fromJSON(content)
+str(embedding)
+```
+
+
+### 语音识别模型
+
+`whisper-1` 是 OpenAI 开发的一个强大的语音识别模型。它主要用于将语音转换为文本（也称为语音转文字，Speech-to-Text，简称 STT）。该模型能够处理多种语言的语音输入，并能够识别不同的口音和语音风格，非常适用于各种音频转录任务。
+
+### 文生图模型
+
+`dall-e-2` 和 `dall-e-3` 是文生图模型。
+
+DALL-E 2 支持以下三种图像尺寸：
+
+1. **256x256**
+2. **512x512**
+3. **1024x1024**
+
+DALL-E 3 支持以下图像尺寸：
+
+1. **1024x1024**: 正方形图像，适合大多数使用场景，是默认推荐的尺寸。
+2. **1792x1024**: 宽屏图像，适合需要更宽视野的场景或横向布局的设计。
+3. **1024x1792**: 纵向图像，适合需要更高视野的场景或纵向布局的设计。
+
+你可以根据具体需求选择合适的图像尺寸进行生成。
+
+```{r}
+url = "https://api.chatanywhere.tech/v1/images/generations"
+
+body = '{
+   "prompt": "A colorful sunset over the snow mountains",
+   "n": 1,
+   "model":  "dall-e-2",
+   "size": "256x256"
+}';
+
+response = VERB("POST", url, body = body, add_headers(headers))
+
+content = content(response, "text", encoding = "UTF-8")
+print(content)
+```
+
+显示图片。
+
+```{r}
+# 获取生成的图像 URL
+image_url = fromJSON(content)[["data"]][["url"]]
+
+knitr::include_graphics(image_url)
+```
+
+### 文字转语音模型
+
+
