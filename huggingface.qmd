@@ -97,10 +97,11 @@ for class_name in pipeline_classes:
 
 ```{python}
 from transformers import pipeline
+from pprint import pprint  # pretty print
 
 classifier = pipeline('text-classification')
 result = classifier("I love using transformers!")
-print(result)
+pprint(result)
 ```
 
 ### 命名实体识别 (`ner`)
@@ -112,7 +113,7 @@ from transformers import pipeline
 
 ner = pipeline('ner', device = device)
 result = ner("Hugging Face is based in New York City.")
-print(result)
+pprint(result)
 ```
 
 ### 问答 (`question-answering`)
@@ -124,7 +125,7 @@ from transformers import pipeline
 
 question_answerer = pipeline('question-answering', device = device)
 result = question_answerer(question="What is the capital of France?", context="The capital of France is Paris.")
-print(result)
+pprint(result)
 ```
 
 ### 文本生成 (`text-generation`)
@@ -136,7 +137,7 @@ from transformers import pipeline
 
 generator = pipeline('text-generation', device = device)
 result = generator("Once upon a time", max_length=50)
-print(result)
+pprint(result)
 ```
 
 ### 翻译 (`translation`)
@@ -148,7 +149,7 @@ from transformers import pipeline
 
 translator = pipeline('translation_en_to_fr', device = device)
 result = translator("Hello, how are you?")
-print(result)
+pprint(result)
 ```
 
 ### 文本摘要 (`summarization`)
@@ -160,7 +161,7 @@ from transformers import pipeline
 
 summarizer = pipeline('summarization', device = device)
 result = summarizer("Hugging Face is creating a tool that democratizes AI. The library will support various tasks and models.")
-print(result)
+pprint(result)
 ```
 
 ## 运行机制
