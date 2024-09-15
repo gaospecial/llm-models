@@ -6,6 +6,7 @@
 
 ```{python}
 import torch
+from pprint import pprint
 
 # select the device for computation
 if torch.cuda.is_available():
@@ -39,7 +40,7 @@ from transformers import pipeline
 object_detector = pipeline("object-detection", model="facebook/detr-resnet-50", device=device)
 
 detection_results = object_detector(image)
-print(detection_results)
+pprint(detection_results)
 ```
 
 
@@ -168,7 +169,7 @@ image_classifier = pipeline("image-classification",
                             device=device)
 
 class_results = image_classifier(image)
-print(class_results)
+pprint(class_results)
 ```
 
 

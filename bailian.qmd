@@ -2,6 +2,11 @@
 
 阿里云的大模型服务平台百炼是一站式的大模型开发及应用构建平台。不论是开发者还是业务人员，都能深入参与大模型应用的设计和构建。您可以通过简单的界面操作，在 5 分钟内开发出一款大模型应用，或在几小时内训练出一个专属模型，从而将更多精力专注于应用创新。
 
+```{python}
+from pprint import pprint
+```
+
+
 ## 百炼模型
 
 百炼提供了丰富多样的模型选择，它集成了通义系列大模型和第三方大模型，涵盖文本、图像、音视频等不同模态。
@@ -39,7 +44,7 @@ def call_with_stream():
             ))
 
 
-call_with_stream()
+pprint(call_with_stream())
 ```
 
 
@@ -64,7 +69,7 @@ def get_response():
         )
     print(completion.model_dump_json())
 
-get_response()
+pprint(get_response())
 ```
 
 ## 视觉推理
@@ -109,7 +114,8 @@ def simple_multimodal_conversation_call():
 
 
 response = simple_multimodal_conversation_call()
-response.output.choices[0]['message']['content'][0]['text']
+content = response.output.choices[0]['message']['content'][0]['text']
+pprint(content)
 ```
 
 ## 文生图
@@ -197,7 +203,7 @@ if transcription_response.status_code == HTTPStatus.OK:
     for transcription in transcription_response.output['results']:
         url = transcription['transcription_url']
         result = json.loads(request.urlopen(url).read().decode('utf8'))
-        print(json.dumps(result, indent=4, ensure_ascii=False))
+        pprint(json.dumps(result, indent=4, ensure_ascii=False))
     print('transcription done!')
 else:
     print('Error: ', transcription_response.output.message)

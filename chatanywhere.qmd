@@ -41,9 +41,8 @@ library(gt)
 models = jsonlite::fromJSON(content(res, as = "text", encoding = "UTF-8"))$data
 
 models |> 
-  mutate(created = as_datetime(created)) |> 
-  gt(groupname_col = "owned_by", row_group_as_column = TRUE) |> 
-  fmt_date("created")
+  mutate(created = as_datetime(created) |> as_date()) |> 
+  gt(groupname_col = "owned_by")
 ```
 
 下面依次介绍这些模型的用法。
