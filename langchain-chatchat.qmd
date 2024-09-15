@@ -6,154 +6,146 @@
 
 要在 **Langchain-Chatchat** 中使用在线的嵌入和ChatGPT服务，您可以按照以下步骤进行配置和实现：
 
-## 步骤概述
+### pip 安装部署
 
-### 1. 获取在线嵌入服务的 API 密钥
+#### 0. 软硬件要求
 
-首先，您需要注册并获取在线嵌入服务的 API 密钥，例如 OpenAI 的嵌入服务。确保您了解该服务的使用限制和费用。
+💡 软件方面，本项目已支持在 Python 3.8-3.11 环境中进行使用，并已在 Windows、macOS、Linux 操作系统中进行测试。
 
-### 2. 安装必要的库
+💻 硬件方面，因 0.3.0 版本已修改为支持不同模型部署框架接入，因此可在 CPU、GPU、NPU、MPS 等不同硬件条件下使用。
 
-确保您已经安装了 **Langchain** 和 **OpenAI** 的 Python 库。如果尚未安装，可以使用以下命令：
+#### 1. 安装 Langchain-Chatchat
 
-```bash
-pip install langchain openai
+从 0.3.0 版本起，Langchain-Chatchat 提供以 Python 库形式的安装方式，具体安装请执行：
+
+```shell
+pip install langchain-chatchat -U
 ```
 
-### 3. 配置 Langchain-Chatchat
+#### 2. 模型推理框架并加载模型
 
-在您的项目中，您需要配置使用在线嵌入服务。可以在配置文件（如 `config.yaml`）中添加以下内容：
+**如果使用在线服务的话，这一步不需要做。**
 
-```yaml
-openai:
-  api_key: "YOUR_API_KEY"
-  embedding_model: "text-embedding-ada-002"  # 选择合适的嵌入模型
+从 0.3.0 版本起，Langchain-Chatchat 不再根据用户输入的本地模型路径直接进行模型加载，涉及到的模型种类包括
+LLM、Embedding、Reranker
+及后续会提供支持的多模态模型等，均改为支持市面常见的各大模型推理框架接入，如 [Xinference](https://github.com/xorbitsai/inference)、[Ollama](https://github.com/ollama/ollama)、[LocalAI](https://github.com/mudler/LocalAI)、[FastChat](https://github.com/lm-sys/FastChat)、[One API](https://github.com/songquanpeng/one-api)
+等。
+
+因此，请确认在启动 Langchain-Chatchat 项目前，首先进行模型推理框架的运行，并加载所需使用的模型。
+
+#### 3. 初始化项目配置与数据目录
+
+从 0.3.1 版本起，Langchain-Chatchat 使用本地 `yaml` 文件的方式进行配置，用户可以直接查看并修改其中的内容，服务器会自动更新无需重启。
+
+1. 设置 Chatchat 存储配置文件和数据文件的根目录（可选）
+
+```shell
+# on linux or macos
+export CHATCHAT_ROOT=/path/to/chatchat_data
+
+# on windows
+set CHATCHAT_ROOT=/path/to/chatchat_data
 ```
 
-### 4. 创建嵌入实例
+2. 执行初始化
 
-在代码中，您可以创建一个嵌入实例，示例如下：
-
-```{python}
-from langchain_openai import OpenAIEmbeddings
-
-# 创建嵌入实例
-embedding_service = OpenAIEmbeddings(
-  openai_api_base = 'https://api.chatanywhere.tech/v1',
-  model='text-embedding-ada-002',
-  api_key = "sk-J3LQRHr9jn9w5dFgHQP61Vyd5d2IP2HY0wzQ4Ta9xrLz2Jti")
+```shell
+chatchat init
 ```
 
-### 5. 生成嵌入
+该命令会执行以下操作：
 
-使用嵌入实例生成知识库文档的嵌入。例如，您可以将文档内容传递给嵌入服务：
+- 创建所有需要的数据目录
+- 复制 samples 知识库内容
+- 生成默认 `yaml` 配置文件
 
-```{python}
-documents = ["这是第一篇文档的内容。", "这是第二篇文档的内容。"]
-embeddings = embedding_service.embed_documents(documents)
+3. 修改配置文件
+
+- 配置模型（model_settings.yaml）  
+  具体参考 `model_settings.yaml` 中的注释。主要修改以下内容：
+  
+  ```yaml
+  # 默认选用的 LLM 名称
+  DEFAULT_LLM_MODEL: "gpt-4o-mini"
+  
+  # 默认选用的 Embedding 名称
+  DEFAULT_EMBEDDING_MODEL: "text-embedding-ada-002"
+  
+  # # 平台名称
+  platform_name: chatanywhere
+  
+  MODEL_PLATFORMS:
+    - platform_name: chatanywhere
+      platform_type: openai
+      api_base_url: https://api.chatanywhere.tech/v1
+      api_key: sk-J3LQR******************
+      api_proxy: ''
+      api_concurrencies: 5
+      auto_detect_model: false
+      llm_models:
+        - gpt-4o-mini
+        - gpt-4o-ca
+        - gpt-4-ca
+      embed_models:
+        - text-embedding-3-small
+        - text-embedding-3-large
+        - text-embedding-ada-002
+      text2image_models: []
+      image2text_models: []
+      rerank_models: []
+      speech2text_models: []
+      text2speech_models: []
+  ```
+  
+- 配置知识库路径（`basic_settings.yaml`）（可选）  
+
+  默认知识库位于 `CHATCHAT_ROOT/data/knowledge_base`，如果你想把知识库放在不同的位置，或者想连接现有的知识库，可以在这里修改对应目录即可。
+  
+  ```yaml
+  # 知识库默认存储路径
+   KB_ROOT_PATH: D:\chatchat-test\data\knowledge_base
+
+   # 数据库默认存储路径。如果使用sqlite，可以直接修改DB_ROOT_PATH；如果使用其它数据库，请直接修改SQLALCHEMY_DATABASE_URI。
+   DB_ROOT_PATH: D:\chatchat-test\data\knowledge_base\info.db
+
+   # 知识库信息数据库连接URI
+   SQLALCHEMY_DATABASE_URI: sqlite:///D:\chatchat-test\data\knowledge_base\info.db
+  ```
+  
+- 配置知识库（`kb_settings.yaml`）（可选）
+
+  默认使用 `FAISS` 知识库，如果想连接其它类型的知识库，可以修改 `DEFAULT_VS_TYPE` 和 `kbs_config`。
+
+- 配置搜索引擎（`tool_settings.yml`）
+
+  ```yaml
+  # 搜索引擎工具配置项。推荐自己部署 searx 搜索引擎，国内使用最方便。
+  search_internet:
+    use: true
+    search_engine_name: duckduckgo
+    search_engine_config:
+      bing:
+        bing_search_url: https://api.bing.microsoft.com/v7.0/search
+        bing_key: '6f4f35****'
+  ```
+
+#### 4. 初始化知识库
+
+> [!WARNING]  
+> 进行知识库初始化前，请确保已经启动模型推理框架及对应 `embedding` 模型，且已按照上述**步骤3**完成模型接入配置。
+
+```shell
+chatchat kb -r
 ```
 
-### 6. 实现相似性搜索
+更多功能可以查看 `chatchat kb --help`
 
-使用生成的嵌入进行相似性搜索。您可以使用 **FAISS** 或其他向量数据库来查找与用户查询最相关的文档。例如：
+#### 5. 启动项目
 
-```{python}
-import faiss
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.vectorstores import FAISS
-
-# 获取向量维度
-index = faiss.IndexFlatL2(len(embedding_service.embed_query("hi")))
-
-# 创建 FAISS 向量存储
-vector_store = FAISS(
-    embedding_function=embedding_service,
-    index=index,
-    docstore=InMemoryDocstore(),
-    index_to_docstore_id={},
-)
+```shell
+chatchat start -a
 ```
 
-导入知识库文档。
-
-```{python}
-from uuid import uuid4
-from langchain_core.documents import Document
-
-# 添加文档嵌入到向量存储
-document_1 = Document(
-    page_content="I had chocalate chip pancakes and scrambled eggs for breakfast this morning.",
-    metadata={"source": "tweet"},
-)
-
-document_2 = Document(
-    page_content="The weather forecast for tomorrow is cloudy and overcast, with a high of 62 degrees.",
-    metadata={"source": "news"},
-)
-
-document_3 = Document(
-    page_content="Building an exciting new project with LangChain - come check it out!",
-    metadata={"source": "tweet"},
-)
-
-documents = [
-    document_1,
-    document_2,
-    document_3,
-]
-uuids = [str(uuid4()) for _ in range(len(documents))]
-
-vector_store.add_documents(documents=documents)
-```
-
-```{python}
-# 查询相似文档
-results = vector_store.similarity_search(
-    "LangChain provides abstractions to make working with LLMs easy",
-    k=2,
-    filter={"source": "tweet"},
-)
-for res in results:
-    print(f"* {res.page_content} [{res.metadata}]")
-```
-
-### 7. 结合 ChatGPT 生成回答
-
-将相似文档的内容与用户的问题一起传递给 ChatGPT，以生成更准确的回答：
-
-```{python}
-from langchain_openai import ChatOpenAI
-
-# 创建 ChatGPT 实例
-chatbot = ChatOpenAI(
-    model="gpt-4o-mini-ca",
-    temperature=0,
-    max_tokens=None,
-    timeout=None,
-    max_retries=2,
-    base_url = 'https://api.chatanywhere.tech/v1',
-    api_key = "sk-J3LQRHr9jn9w5dFgHQP61Vyd5d2IP2HY0wzQ4Ta9xrLz2Jti",
-)
-
-
-def answer_question(question):
-    # 查找相关文档
-    similar_docs = vector_store.similarity_search(embedding_service.embed_query(question))
-    
-    # 将相关文档内容传递给 ChatGPT
-    context = "\n".join(similar_docs)
-    response = chatbot({"prompt": f"{context}\n\n{question}"})
-    
-    return response['choices'][0]['text']
-
-# 示例提问
-question = "请解释一下机器学习的基本概念。"
-answer = answer_question(question)
-print(answer)
-```
-
-通过以上步骤，您可以在 **Langchain-Chatchat** 中成功集成在线的嵌入服务，使其能够在回答时利用知识库中的信息，从而提供更丰富和准确的回答。
-
-
+出现网页界面即为启动成功。
 
 
