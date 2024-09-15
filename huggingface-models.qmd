@@ -108,7 +108,8 @@ for result in detection_results:
         label_text,
         color=color,
         fontsize=12,
-        bbox=dict(facecolor='white', alpha=0.5, edgecolor=color, boxstyle='round,pad=0.5')
+        bbox=dict(facecolor='white', alpha=0.5, 
+                  edgecolor=color, boxstyle='round,pad=0.5')
     )
 
 
@@ -134,7 +135,10 @@ outputs = model(**inputs)
 # convert outputs (bounding boxes and class logits) to COCO API
 # let's only keep detections with score > 0.9
 target_sizes = torch.tensor([image.size[::-1]])
-results = image_processor.post_process_object_detection(outputs, target_sizes=target_sizes, threshold=0.9)[0]
+results = image_processor.post_process_object_detection(
+    outputs, 
+    target_sizes=target_sizes, 
+    threshold=0.9)[0]
 
 for score, label, box in zip(results["scores"], results["labels"], results["boxes"]):
     box = [round(i, 2) for i in box.tolist()]
@@ -159,7 +163,9 @@ The Vision Transformer（ViT）是一种以监督方式在大量图像集合（�
 通过对模型进行预训练，它学习到图像的内部表示，然后可用于提取对下游任务有用的特征：例如，如果您有一个带标签图像的数据集，则可以通过在预训练的编码器顶部放置一个线性层来训练标准分类器。通常会在 [CLS] 标记的顶部放置一个线性层，因为此标记的最后一个隐藏状态可以视为整个图像的表示。
 
 ```{python}
-image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", device=device)
+image_classifier = pipeline("image-classification", 
+                            model="google/vit-base-patch16-224", 
+                            device=device)
 
 class_results = image_classifier(image)
 print(class_results)
@@ -168,7 +174,7 @@ print(class_results)
 
 ## ViT 特征提取
 
-视觉转换器（ViT）模型在 ImageNet-21k 上预训练，包含 1.4 亿张图片和 21843 个类别。其分辨率为 224x224。
+视觉转换器（ViT）模型在 ImageNet-21k 上预训练，包含 1.4 亿张图片和 21843 个类别。其分辨率为 224 x 224。
 
 
 ```{python}

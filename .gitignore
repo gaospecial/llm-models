@@ -1,0 +1,8 @@
+/.quarto/
+.env
+logs/
+__pycache__/
+.Rproj.user
+.DS_Store
+.Rhistory
+.Rprofile

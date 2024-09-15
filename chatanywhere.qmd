@@ -15,9 +15,6 @@ ChatAnyWhere 提供的模型名字可能会与 OpenAI 不同。例如 `*-ca` 模
 ```{r}
 library(httr)
 library(glue)
-library(jsonlite)
-library(gt)
-library(tidyverse)
 
 # 读取 CHATANYWHERE_API_KEY 环境变量
 OPENAI_API_KEY = Sys.getenv("CHATANYWHERE_API_KEY")
@@ -37,6 +34,10 @@ res <- VERB("GET",
 将 JSON 输出为表格。
 
 ```{r}
+library(jsonlite)
+library(tidyverse)
+library(gt)
+
 models = jsonlite::fromJSON(content(res, as = "text", encoding = "UTF-8"))$data
 
 models |> 
@@ -156,16 +157,60 @@ content = content(response, "text", encoding = "UTF-8")
 print(content)
 ```
 
-显示图片。
+获取图片。
 
 ```{r}
+#| results: asis
+
 # 获取生成的图像 URL
 image_url = fromJSON(content)[["data"]][["url"]]
 
-knitr::include_graphics(image_url)
+# 下载图片
+response <- GET(image_url)
+
+# 检查请求是否成功
+if (status_code(response) == 200) {
+  # 将图片保存到磁盘
+  writeBin(content(response, "raw"), "output/sunset.png")
+  cat("图片已成功保存到 `output/sunset.png`。")
+} else {
+  cat("下载图片失败，状态码：", status_code(response), "\n")
+}
 ```
 
+
+```{r}
+#| echo: false
+knitr::include_graphics("output/sunset.png")
+```
+
+
+## 识图功能（不支持）
+
+使用多模态模型，可以识别图片中的信息。
+
+```{r}
+# 设置请求体
+body = list(
+  model = "gpt-4o-ca",
+  file = upload_file("output/sunset.png"),  # 文件路径
+  prompt = "这是什么?",  # 提示
+  encode = "multipart"
+  )
+
+res = VERB("POST", 
+            url = "https://api.chatanywhere.tech/v1/chat/completions", 
+            body = body, 
+            add_headers(headers))
+
+cat(content(res, 'text', encoding = "UTF-8"))
+```
+
+
+
 ## 文字转语音模型
+
+将一段文字转变为语音，支持中英文混合。
 
 ```{r}
 body = '{
