@@ -35,6 +35,39 @@ LLM、Embedding、Reranker
 
 因此，请确认在启动 Langchain-Chatchat 项目前，首先进行模型推理框架的运行，并加载所需使用的模型。
 
+#### 安装知识库工具
+
+- 安装搜索模块
+
+  安装 duckduckgo 搜索模块。
+  
+  ```shell
+  pip install -U duckduckgo-search
+  ```
+
+
+- 安装文档处理模块
+
+  `nltk` 是 Python 中的自然语言处理 (NLP) 库，全称为 **Natural Language Toolkit**。它提供了大量的工具和资源来帮助处理和分析文本数据，涵盖了分词、词性标注、句法分析等任务。
+  
+  - `punkt` 是 NLTK 的一个分词器，它用于将文本分成句子和单词。`punkt_tab` 应该是用来处理或扩展 `punkt` 的一些预定义标注数据（可能是分句表或者分词数据表）。
+     - 分词（Tokenization）是 NLP 的基本任务之一，它将连续的文本字符串切分成较小的部分，如单词或句子。
+  
+  - `averaged_perceptron_tagger` 是一种用于词性标注的算法，它会根据上下文为句子中的每个单词分配一个词性标签（如名词、动词、形容词等）。此模型基于英语的词性标注，因此在文件名中有 `eng`。
+     - 词性标注（POS tagging）是文本分析的重要任务，可以帮助 NLP 系统理解单词的语法作用。
+  
+  ```python
+  import nltk
+  
+  # 下载分词器所需的预定义标注表
+  nltk.download('punkt_tab')
+  
+  # 下载词性标注器的预训练模型，支持对英文文本进行词性标注
+  nltk.download('averaged_perceptron_tagger_eng')
+  ```
+  
+
+
 
 ### 初始化
 
@@ -156,5 +189,9 @@ chatchat start -a
 ```
 
 出现网页界面即为启动成功。
+
+## 更新知识库
+
+
 
 
