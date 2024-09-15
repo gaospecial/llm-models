@@ -5,7 +5,7 @@
 {{< video https://www.bilibili.com/video/BV1vN41127ob/?share_source=copy_web&vd_source=d345aeeaedba2347709dc8ca7b1b5cb1 >}}
 
 
-Hugging Face 是一个专注于人工智能（AI）和机器学习（ML）的平台，特别以自然语言处理（NLP）工具和模型而闻名。它提供了一个丰富的开源生态系统，供研究人员、开发者和数据科学家使用。其中，最著名的工具之一是 **Transformers** 库，这个库包含了多种预训练的模型（如BERT、GPT、T5等），这些模型可以用于各种NLP任务，如文本生成、翻译、问答、情感分析等。
+Hugging Face 是一个专注于人工智能（AI）和机器学习（ML）的平台，特别以自然语言处理（NLP）工具和模型而闻名。它提供了一个丰富的开源生态系统，供研究人员、开发者和数据科学家使用。其中，最著名的工具之一是 **Transformers** 库，这个库包含了多种预训练的模型（如BERT、GPT、T5等），这些模型可以用于各种 任务，如文本生成、翻译、问答、情感分析等。
 
 Hugging Face 还提供了 **Hub**，一个模型托管平台，用户可以在上面分享和下载各种预训练的AI模型。此外，它还支持自定义训练模型和通过API进行推理。Hugging Face 的平台和社区非常活跃，是当前AI和NLP领域的重要资源之一。
 
@@ -18,8 +18,11 @@ Hugging Face 还提供了 **Hub**，一个模型托管平台，用户可以在�
 2. 安装 transformers：
    `pip install transformers datasets evaluate accelerate`。
 
+## 配置 GPU 加速
+
+Pytorch 支持 CUDA（NVIDIA）和 MPS（Mac）平台的 GPU 加速，所以这里检测一下硬件环境。
+
 ```{python}
-from transformers import pipeline
 import torch
 
 # select the device for computation
@@ -36,17 +39,131 @@ print(f"using device: {device}")
 
 ## Pipeline
 
-### 分类器
+`pipeline` 是 `transformers` 库中的一个高层接口，旨在简化模型的使用。它封装了模型的加载、输入处理、预测和输出处理的细节，使得用户可以以更简单的方式执行常见任务。
 
-调用一个分类器。
+在 Hugging Face Transformers 库中，pipelines 可以被分为不同的类别，以适应音频、计算机视觉、自然语言处理（NLP）和多模态任务。以下是这些类别中常见的 pipelines：
+
+1. **音频（Audio）**:
+   - 语音识别（Speech Recognition）: 将音频转换为文本。
+   - 语音合成（Text-to-Speech）: 将文本转换为语音。
+   - 语音分类（Speech Classification）: 对音频进行分类，如情绪识别。
+
+2. **计算机视觉（Computer Vision）**:
+   - 图像分类（Image Classification）: 识别图像中的主要对象或场景。
+   - 对象检测（Object Detection）: 识别并定位图像中的对象。
+   - 图像分割（Image Segmentation）: 将图像分割成多个部分或对象。
+   - 图像生成（Image Generation）: 根据文本描述生成图像。
+
+3. **自然语言处理（NLP）**:
+   - 文本分类（Text Classification）: 对文本进行分类，如情感分析。
+   - 命名实体识别（Named Entity Recognition, NER）: 识别文本中的实体。
+   - 问答（Question Answering）: 从文本中找到问题的答案。
+   - 文本生成（Text Generation）: 生成新的文本内容。
+   - 摘要（Summarization）: 生成文本的摘要。
+   - 翻译（Translation）: 将文本从一种语言翻译成另一种语言。
+
+4. **多模态（Multimodal）**:
+   - 视觉问答（Visual Question Answering, VQA）: 结合图像和文本问题，提供答案。
+   - 图像字幕生成（Image Captioning）: 为图像生成描述性文本。
+   - 视频问答（Video Question Answering）: 根据视频内容回答问题。
+   - 多模态情感分析（Multimodal Sentiment Analysis）: 结合文本、音频和视觉信息进行情感分析。
+
+这些 pipelines 利用了预训练的模型，可以处理各种任务，从单一模态的音频或图像处理到结合多种模态信息的复杂任务。用户可以根据自己的需求选择合适的模型和pipeline来实现特定的任务。
+
 
 ```{python}
-classifier = pipeline("sentiment-analysis", device=device)
+import inspect
+from transformers import pipelines
 
-results = classifier(["We are very happy to show you the 🤗 Transformers library.", "We hope you don't hate it."])
-for result in results:
-    print(f"label: {result['label']}, with score: {round(result['score'], 4)}")
+# 获取 transformers.pipeline 模块中的所有成员
+pipeline_members = inspect.getmembers(pipelines)
+
+# 过滤出类，并且名称以 'Pipeline' 结尾
+pipeline_classes = [name for name, obj in pipeline_members if inspect.isclass(obj) and name.endswith('Pipeline')]
+
+# 打印符合条件的类名称
+print("Classes ending with 'Pipeline':")
+for class_name in pipeline_classes:
+    print(class_name)
+
 ```
+
+
+以下是一些常见的 `pipeline` 类型和它们的应用场景：
+
+### 文本分类 (`text-classification`)
+
+用于对输入文本进行分类，例如情感分析。
+
+```{python}
+from transformers import pipeline
+
+classifier = pipeline('text-classification')
+result = classifier("I love using transformers!")
+print(result)
+```
+
+### 命名实体识别 (`ner`)
+
+用于识别文本中的命名实体（如人名、地点、组织等）。
+
+```{python}
+from transformers import pipeline
+
+ner = pipeline('ner', device = device)
+result = ner("Hugging Face is based in New York City.")
+print(result)
+```
+
+### 问答 (`question-answering`)
+
+用于从给定上下文中回答问题。
+
+```{python}
+from transformers import pipeline
+
+question_answerer = pipeline('question-answering', device = device)
+result = question_answerer(question="What is the capital of France?", context="The capital of France is Paris.")
+print(result)
+```
+
+### 文本生成 (`text-generation`)
+
+用于生成文本，例如生成续写或对话。
+
+```{python}
+from transformers import pipeline
+
+generator = pipeline('text-generation', device = device)
+result = generator("Once upon a time", max_length=50)
+print(result)
+```
+
+### 翻译 (`translation`)
+
+用于将文本从一种语言翻译成另一种语言。
+
+```{python}
+from transformers import pipeline
+
+translator = pipeline('translation_en_to_fr', device = device)
+result = translator("Hello, how are you?")
+print(result)
+```
+
+### 文本摘要 (`summarization`)
+
+用于对长文本进行摘要，提取主要内容。
+
+```{python}
+from transformers import pipeline
+
+summarizer = pipeline('summarization', device = device)
+result = summarizer("Hugging Face is creating a tool that democratizes AI. The library will support various tasks and models.")
+print(result)
+```
+
+## 运行机制
 
 使用 Hugging Face 的 `pipeline` 运行任务时，任务默认是在本地执行的。
 
@@ -54,12 +171,28 @@ for result in results:
 
 不过，`pipeline` 也可以访问在线的模型存储库。如果你指定了一个在线模型（例如 Hugging Face Hub 上的某个模型），那么 `pipeline` 会先从在线存储库下载模型到本地，然后在本地运行推理任务。因此，即使你访问的是在线模型，执行过程仍然是在本地完成的。
 
-总结来说，虽然模型可以从 Hugging Face Hub 下载，但任务执行是在本地进行的。
+本地运行推理，可以很方便的执行批处理任务。
 
-### ZeroShotClassificationPipeline
 
-当你使用以下代码时：
+```{python}
+from transformers import pipeline
 
+classifier = pipeline("sentiment-analysis", device=device)
+
+results = classifier(["We are very happy to show you the 🤗 Transformers library.", "We hope you don't hate it."])
+for result in results:
+    print(f"label: {result['label']}, with score: {round(result['score'], 4)}")
+```
+
+
+### 配置模型和参数
+
+`pipeline` 会自动下载和使用默认的预训练模型。但是有些任务可能没有指定模型，这时候就需要配置模型参数。此外，如果需要使用特定的模型，也可以在 `pipeline` 构造函数中指定模型名称。
+
+`pipeline` 会根据任务类型自动处理输入和输出。例如，文本分类任务的输出通常是每个类别的概率，而翻译任务的输出是翻译后的文本。如果提供的任务名称不正确，`pipeline` 可能会抛出错误。如果模型不适合特定任务，也可能会得到不准确的结果或遇到运行时错误。
+
+
+下面的示例中，我们针对 `ZeroShotClassificationPipeline` 任务指定使用了 Facebook 的 `bart-large-mnli` 模型。
 
 ```{python}
 oracle = pipeline("zero-shot-classification", 
@@ -96,19 +229,19 @@ oracle(
   
 - **缓存机制**：如果你再次使用同一个模型（如 `facebook/bart-large-mnli`），`pipeline` 会直接从本地缓存中加载模型，而不会再次从 Hugging Face Hub 下载，除非你手动清除缓存或指定下载新的模型版本。
 
-### 翻译器
+### 配置一个翻译器
 
-调用一个翻译器。
+上面我们调用一个翻译器，将英文翻译为法文。
 
 ```{python}
 en_fr_translator = pipeline("translation_en_to_fr", device=device)
 en_fr_translator("How old are you?")
 ```
 
-不过，调用 `pipeline("tranlation_en_to_zh")` 却会出错。这是因为：虽然 "translation_en_to_zh" 是一个有效的任务标识符，但它并不是直接指定模型的名称。有些错误可能是由于没有找到合适的预训练模型。你可以显式指定模型名称来避免这种情况：
+不过，调用 `pipeline("tranlation_en_to_zh")` 却会出错。这是因为：虽然 "translation_en_to_zh" 是一个有效的任务标识符，但它并不是直接指定模型的名称。这时，需要显式指定模型名称来避免这种情况：
 
 ::: {.callout-note}
-这里还需要安装一个确实的模块：`SentencePiece`。
+这里还需要安装一个缺失的模块：`SentencePiece`。
 
 `SentencePiece` 是一个用于文本分词和词汇生成的工具，它在自然语言处理（NLP）任务中非常有用，尤其是在训练和使用基于子词单元的模型时。`SentencePiece` 由 Google 开发，作为一种无语言依赖的方法，它可以处理几乎任何语言的文本数据。
 
@@ -138,20 +271,21 @@ en_fr_translator("How old are you?")
 :::
 
 ```{python}
-translator = pipeline("translation_en_to_zh", model="Helsinki-NLP/opus-mt-en-zh", device=device)
+translator = pipeline("translation_en_to_zh",
+                      model="Helsinki-NLP/opus-mt-en-zh", device=device)
 translator("This is a introduction to Huggingface.")
 ```
 
-结果一般吧！
-
-翻译任务需要用到的功能包括分词，模型的选择等。下面的代码进行了详细的设置。
+结果很一般。这是因为翻译任务不仅需要模型支持，还需要有一个中文的分词器。而默认的分词器不适合进行中文分词的任务。下面，我们优化一下分词器的设置。
 
 ```{python}
 from transformers import AutoModelWithLMHead,AutoTokenizer,pipeline
 mode_name = 'liam168/trans-opus-mt-en-zh'
 model = AutoModelWithLMHead.from_pretrained(mode_name)
 tokenizer = AutoTokenizer.from_pretrained(mode_name)
-translation = pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer, device=device)
+translation = pipeline("translation_en_to_zh", 
+                      model=model, 
+                      tokenizer=tokenizer, device=device)
 translation('This is a introduction to Huggingface.')
 ```
 
@@ -201,5 +335,6 @@ translation('This is a introduction to Huggingface.')
 最终输出会是 `"This is a introduction to Huggingface."` 的中文翻译版本，例如 `"这是对 Huggingface 的介绍。"`（具体翻译结果可能有所不同，取决于模型的性能）。
 
 这段代码通过加载 Hugging Face 提供的预训练模型和分词器，实现了从英语到中文的自动翻译任务，并且通过使用高层的 `pipeline` API，简化了翻译任务的执行。
+
 
 
