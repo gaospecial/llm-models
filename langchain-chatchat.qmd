@@ -6,15 +6,17 @@
 
 要在 **Langchain-Chatchat** 中使用在线的嵌入和ChatGPT服务，您可以按照以下步骤进行配置和实现：
 
-### pip 安装部署
+## 安装部署
 
-#### 0. 软硬件要求
+### 软硬件要求
 
 💡 软件方面，本项目已支持在 Python 3.8-3.11 环境中进行使用，并已在 Windows、macOS、Linux 操作系统中进行测试。
 
 💻 硬件方面，因 0.3.0 版本已修改为支持不同模型部署框架接入，因此可在 CPU、GPU、NPU、MPS 等不同硬件条件下使用。
 
-#### 1. 安装 Langchain-Chatchat
+### 安装步骤
+
+#### 安装 Langchain-Chatchat
 
 从 0.3.0 版本起，Langchain-Chatchat 提供以 Python 库形式的安装方式，具体安装请执行：
 
@@ -22,7 +24,7 @@
 pip install langchain-chatchat -U
 ```
 
-#### 2. 模型推理框架并加载模型
+#### 模型推理框架并加载模型
 
 **如果使用在线服务的话，这一步不需要做。**
 
@@ -33,25 +35,28 @@ LLM、Embedding、Reranker
 
 因此，请确认在启动 Langchain-Chatchat 项目前，首先进行模型推理框架的运行，并加载所需使用的模型。
 
-#### 3. 初始化项目配置与数据目录
+
+### 初始化
 
 从 0.3.1 版本起，Langchain-Chatchat 使用本地 `yaml` 文件的方式进行配置，用户可以直接查看并修改其中的内容，服务器会自动更新无需重启。
 
-1. 设置 Chatchat 存储配置文件和数据文件的根目录（可选）
+#### 初始化工作目录
 
-```shell
-# on linux or macos
-export CHATCHAT_ROOT=/path/to/chatchat_data
+设置 Chatchat 存储配置文件和数据文件的根目录（可选）
 
-# on windows
-set CHATCHAT_ROOT=/path/to/chatchat_data
-```
+  ```shell
+  # on linux or macos
+  export CHATCHAT_ROOT=/path/to/chatchat_data
+  
+  # on windows
+  set CHATCHAT_ROOT=/path/to/chatchat_data
+  ```
 
-2. 执行初始化
+#### 执行初始化
 
-```shell
-chatchat init
-```
+  ```shell
+  chatchat init
+  ```
 
 该命令会执行以下操作：
 
@@ -59,9 +64,12 @@ chatchat init
 - 复制 samples 知识库内容
 - 生成默认 `yaml` 配置文件
 
-3. 修改配置文件
+### 配置模型和工具
 
-- 配置模型（model_settings.yaml）  
+修改配置文件
+
+#### 配置模型（model_settings.yaml）  
+
   具体参考 `model_settings.yaml` 中的注释。主要修改以下内容：
   
   ```yaml
@@ -97,7 +105,7 @@ chatchat init
       text2speech_models: []
   ```
   
-- 配置知识库路径（`basic_settings.yaml`）（可选）  
+#### 配置知识库路径（`basic_settings.yaml`）（可选）  
 
   默认知识库位于 `CHATCHAT_ROOT/data/knowledge_base`，如果你想把知识库放在不同的位置，或者想连接现有的知识库，可以在这里修改对应目录即可。
   
@@ -112,11 +120,11 @@ chatchat init
    SQLALCHEMY_DATABASE_URI: sqlite:///D:\chatchat-test\data\knowledge_base\info.db
   ```
   
-- 配置知识库（`kb_settings.yaml`）（可选）
+#### 配置知识库（`kb_settings.yaml`）（可选）
 
   默认使用 `FAISS` 知识库，如果想连接其它类型的知识库，可以修改 `DEFAULT_VS_TYPE` 和 `kbs_config`。
 
-- 配置搜索引擎（`tool_settings.yml`）
+#### 配置搜索引擎（`tool_settings.yml`）
 
   ```yaml
   # 搜索引擎工具配置项。推荐自己部署 searx 搜索引擎，国内使用最方便。
@@ -128,11 +136,12 @@ chatchat init
         bing_search_url: https://api.bing.microsoft.com/v7.0/search
         bing_key: '6f4f35****'
   ```
+  
+### 启动服务
 
-#### 4. 初始化知识库
+#### 初始化知识库
 
-> [!WARNING]  
-> 进行知识库初始化前，请确保已经启动模型推理框架及对应 `embedding` 模型，且已按照上述**步骤3**完成模型接入配置。
+运行下面命令初始化。
 
 ```shell
 chatchat kb -r
@@ -140,7 +149,7 @@ chatchat kb -r
 
 更多功能可以查看 `chatchat kb --help`
 
-#### 5. 启动项目
+#### 启动项目
 
 ```shell
 chatchat start -a
