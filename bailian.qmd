@@ -31,7 +31,7 @@ def call_with_stream():
     responses = dashscope.Generation.call("qwen-turbo",
                                 messages=messages,
                                 result_format='message',  # set the result to be "message"  format.
-                                stream=True, # set streaming output
+                                stream=False, # set streaming output
                                 incremental_output=True  # get streaming output incrementally
                                 )
     for response in responses:
@@ -74,7 +74,7 @@ pprint(get_response())
 
 ## 视觉推理
 
-Qwen-VL(qwen-vl-plus/qwen-vl-max) 模型现有几大特点：
+Qwen-VL(`qwen-vl-plus`/`qwen-vl-max`) 模型现有几大特点：
 
 - 大幅增强了图片中文字处理能力，能够成为生产力小帮手，提取、整理、总结文字信息不在话下。
 - 增加可处理分辨率范围，各分辨率和长宽比的图都能处理，大图和长图能看清。
@@ -115,7 +115,7 @@ def simple_multimodal_conversation_call():
 
 response = simple_multimodal_conversation_call()
 content = response.output.choices[0]['message']['content'][0]['text']
-pprint(content)
+pprint(content, width = 72)
 ```
 
 ## 文生图
@@ -258,3 +258,190 @@ def html_tag_audio(file, file_type='wav'):
 tts_output = "output/weather.wav"
 html_tag_audio(tts_output, file_type="wav")
 ```
+
+## 文档解析
+
+`Qwen-Long` 是在通义千问针对超长上下文处理场景的大语言模型，支持中文、英文等不同语言输入，支持最长 1000 万 tokens(约 1500 万字或 1.5 万页文档)的超长上下文对话。配合同步上线的文档服务，可支持 word、pdf、markdown、epub、mobi 等多种文档格式的解析和对话。 
+
+### 上传文档
+
+```{python}
+from pathlib import Path
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.getenv("DASHSCOPE_API_KEY"), # 如果您没有配置环境变量，请在此处用您的API Key进行替换
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",  # 填写DashScope服务的base_url
+)
+
+file_object = client.files.create(file=Path("example/Kraken2.pdf"), 
+                                  purpose="file-extract")
+
+print(f"文件上传成功，文件ID: {file_object.id}")
+```
+
+### 查询文件
+
+查询、删除文件。
+
+```{python}
+# 查询文件元信息
+client.files.retrieve(file_object.id)
+
+# 查询文件列表
+client.files.list()
+```
+
+
+```{python}
+#| eval: false
+# 删除文件
+client.files.delete(file_object.id)
+```
+
+
+### 基于文档的对话
+
+**Qwen-Long** 支持长文本（文档）对话，文档内容需放在 `role` 为 `system` 的 `message` 中，有以下两种方式可将文档信息输入给模型：
+
+- 在提前上传文档获取文档 ID（`fileid`）后，可以直接提供 `fileid`。支持在对话中使用一个或多个 `fileid`。
+- 直接输入需要处理的文本格式的文档内容（file content）。
+
+```{python}
+#| results: asis
+from pprint import pprint
+
+# 获取文件内容
+# 新文档上传后需要等待模型解析，首轮响应时间可能较长
+completion = client.chat.completions.create(
+    model="qwen-long",
+    messages=[
+        {
+            'role': 'system',
+            'content': 'You are a helpful assistant.'
+        },
+        {
+            'role': 'system',
+            'content': f'fileid://{file_object.id}'
+        },
+        {
+            'role': 'user',
+            'content': '这篇文章讲了什么？'
+        }
+    ],
+    stream=False
+)
+
+
+pprint(completion.choices[0].message.model_dump(), width = 72)
+```
+
+### 多个文档
+
+当有多个文档时，可以将多个 `fileid` 传递给 `content`。
+
+```python
+# 首次对话会等待文档解析完成，首轮响应时间可能较长
+completion = client.chat.completions.create(
+    model="qwen-long",
+    messages=[
+        {
+            'role': 'system',
+            'content': 'You are a helpful assistant.'
+        },
+        {
+            'role': 'system',
+            'content': f"fileid://{file_1.id},fileid://{file_2.id}"
+        },
+        {
+            'role': 'user',
+            'content': '这几篇文章讲了什么？'
+        }
+    ],
+    stream=False
+)
+```
+
+### 追加文档
+
+使用下面的方法，可以在对话过程中追加文档。
+
+```{python}
+#| results: asis
+
+# data_1.pdf为原文档，data_2.pdf为追加文档
+file_1 = client.files.create(file=Path("example/gaoch-cv.md"),
+                             purpose="file-extract")
+
+# 初始化messages列表
+messages = [
+    {
+        'role': 'system',
+        'content': 'You are a helpful assistant.'
+    },
+    {
+        'role': 'system',
+        'content': f'fileid://{file_1.id}'
+    },
+    {
+        'role': 'user',
+        'content': '这篇文章讲了什么？'
+    },
+]
+# 第一轮响应
+completion = client.chat.completions.create(
+    model="qwen-long",
+    messages=messages,
+    stream=False
+)
+
+# 打印出第一轮响应
+print(f"第一轮响应：{completion.choices[0].message.model_dump()}")
+```
+
+将第一轮响应的内容添加到历史记录中。
+
+
+```{python}
+# 构造assistant_message
+assistant_message = {
+    "role": "assistant",
+    "content": completion.choices[0].message.content}
+
+# 将assistant_message添加到messages中
+messages.append(assistant_message)
+```
+
+上传一个新文档。
+
+
+```{python}
+#| results: asis
+
+# 获取追加文档的fileid
+file_2 = client.files.create(file=Path("example/syncom-group-library.md"), 
+                             purpose="file-extract")
+
+# 将追加文档的fileid添加到messages中
+system_message = {
+    'role': 'system',
+    'content': f'fileid://{file_2.id}'
+}
+messages.append(system_message)
+
+# 添加用户问题
+messages.append({
+    'role': 'user',
+    'content': '这两篇文章的内容有什么异同点？'
+})
+
+# 追加文档后的响应
+completion = client.chat.completions.create(
+    model="qwen-long",
+    messages=messages,
+    stream=False
+)
+
+print(f"追加文档后的响应：{completion.choices[0].message.model_dump()}")
+```
+

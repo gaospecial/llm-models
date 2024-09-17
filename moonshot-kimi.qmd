@@ -5,13 +5,45 @@ execute:
     cache: true
 ---
 
+## 支持的模型
+
+Kimi 的模型具有 3 种不同规格的上下文长度。
+
+```{python}
+from openai import OpenAI
+import os
+ 
+MOONSHOT_API_KEY = os.getenv("MOONSHOT_API_KEY")
+
+client = OpenAI(
+    api_key = MOONSHOT_API_KEY,
+    base_url = "https://api.moonshot.cn/v1",
+)
+ 
+model_list = client.models.list()
+model_data = model_list.data
+ 
+for i, model in enumerate(model_data):
+    print(f"model[{i}]:", model.id)
+```
+作为 Moonshot AI 开发的人工智能助手，Kimi 具备一些独特的技能和特点，这些可能与文心一言、通义千问等其他AI助手有所不同。
+
+1. **长文本处理**：我能够处理最多 20 万字的输入和输出（`moonshot-v1-128k`），这使得 Kimi 能够处理长篇文章、报告和代码等。
+
+2. **文件阅读和解析**：用户可以上传多种格式的文件，如TXT、PDF、Word文档、PPT幻灯片和Excel电子表格，Kimi 可以阅读这些文件的内容并据此回答问题。
+
+3. **搜索能力**：Kimi 可以结合搜索结果来提供更全面和准确的回答。
+
+
 ## 基于文档的对话
 
-要上传文档给 Kimi 进行处理，你可以使用 Moonshot AI 提供的文件上传接口。以下是使用 Python 代码和 OpenAI SDK 上传 PDF 文档并实现基于文档对话的步骤。
+Kimi 提供的文档上传功能采用 OpenAI 相同的接口标准。
+
+以下是使用 Python 代码和 OpenAI SDK 上传 PDF 文档并实现基于文档对话的步骤。
 
 ### 安装 OpenAI SDK
 
-如果你还没有安装OpenAI SDK，可以通过以下命令安装：
+如果你还没有安装 OpenAI SDK，可以通过以下命令安装：
 
 ```bash
 pip install --upgrade 'openai>=1.0'
@@ -25,8 +57,6 @@ pip install --upgrade 'openai>=1.0'
 from pathlib import Path
 from openai import OpenAI
 import os
-
-MOONSHOT_API_KEY = os.getenv("MOONSHOT_API_KEY")
 
 client = OpenAI(
    api_key = MOONSHOT_API_KEY,  # 替换为你的API密钥
@@ -47,6 +77,7 @@ file_object = client.files.create(file = pdf_file_path,
 print(f"文件上传成功，文件ID: {file_object.id}")
 ```
 
+
 ### 获取文件内容
 
 上传文件后，你可以使用文件ID来获取文件内容。
@@ -57,7 +88,8 @@ from pprint import pprint
 # 获取文件内容
 file_content = client.files.content(file_id=file_object.id).text
 
-pprint(file_content, width = 72)
+# 打印前 200 字
+pprint(file_content[:200], width = 72)
 ```
 
 ### 使用文件内容对话
@@ -149,11 +181,6 @@ def chat(query, messages):
 print(chat("Kraken2 有哪些数据库", messages))
 ```
 
-
-
-```{python}
-print(chat("一般选用哪个数据库进行分析", messages))
-```
 
 :::{.callout-warning}
 值得注意的是，随着对话的进行，模型每次需要传入的 token 都会线性增加，必要时，需要一些策略进行优化，例如只保留最近几轮对话。
