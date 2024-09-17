@@ -14,65 +14,61 @@ from pprint import pprint
 参见：<https://help.aliyun.com/zh/model-studio/getting-started/models?>
 
 
-## 调用通义千问大模型
+### 语言模型
 
 您可以使用 OpenAI Python SDK、DashScope SDK 或 HTTP 接口调用通义千问模型。
 
+#### 使用 DashScope SDK
+
+使用 DashScope SDK 时，会自动读取环境变量中的 API_KEY 并创建对象。
+
 ```{python}
 #| cache: true
+#| results: asis
+
 # Refer to the document for workspace information: https://help.aliyun.com/document_detail/2746874.html    
         
 from http import HTTPStatus
 import dashscope
 
-def call_with_stream():
-    messages = [
-        {'role': 'user', 'content': '你是谁'}]
-    responses = dashscope.Generation.call("qwen-turbo",
-                                messages=messages,
-                                result_format='message',  # set the result to be "message"  format.
-                                stream=False, # set streaming output
-                                incremental_output=True  # get streaming output incrementally
-                                )
-    for response in responses:
-        if response.status_code == HTTPStatus.OK:
-            print(response.output.choices[0]['message']['content'],end='')
-        else:
-            print('Request id: %s, Status code: %s, error code: %s, error message: %s' % (
-                response.request_id, response.status_code,
-                response.code, response.message
-            ))
+messages = [{'role': 'user', 'content': '你是谁'}]
+response = dashscope.Generation.call("qwen-turbo",
+                            messages=messages,
+                            result_format='message',  # set the result to be "message"  format.
+                            stream=False, # set streaming output
+                            )
 
-
-pprint(call_with_stream())
+pprint(response.output.choices[0].message.content, width = 72)
 ```
 
-
+#### 使用 OpenAI SDK
 
 ```{python}
 #| cache: true
+
 from openai import OpenAI
 import os
 
-def get_response():
-    client = OpenAI(
-        api_key=os.getenv("DASHSCOPE_API_KEY"), # 如果您没有配置环境变量，请在此处用您的API Key进行替换
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",  # 填写DashScope服务的base_url
-    )
-    completion = client.chat.completions.create(
-        model="qwen-turbo",
-        messages=[
-            {'role': 'system', 'content': 'You are a helpful assistant.'},
-            {'role': 'user', 'content': '你是谁？'}],
-        temperature=0.8,
-        top_p=0.8
-        )
-    print(completion.model_dump_json())
+# 创建 client
+client = OpenAI(
+    api_key=os.getenv("DASHSCOPE_API_KEY"), # 如果您没有配置环境变量，请在此处用您的API Key进行替换
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",  # 填写DashScope服务的base_url
+)
 
-pprint(get_response())
+# 生成对话
+completion = client.chat.completions.create(
+    model="qwen-turbo",
+    messages=[
+        {'role': 'system', 'content': 'You are a helpful assistant.'},
+        {'role': 'user', 'content': '你是谁？'}],
+    temperature=0.8,
+    top_p=0.8
+    )
+
+print(completion.choices[0].message.content)
 ```
 
-## 视觉推理
+### 视觉推理
 
 Qwen-VL(`qwen-vl-plus`/`qwen-vl-max`) 模型现有几大特点：
 
@@ -118,7 +114,7 @@ content = response.output.choices[0]['message']['content'][0]['text']
 pprint(content, width = 72)
 ```
 
-## 文生图
+### 文生图
 
 通义万相-文本生成图像是基于自研的Composer组合生成框架的AI绘画创作大模型，能够根据用户输入的文字内容，生成符合语义描述的多样化风格的图像。通过知识重组与可变维度扩散模型，加速收敛并提升最终生成图片的效果，布局自然、细节丰富、画面细腻、结果逼真。AI深度理解中英文文本语义，让文字秒变精致AI画作。
 
@@ -174,7 +170,7 @@ image = Image.open(image_path)
 plt.imshow(image)
 ```
 
-## 语音识别
+### 语音识别
 
 SenseVoice 语音识别大模型专注于高精度多语言语音识别、情感辨识和音频事件检测，支持超过 50 种语言的识别，整体效果优于 Whisper 模型，中文与粤语识别准确率相对提升在 50% 以上。
 
@@ -209,7 +205,7 @@ else:
     print('Error: ', transcription_response.output.message)
 ```
 
-## 语音合成
+### 语音合成
 
 Sambert 语音合成 API 基于达摩院改良的自回归韵律模型，支持文本至语音的实时流式合成。
 

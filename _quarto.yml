@@ -17,6 +17,7 @@ book:
     - huggingface-models.qmd
     - chatanywhere.qmd
     - moonshot-kimi.qmd
+    - bigmodel.qmd
     - langchain-chatchat.qmd
     - openai.qmd
     - coze.qmd
