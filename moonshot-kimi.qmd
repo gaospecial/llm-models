@@ -1,0 +1,90 @@
+# Moonshot Kimi
+
+## 基于文档的对话
+
+要上传文档给 Kimi 进行处理，你可以使用 Moonshot AI 提供的文件上传接口。以下是使用 Python 代码和 OpenAI SDK 上传 PDF 文档的步骤：
+
+### 安装 OpenAI SDK
+
+如果你还没有安装OpenAI SDK，可以通过以下命令安装：
+
+```bash
+pip install --upgrade 'openai>=1.0'
+```
+
+### 上传文件
+
+**编写代码上传文件**：使用以下 Python 代码示例上传 PDF 文件。请确保将`$MOONSHOT_API_KEY`替换为你的实际API密钥。
+
+```{python}
+from pathlib import Path
+from openai import OpenAI
+import os
+
+MOONSHOT_API_KEY = os.getenv("MOONSHOT_API_KEY")
+
+client = OpenAI(
+   api_key = MOONSHOT_API_KEY,  # 替换为你的API密钥
+   base_url = "https://api.moonshot.cn/v1",
+)
+```
+
+
+
+```{python}
+# 指定要上传的PDF文件路径
+pdf_file_path = Path("/Users/gaoch/GitHub/hugging-face/example/Kraken2.pdf")
+
+# 上传文件
+file_object = client.files.create(file = pdf_file_path, 
+                                  purpose = "file-extract")
+
+print(f"文件上传成功，文件ID: {file_object.id}")
+```
+
+### 获取文件内容
+
+上传文件后，你可以使用文件ID来获取文件内容。
+
+```{python}
+#| results: asis
+from pprint import pprint
+# 获取文件内容
+file_content = client.files.content(file_id=file_object.id).text
+
+pprint(file_content, width = 72)
+```
+
+### 使用文件内容对话
+
+使用文件内容进行对话是一种常见的场景，尤其是在需要结合特定文档内容来回答用户问题时。
+
+一旦你获取了文件内容，就可以将其作为输入传递给Kimi进行进一步的处理或分析。具体做法是将获取的文件内容作为系统提示（system message）加入到对话中，然后发送用户的问题。
+
+```{python}
+messages = [
+    {
+        "role": "system",
+        "content": "你是Kimi，由Moonshot AI提供的人工智能助手。"
+    },
+    {
+        "role": "system",
+        "content": file_content  # 将文件内容作为系统提示
+    },
+    {
+        "role": "user",
+        "content": "Kraken2 使用的流程是什么"
+    }
+]
+
+# 发送对话请求
+response = client.chat.completions.create(
+    model="moonshot-v1-32k",
+    messages=messages,
+    temperature=0.3,
+)
+
+# 打印回答
+print(response.choices[0].message.content)
+```
+
