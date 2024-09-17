@@ -3,6 +3,7 @@ project:
 
 execute: 
   freeze: auto
+  cache: true
 
 book:
   title: "大模型平台和应用实例"
