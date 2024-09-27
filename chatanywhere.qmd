@@ -95,6 +95,106 @@ content(res, 'text', encoding = "UTF-8") |>
   str()
 ```
 
+## 使用 OpenAI API
+
+```{python}
+from openai import OpenAI
+import os
+
+# 创建 client
+client = OpenAI(
+    api_key=os.getenv("CHATANYWHERE_API_KEY"), # 如果您没有配置环境变量，请在此处用您的API Key进行替换
+    base_url="https://api.chatanywhere.tech",  # 填写 openAI 服务的 base_url
+)
+
+# 生成对话
+completion = client.chat.completions.create(
+    model="gpt-4o-ca",
+    messages=[
+        {'role': 'system', 'content': 'You are a helpful assistant.'},
+        {'role': 'user', 'content': '怎么使用 OpenAI 的接口上传 PDF 文件，并根据文件内容回答我们提出的问题。'}],
+    temperature=0.8,
+    top_p=0.8
+    )
+
+print(completion.choices[0].message.content)
+```
+
+
+
+### 解析文件
+
+ChatAnyWhere 的服务器是不是不支持下面这个命令？
+
+```{python}
+#| eval: false
+from pathlib import Path
+file_object = client.files.create(file=Path("example/Kraken2.pdf"), 
+                                  purpose="file-extract")
+
+print(f"文件上传成功，文件ID: {file_object.id}")
+```
+
+### 使用 Kimi 服务器解析
+
+```{python}
+from pathlib import Path
+from openai import OpenAI
+import os
+
+client = OpenAI(
+   api_key = os.getenv("MOONSHOT_API_KEY"),  # 替换为你的API密钥
+   base_url = "https://api.moonshot.cn/v1",
+)
+
+pdf_file_path = Path("example/Kraken2.pdf")
+
+# 上传文件
+file_object = client.files.create(file = pdf_file_path, 
+                                  purpose = "file-extract")
+
+print(f"文件上传成功，文件ID: {file_object.id}")
+```
+
+
+```{python}
+# 获取文件内容
+file_content = client.files.content(file_id=file_object.id).text
+
+# 打印前 200 字
+print(file_content[:200])
+```
+
+```{python}
+from IPython.display import Markdown
+
+messages = [
+    {
+        "role": "system",
+        "content": "你是Kimi，由Moonshot AI提供的人工智能助手。"
+    },
+    {
+        "role": "system",
+        "content": file_content  # 将文件内容作为系统提示
+    },
+    {
+        "role": "user",
+        "content": "总结一下这份文件中的内容"
+    }
+]
+
+# 发送对话请求
+response = client.chat.completions.create(
+    model="moonshot-v1-32k",
+    messages=messages,
+    temperature=0.3,
+)
+
+# 打印回答
+Markdown(response.choices[0].message.content)
+```
+
+
 ## 词嵌入模型
 
 所有三个词嵌入模型都是基于 Transformer 架构，这使得它们在处理自然语言时具有良好的性能。下表比较了 `text-embedding-ada-002`、`text-embedding-3-small` 和 `text-embedding-3-large` 这三个词嵌入模型的特点：

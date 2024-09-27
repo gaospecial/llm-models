@@ -15,3 +15,5 @@ LaTeX: XeLaTeX
 PythonType: conda
 PythonVersion: 3.12.5
 PythonPath: /opt/homebrew/anaconda3/envs/hugging_face/bin/python3.12
+
+ProjectName: llm-models
