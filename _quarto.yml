@@ -51,15 +51,3 @@ format:
             \usepackage{amsthm,mathrsfs}
             \usepackage{fvextra}
             \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
-  titlepage-pdf:
-    titlepage: cover.png
-    fig-width: 5.5
-    fig-asp: 0.618
-    warning: false
-    message: false
-    include-in-header: 
-          text: |
-            \usepackage{ctex}
-            \usepackage{amsthm,mathrsfs}
-            \usepackage{fvextra}
-            \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
