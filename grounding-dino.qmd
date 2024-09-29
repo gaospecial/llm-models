@@ -23,7 +23,7 @@ headers = {
 ### 参数
 
 | **参数** | **说明** | **类型** | **默认值** | **是否必填** |
-|---------------|---------------|---------------|---------------|---------------|
+|---------------|------------------------------|---------------|---------------|---------------|
 | `image` | 目标图片， base64 或者 http(s) 链接图片 url | String | 无 | 是 |
 | `prompts` | 提示类别，多个提示类别，数组设置多项 | Array | 无 | 是 |
 | `prompts[].type` | prompt 类别，目前支持文本，固定值为 "text" | String | 无 | 是 |
@@ -39,7 +39,7 @@ headers = {
 
 ```{python}
 body = {
-    "image": "https://dds-frontend.oss-accelerate.aliyuncs.com/static_files/playground/grounding_DINO-1.5/02.jpg",
+    "image": "https://playground/grounding_DINO-1.5/02.jpg",
     "prompts": [
         {"type": "text", "text": "window covering"},
         {"type": "text", "text": "dinner table"}
@@ -122,8 +122,7 @@ body = {
 
 提交并获取结果。
 
-```{python}
-#| eval: false
+``` python
 max_retries = 60  # max retry times
 retry_count = 0
 
@@ -137,7 +136,7 @@ resp = requests.post(
 if resp.status_code == 200:
     json_resp = resp.json()
     print(json_resp)
-    # {'code': 0, 'data': {'task_uuid': '092ccde4-a51a-489b-b384-9c4ba8af7375'}, 'msg': 'ok'}
+    # {'code': 0, 'data': {'task_uuid': '092ccde4-a51a-45'}, 'msg': 'ok'}
 
     # get task_uuid
     task_uuid = json_resp["data"]["task_uuid"]
@@ -145,7 +144,8 @@ if resp.status_code == 200:
 
     # poll get task result
     while retry_count < max_retries:
-        resp = requests.get(f'https://api.deepdataspace.com/task_statuses/{task_uuid}', headers=headers)
+        url = f'https://api.deepdataspace.com/task_statuses/{task_uuid}'
+        resp = requests.get(url, headers=headers)
         if resp.status_code != 200:
             break
         json_resp = resp.json()
@@ -166,11 +166,13 @@ else:
 
 ```{python}
 #| echo: false
+from pprint import pprint
+
 # 模拟 JSON 返回
 json_resp = {'code': 0, 'msg': 'ok', 'data': {'task_uuid': '4cc0ca70-9e00-4698-9386-2776cbd9bc0d'}}
-print(json_resp)
+pprint(json_resp)
 task_uuid = json_resp["data"]["task_uuid"]
-print(f'task_uuid:{task_uuid}')
+pprint(f'task_uuid:{task_uuid}')
 
 json_resp = {
     'code': 0,
@@ -202,11 +204,12 @@ json_resp = {
     }
 }
 
-from pprint import pprint
 pprint(json_resp)
 ```
 
 ### 处理结果
+
+将检测的结果标在图片上面。
 
 ```{python}
 # 计算识别到的类型数目
@@ -229,12 +232,7 @@ def category_num(data):
     
     return category_count
 
-category_num(json_resp)
-```
 
-将检测的结果标在图片上面。
-
-```{python}
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
@@ -294,7 +292,7 @@ def plot_with_result(image_path, json_resp):
     
     # Show the plot with bounding boxes and labels
     plt.show()
-    
+
 plot_with_result(image_path, json_resp)
 ```
 
@@ -305,7 +303,7 @@ Grounded SAM 算法集成了 Grounding DINO 1.0 和 SAM 算法 2 种功能，利
 ### 参数
 
 | **参数** | **说明** | **类型** | **默认值** | **是否必填** |
-|----|----|----|----|----|
+|---------------|---------------|---------------|---------------|---------------|
 | `image` | 目标图片， base64 或者 http(s) 链接图片 url | String | 无 | 是 |
 | `prompts` | 提示类别，多个提示类别，数组设置多项 | Array | 无 | 是 |
 | `prompts[].type` | prompt 类别，固定值为 "text" | String | 无 | 是 |
@@ -316,8 +314,7 @@ Grounded SAM 算法集成了 Grounding DINO 1.0 和 SAM 算法 2 种功能，利
 
 ### 提交任务
 
-```{python}
-#| eval: false
+``` python
 # 使用同样的 image 和 prompt
 body = {
     "image": image,
@@ -334,12 +331,9 @@ resp1 = requests.post(
 )
 ```
 
-
-
 运行图像分割任务。
 
-```{python}
-#| eval: false
+``` python
 # get task_uuid
 retry_count = 0
 if resp.status_code == 200:
@@ -367,34 +361,32 @@ if resp.status_code == 200:
         print(f'get task resp: {resp.status_code} - {resp.text}')
 else:
     print(f'Error: {resp.status_code} - {resp.text}')
-
 ```
 
 ```{python}
 #| echo: false
+from pprint import pprint
 json_resp = {}
 
 pprint(json_resp)
 ```
+
 ### 处理结果
 
 ```{python}
-plot_with_result(image_path, json_resp)
+# plot_with_result(image_path, json_resp)
 ```
-
 
 ## Interactive Visual Prompting
 
 交互式视觉提示（IVP）是一种基于 T-Rex 模型的交互式目标检测和计数系统。它通过视觉提示实现目标检测和计数，无需任何训练，真正实现了适用于多种场景的单一视觉模型。它在密集或重叠场景中计数物体方面尤其出色。
 
-
 ### 提交任务
 
-```{python}
-#| eval: false
+``` python
 body = {
-    "prompt_image": "https://dds-frontend.oss-accelerate.aliyuncs.com/static_files/playground/ivp/v2/left_17.jpeg",
-    "infer_image": "https://dds-frontend.oss-accelerate.aliyuncs.com/static_files/playground/ivp/v2/right_17.jpeg",
+    "prompt_image": "https://playground/ivp/v2/left_17.jpeg",
+    "infer_image": "https://playground/ivp/v2/right_17.jpeg",
     "prompts": [
         {
             "type": "rect",
@@ -423,8 +415,7 @@ resp1 = requests.post(
 
 ### 处理结果
 
-```{python}
-#| eval: false
+``` python
 if resp1.status_code == 200:
     json_resp1 = resp1.json()
     print(json_resp1)
@@ -453,12 +444,10 @@ if resp1.status_code == 200:
         print(f'get task resp: {resp.status_code} - {resp.text}')
 else:
     print(f'Error: {resp1.status_code} - {resp1.text}')
-
 ```
 
 ```{python}
 #| echo: false
-
 print({'code': 0, 'msg': 'ok', 'data': {'task_uuid': 'ebff4e6f-35db-4c7f-9f46-72034bd462af'}})
 resp_json = {'code': 0, 
              'msg': 'ok', 
@@ -472,6 +461,8 @@ resp_json = {'code': 0,
                       'uuid': 'ebff4e6f-35db-4c7f-9f46-72034bd462af'
               }
 }
+
+from pprint import pprint
 pprint(resp_json)
 ```
 
@@ -486,11 +477,10 @@ prompt_data = {"data": {"result": {"objects": [{"category": "prompt",
                                                           561.88656716417,
                                                           506.9031949626866]},
                                                ]}}}
-plot_with_result(prompt_image, prompt_data)
 
+plot_with_result(prompt_image, prompt_data)
 plot_with_result(infer_image, resp_json)
 ```
-
 
 ## 使用 SDK 调用
 
@@ -498,6 +488,7 @@ plot_with_result(infer_image, resp_json)
 
 ```{python}
 # 1. Initialize the client with your API token.
+import os
 from dds_cloudapi_sdk import Config
 from dds_cloudapi_sdk import Client
 
@@ -506,7 +497,6 @@ config = Config(token)
 client = Client(config)
 ```
 
-
 运行任务的一般流程如下。
 
 ```{python}
@@ -514,7 +504,8 @@ client = Client(config)
 
 # 2. Upload local image to the server and get the URL.
 infer_image_url = "https://dev.deepdataspace.com/static/04_a.ae28c1d6.jpg"
-# infer_image_url = client.upload_file("path/to/infer/image.jpg")  # you can also upload local file for processing
+# infer_image_url = client.upload_file("path/to/infer/image.jpg")  
+# you can also upload local file for processing
 prompt_image_url = infer_image_url  # use the same image for prompt
 
 # 3. Create a task with proper parameters.
@@ -567,11 +558,12 @@ from dds_cloudapi_sdk import DetectionTask
 from dds_cloudapi_sdk import TextPrompt
 from dds_cloudapi_sdk import DetectionModel
 from dds_cloudapi_sdk import DetectionTarget
-```
+import os
 
+token = os.getenv("DINO_API_KEY")
+config = Config(token)
+client = Client(config)
 
-```{python}
-#| eval: false
 # Step 3: run the task by DetectionTask class
 # image_url = "https://algosplt.oss-cn-shenzhen.aliyuncs.com/test_files/tasks/detection/iron_man.jpg"
 # if you are processing local image file, upload them to DDS server to get the image url
@@ -579,19 +571,30 @@ image_url = client.upload_file("example/images/IMG_0173.jpg")
 
 task = DetectionTask(
     image_url=image_url,
-    prompts=[TextPrompt(text="plate"), TextPrompt(text="leaf"), TextPrompt(text="seedling")],
+    prompts=[TextPrompt(text="plate"), 
+             TextPrompt(text="leaf"), 
+             TextPrompt(text='primary root'),
+             TextPrompt(text="mark"),
+             TextPrompt(text="seedlings")],
     targets=[DetectionTarget.Mask, DetectionTarget.BBox],  # detect both bbox and mask
     model=DetectionModel.GDino1_5_Pro,  # detect with GroundingDino-1.5-Pro model
 )
+```
 
+运行任务。
+
+```{python}
+#| eval: false
 client.run_task(task)
 result = task.result
 ```
 
-
 ```{python}
 # 使用缓存的结果
+import os
 import pickle
+import requests
+
 # 保存结果
 file_path = "example/results/detection-result.pkl"
 # 检查文件是否存在
@@ -600,23 +603,32 @@ if os.path.isfile(file_path):
     with open(file_path, 'rb') as file:
         result = pickle.load(file)
 else:
+    client.run_task(task)
+    result = task.result
     # 文件不存在，创建一个新的result对象并保存
     with open(file_path, 'wb') as file:
         pickle.dump(result, file)
 
-print(result.mask_url)
+# 下载图片并保存
+response = requests.get(result.mask_url)
+
+# 检查请求是否成功
+save_path = "example/results/detection-result-mask.png"
+if not os.path.isfile(save_path) and response.status_code == 200:
+    # 将图片保存到本地文件
+    with open(save_path, 'wb') as file:
+        file.write(response.content)
+    print(f"图片成功保存到 {save_path}")
 ```
 
 这个含有 mask 的图像，标记了检测到的物体的范围。
 
-```{r}
-knitr::include_graphics("example/results/detection-result-mask.png")
-```
-
+![](example/results/detection-result-mask.png)
 
 ```{python}
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
+import matplotlib.patches as patches
 
 image = Image.open("example/images/IMG_0173.jpg")
 objects = result.objects  # the list of detected objects
@@ -656,55 +668,3 @@ for idx, obj in enumerate(objects):
     plt.show()
     
 ```
-
-```{python}
-    # Create a figure and axis for plotting
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
-    
-    # Display the original image
-    image = Image.open(image_path)
-    ax.imshow(image)
-    
-    # 获取 JSON 数据中的 objects 列表
-    detection_results = json_resp['data']['result']['objects']
-    
-    # Overlay bounding boxes and labels with random colors
-    for result in detection_results:
-        score = result.get('score') or 0
-        label = result.get('category')
-        bbox = result['bbox']
-        
-        # Generate a random color
-        color = colors[label]
-        
-        # 创建一个矩形框，参数为 (左上角 x, 左上角 y, 宽度, 高度)
-        rect = patches.Rectangle(
-            (bbox[0], bbox[1]),  # 左上角坐标
-            bbox[2] - bbox[0],   # 宽度
-            bbox[3] - bbox[1],   # 高度
-            linewidth=2,         # 边框宽度
-            edgecolor=color,     # 边框颜色
-            facecolor='none'     # 填充颜色
-        )
-        ax.add_patch(rect)
-        
-        # Draw label and score with the same color as the rectangle
-        label_text = f"{label}: {score:.2f}"
-        ax.text(
-            bbox[0],
-            bbox[1] - 10,
-            label_text,
-            color=color,
-            fontsize=12,
-            bbox=dict(facecolor='white', alpha=0.5, 
-                      edgecolor=color, boxstyle='round,pad=0.5')
-        )
-    
-    
-    # Hide axis
-    # plt.axis('off')
-    
-    # Show the plot with bounding boxes and labels
-    plt.show()
-```
-
