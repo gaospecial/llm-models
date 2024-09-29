@@ -5,6 +5,8 @@ execute:
   freeze: auto
   cache: true
 
+jupyter: python3
+
 book:
   title: "大模型平台和应用实例"
   author: "高春辉"
@@ -39,6 +41,18 @@ format:
     message: false
   pdf:
     documentclass: scrreprt
+    fig-width: 5.5
+    fig-asp: 0.618
+    warning: false
+    message: false
+    include-in-header: 
+          text: |
+            \usepackage{ctex}
+            \usepackage{amsthm,mathrsfs}
+            \usepackage{fvextra}
+            \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+  titlepage-pdf:
+    titlepage: cover.png
     fig-width: 5.5
     fig-asp: 0.618
     warning: false

@@ -8,3 +8,5 @@ __pycache__/
 .Rprofile
 _book
 _freeze
+/*_cache/
+/*_files/
