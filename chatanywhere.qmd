@@ -154,10 +154,7 @@ file_object = client.files.create(file = pdf_file_path,
                                   purpose = "file-extract")
 
 print(f"文件上传成功，文件ID: {file_object.id}")
-```
 
-
-```{python}
 # 获取文件内容
 file_content = client.files.content(file_id=file_object.id).text
 

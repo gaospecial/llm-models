@@ -123,7 +123,7 @@ client = OpenAI(
 
 # 提交对话请求
 completion = client.chat.completions.create(
-    model="glm-4",
+    model="GLM-4-Flash",
     messages=[
         {
             "role": "system",
@@ -168,7 +168,7 @@ messages = [{
 }]
 
 response = client.chat.completions.create(
-    model="glm-4",
+    model="GLM-4-Flash",
     messages=messages,
     tools=tools
 )
@@ -312,7 +312,7 @@ pprint(knowledge_list.model_dump())
 question = "Kraken2的安装方法"
 knowledge = "默认知识库"
 response = client.chat.completions.create(
-    model="glm-4",  # 填写需要调用的模型名称
+    model="GLM-4-Flash",  # 填写需要调用的模型名称
     messages=[
         {"role": "user", "content": question},
     ],
@@ -362,6 +362,7 @@ pprint(result.model_dump_json(), width = 72)
 `GLM-4-Long` 最长支持200万字符上下文，结合文件问答功能。
 
 ```{python}
+#| eval: false
 from pathlib import Path
 import json
 
@@ -398,7 +399,7 @@ print(response.choices[0].message)
 
 ```{python}
 #| output: asis
-
+#| eval: false
 
 # 请求文件列表
 result = client.files.list(
