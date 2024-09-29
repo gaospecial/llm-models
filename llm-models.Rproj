@@ -13,7 +13,7 @@ RnwWeave: Sweave
 LaTeX: XeLaTeX
 
 PythonType: conda
-PythonVersion: 3.12.5
-PythonPath: /opt/homebrew/anaconda3/envs/hugging_face/bin/python3.12
+PythonVersion: 3.10.15
+PythonPath: /opt/homebrew/anaconda3/envs/hugging_face/bin/python3.10
 
 ProjectName: llm-models

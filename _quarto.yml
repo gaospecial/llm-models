@@ -19,6 +19,7 @@ book:
     - chatanywhere.qmd
     - moonshot-kimi.qmd
     - bigmodel.qmd
+    - grounding-dino.qmd
     - langchain-chatchat.qmd
     - openai.qmd
     - coze.qmd
