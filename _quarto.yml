@@ -27,6 +27,7 @@ book:
     - coze.qmd
     - bailian.qmd
     - volcengine.qmd
+    - research-summary.qmd
     - gradio.qmd
     - references.qmd
 

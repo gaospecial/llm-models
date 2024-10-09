@@ -33,6 +33,7 @@ res <- VERB("GET",
 
 将 JSON 输出为表格。
 
+
 ```{r}
 library(jsonlite)
 library(tidyverse)
@@ -112,7 +113,7 @@ completion = client.chat.completions.create(
     model="gpt-4o-ca",
     messages=[
         {'role': 'system', 'content': 'You are a helpful assistant.'},
-        {'role': 'user', 'content': '怎么使用 OpenAI 的接口上传 PDF 文件，并根据文件内容回答我们提出的问题。'}],
+        {'role': 'user', 'content': '你是谁'}],
     temperature=0.8,
     top_p=0.8
     )
@@ -129,8 +130,16 @@ ChatAnyWhere 的服务器是不是不支持下面这个命令？
 ```{python}
 #| eval: false
 from pathlib import Path
-file_object = client.files.create(file=Path("example/Kraken2.pdf"), 
-                                  purpose="file-extract")
+
+assistant = client.beta.assistants.create(
+  name="Document Reader Assistant",
+  instructions="You are an document reader",
+  model="gpt-4o",
+  tools=[{"type": "file_search"}],
+)
+
+file_object = client.files.create(file=open(Path("example/Kraken2.pdf"),"r"), 
+                                  purpose="assistants")
 
 print(f"文件上传成功，文件ID: {file_object.id}")
 ```

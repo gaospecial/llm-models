@@ -1,0 +1,280 @@
+# 研究概要
+
+通过大语言模型分析文献标题和摘要，确定其研究主题是否为“合成菌群”。
+
+## 任务流程
+
+首先将参考文献的摘要进行整理，然后使用模型来分析这些摘要。以下是一个基本的步骤：
+
+1.  **收集摘要**：将你所有参考文献的摘要收集起来，可以按照主题或年份等进行分类。
+2.  **输入模型**：将这些摘要分批输入模型。由于每个摘要可能较短，你可以一次输入多个摘要。
+3.  **分析主题**：要求模型根据输入的摘要，识别出每个参考文献的主要研究主题。
+
+这样，你就可以利用模型快速了解大量参考文献的主要内容，并根据自己的兴趣和研究方向选择需要深入阅读的文献。
+
+当然，以下是一个具体的实施示例，假设你有几篇参考文献的摘要，并希望模型分析其中的主要研究主题：
+
+### 示例摘要
+
+1.  **摘要 1**: “This study explores the effects of soil microbiomes on plant growth in maize, focusing on nitrogen fixation and plant health under different environmental conditions.”
+2.  **摘要 2**: “The research investigates the impact of synthetic microbial communities on soil nutrient cycling, analyzing their potential to enhance agricultural sustainability.”
+3.  **摘要 3**: “This paper examines the interactions between soil microorganisms and plant roots, specifically in the context of drought resistance in crops.”
+
+### 实施步骤
+
+**第一步：收集摘要**
+
+将这些摘要收集并整理好，可以按主题或关键字进行分类。
+
+**第二步：输入模型**
+
+假设你将这三个摘要分批输入模型，并让模型识别每个摘要的主要研究主题。你可以构造这样的提示：
+
+**提示词示例**:
+
+> “请根据以下摘要识别每篇文章的主要研究主题：
+>
+> 1.  摘要 1: \[输入摘要\]
+> 2.  摘要 2: \[输入摘要\]
+> 3.  摘要 3: \[输入摘要\]”
+
+**第三步：模型输出**
+
+模型将分析这些摘要，并识别出每篇文章的主题。例如，模型可能给出的结果如下：
+
+::: quoted
+-   **摘要 1 主题**: 植物健康与氮固定在不同环境条件下的变化
+-   **摘要 2 主题**: 微生物群落在土壤养分循环中的作用及其对农业可持续性的影响
+-   **摘要 3 主题**: 土壤微生物与作物抗旱性之间的相互作用
+:::
+
+
+
+## 代码实现
+
+要实现这个过程，你可以使用 Python 结合 OpenAI 的 API 来处理文本。以下是一个代码示例，利用 GPT 模型分析摘要并提取主要主题。
+
+**环境准备：**
+
+（略）
+
+**实现代码：**
+
+1. **analyze_abstracts** 函数：接受一个摘要列表，将它们拼接成一个请求提示，并传递给 GPT 模型进行处理。
+2. **openai.chat.completions.create()**：调用 OpenAI 的模型来生成对话结果，输出每个摘要的主要主题。
+3. **model="gpt-4o-ca"**：你可以根据需要选择不同的GPT模型。
+4. **摘要输入**：输入多个摘要，模型会分析并提取主要的研究主题。
+
+**运行效果：**
+
+模型会返回每个摘要的研究主题：
+
+```{python}
+import openai
+import os
+from IPython.display import Markdown
+
+openai.base_url = "https://api.chatanywhere.tech"
+openai.api_key = os.getenv("CHATANYWHERE_API_KEY")
+
+system_prompt = "这些文章的主题是什么？"
+
+def analyze_abstracts(abstracts):
+  # Create prompt with multiple messages (abstracts)
+  messages = [
+      {"role": "system", "content": system_prompt}
+  ]
+  for abstract in abstracts:
+      messages.append({"role": "user", "content": abstract})
+
+  # Use Completion.create with messages list
+  response = openai.chat.completions.create(
+      model="gpt-4o-ca",  # Adjust model as needed
+      messages=messages,
+      n=1,  # Generate only 1 response
+  )
+
+  # Extract and return the analyzed content
+  return response.choices[0].message.content
+
+# 示例摘要
+abstracts = [
+  "Paper1: This study explores the effects of soil microbiomes on plant growth in maize, focusing on nitrogen fixation and plant health under different environmental conditions.",
+  "Paper2: The research investigates the impact of synthetic microbial communities on soil nutrient cycling, analyzing their potential to enhance agricultural sustainability.",
+  "Paper3: This paper examines the interactions between soil microorganisms and plant roots, specifically in the context of drought resistance in crops."
+]
+
+
+# 分析摘要并输出主题
+themes = analyze_abstracts(abstracts)
+Markdown(themes)
+```
+
+## 与导出文件联动
+
+好的，接下来我们可以设计一个流程来自动读取 Web of Science 的导出文件（通常是 CSV/TSV 格式），然后每次批量处理 5 篇文献的摘要，并使用 GPT 模型提取主题，最后将提取的主题保存到本地文件中。下面是具体的实现思路和代码。
+
+**流程步骤：**
+
+1. **读取CSV文件**：从导出的Web of Science文件中读取文献的标题（ti列）和摘要（ab列）。 
+2. **分批处理摘要**：每次提取5篇文献的摘要，使用GPT模型分析主题。
+3. **保存结果**：将每篇文献的标题、摘要以及提取到的主题保存到本地文件（如CSV文件）中。
+
+### 读取文件
+
+```{python}
+import pandas as pd
+
+# 读取CSV文件中的标题和摘要
+file = "example/wos-fast5k/savedrecs.txt"
+    
+# 根据文件的分隔符修改 delimiter 参数
+# 设置 index_col=False 来确保第一列不会被当作行索引
+data = pd.read_csv(file, delimiter='\t', index_col=False)  
+
+# 删除全为 NaN 的列
+data = data.loc[:, data.notna().sum() != 0]
+
+# 查看处理后的数据
+print(data[0:5])
+```
+
+下面，将 `dataframe` 中的数据逐批处理，生成 JSON 格式的文本。
+
+1. **`batch_to_json()`**：这是函数的主体，将数据按批次进行处理，并将每行数据转化为 JSON 格式。
+2. **批次切分**：使用 `data[i:i+batch_size]` 对 `DataFrame` 进行分批处理。
+3. **构建 JSON**：每行数据提取出 `UT`、`TI`、`AB` 列的值，并构建一个包含 `id`、`ti` 和 `ab` 键的 JSON 对象。
+4. **`json.dumps()`**：将列表形式的 JSON 对象转换为 JSON 字符串。
+5. **`ensure_ascii=False`**：确保输出的 JSON 字符串支持非 ASCII 字符。
+
+```{python}
+import pandas as pd
+import json
+
+def batch_to_json(data, batch_size):
+    # 确保输入的 data 是一个 DataFrame，且 batch_size 是正整数
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError("data 应该是一个 pandas DataFrame")
+    if not isinstance(batch_size, int) or batch_size <= 0:
+        raise ValueError("batch_size 应该是一个正整数")
+    
+    # 提取 dataframe 中的每 batch_size 行数据
+    batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
+    
+    result = []
+    for batch in batches:
+        json_batch = []
+        for _, row in batch.iterrows():
+            # 构建每行的 JSON 对象
+            json_obj = {
+                "ID": row["UT"],
+                "TI": row["TI"],
+                "AB": row["AB"]
+            }
+            json_batch.append(json_obj)
+        result.append(json.dumps(json_batch, ensure_ascii=False))  # 转换为 JSON 格式的字符串
+    return result
+
+# 示例使用
+batch_size = 2
+json_output = batch_to_json(data[0:6], batch_size)
+
+from pprint import pprint
+for batch in json_output:
+    Markdown(batch)
+```
+
+### 调整提示词
+
+
+Note: 将提示词换成英文效果可能会更好。
+
+```{python}
+# 使用三引号插入一个非常长的系统提示符
+system_prompt = """  
+请根据以下内容识别每篇文章的研究主题与**合成菌群**研究的相关性，并给出评分（完全不相关 0 分，十分相关 10 分，部分相关 1-9 分）：
+
+请注意：
+
+1. 合成菌群是指人们利用一个或者多个微生物组成的复合物，它可以是一个益生菌，一种生物肥料，或者一个小型的微生物群落。所有与这些内容相关的研究都应该被认为是合成菌群的相关研究。
+2. 后续的这些内容都会以 JSON 格式给出文章的 ID、标题（TI）和摘要（AB），请根据标题和摘要的内容进行判断，并且记录 ID 用于回答。
+3. 务必按照下面的要求回答。
+
+回答要求：
+
+1. 在回答时请给出文章的 ID，评分（score）与简短理由（reason）。
+2. 请使用 JSON 格式回答。
+
+
+下面是一个示例回答：
+
+{results: [{"ID":"WOS:000996233600009","score":5, "reason": "reason in Chinese"},
+{"ID":"WOS:001247571700001","score":10, "reason": "reason in Chinese"}]}
+
+"""
+```
+
+
+要使 OpenAI API 调用的结果以统一的 JSON 格式返回，可以按照以下步骤进行设置：
+
+
+```{python}
+def analyze_content(content):
+  # Create prompt with multiple messages (abstracts)
+  messages = [
+      {"role": "system", "content": system_prompt}
+  ]
+  
+  messages.append({"role": "user", "content": content})
+
+  # Use Completion.create with messages list
+  response = openai.chat.completions.create(
+      model="gpt-4o-ca",  # Adjust model as needed
+      messages=messages,
+      response_format={"type": "json_object"}
+  )
+
+  # Extract and return the analyzed content
+  return response.choices[0].message.content
+
+
+Markdown(analyze_content(json_output[0]))
+```
+
+### 批处理
+
+现在可以进行批处理，并将结果保存下来。
+
+
+```{python}
+batches = batch_to_json(data[0:20], batch_size=5)
+
+results = []
+
+for batch in batches:
+  result = analyze_content(batch)
+  results.append(result)
+
+```
+
+将列表合并成一个数据框，并保存到硬盘中供后续分析使用。
+
+```{python}
+import json
+
+data_list = []
+
+
+for json_data in results:
+  data = json.loads(json_data)
+  result = data['results']
+
+  for item in result:
+    data_list.append([item['ID'], item['score'], item['reason']])
+
+df = pd.DataFrame(data_list, columns=['ID', 'score', 'reason'])
+
+df
+# df.to_csv('output.csv', index=False)
+```
+
