@@ -28,6 +28,7 @@ book:
     - bailian.qmd
     - volcengine.qmd
     - research-summary.qmd
+    - object-detection-of-microfluidic-chip.qmd
     - gradio.qmd
     - references.qmd
 

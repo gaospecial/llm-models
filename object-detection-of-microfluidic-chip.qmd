@@ -130,3 +130,111 @@ plt.show()
 print(f"Detected contours: {len(contours)}")
 ```
 
+
+## 使用 GroundingDino 检测微流控芯片
+
+在这个部分,我们将使用 GroundingDino 模型来检测微流控芯片中的白点。GroundingDino 是一个强大的目标检测模型,可以根据文本提示来定位和分割图像中的对象。以下是代码的主要步骤和功能:
+
+1. 准备图像和提示:
+   - 设置图像路径和上传图像
+   - 创建文本提示 "white dots"
+
+2. 配置检测任务:
+   - 使用 DetectionTask 设置检测参数
+   - 指定检测目标为边界框(BBox)和掩码(Mask)
+   - 选择 GroundingDino-1.5-Pro 模型
+
+3. 执行检测:
+   - 使用 client.run_task() 运行检测任务
+   - 获取检测结果
+
+4. 可视化结果:
+   - 遍历检测到的每个对象
+   - 将掩码从 RLE 格式转换为 RGBA 图像
+   - 创建图像副本并绘制检测结果
+   - 显示原始图像、掩码叠加和边界框
+   - 添加类别和置信度得分标签
+
+这段代码展示了如何使用高级目标检测模型来识别微流控芯片中的特定结构,并以可视化的方式呈现结果。
+
+
+```{python}
+import os
+from dds_cloudapi_sdk import Config
+from dds_cloudapi_sdk import Client
+from dds_cloudapi_sdk import DetectionTask
+from dds_cloudapi_sdk import TextPrompt
+from dds_cloudapi_sdk import DetectionModel
+from dds_cloudapi_sdk import DetectionTarget
+
+token = os.getenv("DINO_API_KEY")
+config = Config(token)
+client = Client(config)
+
+image_path = "example/images/microfluidic-chip.jpg"
+image_url = client.upload_file(image_path)
+prompt = [TextPrompt(text="white dots surrounding by black edge")]
+
+task = DetectionTask(
+    image_url=image_url,
+    prompts=prompt,
+    targets=[DetectionTarget.Mask, DetectionTarget.BBox],  # detect both bbox and mask
+    model=DetectionModel.GDino1_5_Pro,  # detect with GroundingDino-1.5-Pro model
+)
+
+task = DetectionTask(
+    image_url=image_url,
+    prompts=prompt,
+    targets=[DetectionTarget.Mask, DetectionTarget.BBox],
+    model=DetectionModel.GDino1_5_Pro,
+)
+
+client.run_task(task)
+result = task.result    
+```
+
+```{python}
+# 显示检测结果
+import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw
+import matplotlib.patches as patches
+
+image = Image.open(image_path)
+
+objects = result.objects  # the list of detected objects
+for idx, obj in enumerate(objects):
+    # 将RLE格式转换为RGBA图像
+    mask_image = task.rle2rgba(obj.mask)
+
+    # 创建一个图像副本用于绘制
+    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+    
+    ax.imshow(image)
+    ax.imshow(mask_image, alpha=0.5)
+    
+    # 在图像上绘制掩码
+    bbox = obj.bbox
+    # 创建一个矩形框，参数为 (左上角 x, 左上角 y, 宽度, 高度)
+    rect = patches.Rectangle(
+        (bbox[0], bbox[1]),  # 左上角坐标
+        bbox[2] - bbox[0],   # 宽度
+        bbox[3] - bbox[1],   # 高度
+        linewidth=2,         # 边框宽度
+        edgecolor='red',     # 边框颜色
+        facecolor='none'     # 填充颜色
+    )
+    ax.add_patch(rect)   
+    
+    # 在图像上添加类别和分数
+    text = f"{obj.category} {obj.score:.2f}"
+    ax.text(bbox[0], 
+              bbox[1] - 10, 
+              text, 
+              color='red', 
+              fontsize=12)
+
+    # 显示图像
+    # plt.axis('off')  # 不显示坐标轴
+    plt.show()
+    
+```
