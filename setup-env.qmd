@@ -1,0 +1,98 @@
+# 设置运行环境
+
+## 使用 Conda
+
+Conda 是一个强大的包管理和环境管理工具，广泛用于 Python 项目。以下是使用 Conda 的基本步骤：
+
+1. 安装 Conda
+
+首先，从 Anaconda 官网下载并安装 Conda。您可以选择安装完整的 Anaconda 发行版，或者更轻量级的 Miniconda。
+
+2. 创建环境
+
+创建一个新的 Conda 环境：
+
+```
+conda create -n myenv python=3.10
+```
+
+这将创建一个名为 `myenv` 的 Python 3.10 环境。
+
+3. 安装包
+
+在创建的环境中安装所需的包：
+
+```
+conda install numpy
+```
+
+这将安装 NumPy 包。
+
+4. 激活环境
+
+激活环境：
+
+```
+conda activate myenv
+```
+
+这将激活您创建的环境。
+
+5. 导出环境
+
+如果您已经有一个想要记录的 Conda 环境，可以使用以下命令导出它：
+
+```
+conda env export > environment.yml
+```
+
+这将创建一个包含当前环境所有包及其版本的 `environment.yml` 文件。
+
+6. 使用文件创建环境
+
+创建好 `environment.yml` 文件后，您可以使用以下命令创建新环境：
+
+```
+conda env create -f environment.yml
+```
+
+这将创建一个与 `environment.yml` 文件中记录的包及其版本完全相同的新环境。
+
+## 使用 pip
+
+pip 是 Python 的包管理工具，广泛用于 Python 项目。以下是使用 pip 的基本步骤：
+
+1. 安装 pip
+
+首先，确保您已经安装了 pip。pip 通常随 Python 一起安装。
+
+2. 安装包
+
+在创建的环境中安装所需的包：
+
+```
+pip install numpy
+```
+
+这将安装 NumPy 包。
+
+3. 导出环境
+
+如果您已经有一个想要记录的 pip 环境，可以使用以下命令导出它：
+
+```
+pip freeze > requirements.txt
+```
+
+这将创建一个包含当前环境中所有已安装包及其版本的 `requirements.txt` 文件。
+
+4. 使用文件创建环境
+
+创建好 `requirements.txt` 文件后，您可以使用以下命令创建新环境：
+
+```
+pip install -r requirements.txt
+```
+
+这将安装 `requirements.txt` 文件中列出的所有包。
+
