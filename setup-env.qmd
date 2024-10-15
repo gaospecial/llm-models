@@ -96,3 +96,14 @@ pip install -r requirements.txt
 
 这将安装 `requirements.txt` 文件中列出的所有包。
 
+## 注意
+
+当你同时使用 `conda` 和 `pip` 安装 Python 环境后出现冲突时，可以尝试以下方法解决：
+
+1. **优先使用 Conda**：尽量使用 `conda` 来管理包，因为它更好地处理依赖关系。只有当 `conda` 中找不到包时，再使用 `pip`。
+
+2. **创建隔离环境**：通过 `conda create -n myenv` 创建一个新的环境，避免与全局环境冲突。
+
+3. **使用 `conda install pip`**：在 `conda` 环境中安装 `pip`，确保 `pip` 安装的包与环境兼容。
+
+4. **重装冲突包**：如果问题持续，尝试卸载冲突包，并使用单一包管理工具重新安装。
