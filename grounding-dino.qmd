@@ -95,7 +95,7 @@ def image_base64(image_path):
         return encoded_image_str
 
 # 打印或使用 base64 编码字符串
-image_path = "example/images/IMG_0173.jpg"
+image_path = "example/images/leaf-plate.jpg"
 print(image_base64(image_path)[:70])
 ```
 
@@ -595,7 +595,7 @@ client = Client(config)
 # Step 3: run the task by DetectionTask class
 # image_url = "https://algosplt.oss-cn-shenzhen.aliyuncs.com/test_files/tasks/detection/iron_man.jpg"
 # if you are processing local image file, upload them to DDS server to get the image url
-image_url = client.upload_file("example/images/IMG_0173.jpg")
+image_url = client.upload_file("example/images/leaf-plate.jpg")
 
 task = DetectionTask(
     image_url=image_url,
@@ -658,7 +658,7 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 import matplotlib.patches as patches
 
-image = Image.open("example/images/IMG_0173.jpg")
+image = Image.open("example/images/leaf-plate.jpg")
 objects = result.objects  # the list of detected objects
 # 创建一个图像副本用于绘制
 fig, ax = plt.subplots(1, 1, figsize=(12, 8))
