@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>8&nbsp; 智谱开放平台 – 大模型平台和应用实例</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./grounding-dino.html" rel="next">
+<link href="./moonshot-kimi.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./bigmodel.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">智谱开放平台</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">大模型平台和应用实例</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">设置运行环境</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hugging Face Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./moonshot-kimi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Moonshot Kimi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bigmodel.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">智谱开放平台</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grounding-dino.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">DDS Could</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./langchain-chatchat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">本地知识库</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./openai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">OpenAI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./coze.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Coze</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./volcengine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">火山引擎</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">研究概要</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./llama.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Llama 3.2</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./object-detection-of-microfluidic-chip.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gradio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#模型清单" id="toc-模型清单" class="nav-link active" data-scroll-target="#模型清单"><span class="header-section-number">8.1</span> 模型清单</a>
+  <ul class="collapse">
+  <li><a href="#语言模型" id="toc-语言模型" class="nav-link" data-scroll-target="#语言模型"><span class="header-section-number">8.1.1</span> 语言模型</a></li>
+  <li><a href="#多模态模型" id="toc-多模态模型" class="nav-link" data-scroll-target="#多模态模型"><span class="header-section-number">8.1.2</span> 多模态模型</a></li>
+  <li><a href="#向量模型" id="toc-向量模型" class="nav-link" data-scroll-target="#向量模型"><span class="header-section-number">8.1.3</span> 向量模型</a></li>
+  <li><a href="#其他模型" id="toc-其他模型" class="nav-link" data-scroll-target="#其他模型"><span class="header-section-number">8.1.4</span> 其他模型</a></li>
+  </ul></li>
+  <li><a href="#语言模型-1" id="toc-语言模型-1" class="nav-link" data-scroll-target="#语言模型-1"><span class="header-section-number">8.2</span> 语言模型</a>
+  <ul class="collapse">
+  <li><a href="#使用-openai-sdk" id="toc-使用-openai-sdk" class="nav-link" data-scroll-target="#使用-openai-sdk"><span class="header-section-number">8.2.1</span> 使用 OpenAI SDK</a></li>
+  <li><a href="#使用智谱ai-sdk" id="toc-使用智谱ai-sdk" class="nav-link" data-scroll-target="#使用智谱ai-sdk"><span class="header-section-number">8.2.2</span> 使用智谱AI SDK</a></li>
+  </ul></li>
+  <li><a href="#多模态模型-1" id="toc-多模态模型-1" class="nav-link" data-scroll-target="#多模态模型-1"><span class="header-section-number">8.3</span> 多模态模型</a>
+  <ul class="collapse">
+  <li><a href="#文生视频" id="toc-文生视频" class="nav-link" data-scroll-target="#文生视频"><span class="header-section-number">8.3.1</span> 文生视频</a></li>
+  <li><a href="#图生视频" id="toc-图生视频" class="nav-link" data-scroll-target="#图生视频"><span class="header-section-number">8.3.2</span> 图生视频</a></li>
+  <li><a href="#文生图片" id="toc-文生图片" class="nav-link" data-scroll-target="#文生图片"><span class="header-section-number">8.3.3</span> 文生图片</a></li>
+  <li><a href="#图片视频理解" id="toc-图片视频理解" class="nav-link" data-scroll-target="#图片视频理解"><span class="header-section-number">8.3.4</span> 图片视频理解</a></li>
+  </ul></li>
+  <li><a href="#增强检索" id="toc-增强检索" class="nav-link" data-scroll-target="#增强检索"><span class="header-section-number">8.4</span> 增强检索</a>
+  <ul class="collapse">
+  <li><a href="#创建知识库" id="toc-创建知识库" class="nav-link" data-scroll-target="#创建知识库"><span class="header-section-number">8.4.1</span> 创建知识库</a></li>
+  <li><a href="#请求知识库文件列表" id="toc-请求知识库文件列表" class="nav-link" data-scroll-target="#请求知识库文件列表"><span class="header-section-number">8.4.2</span> 请求知识库文件列表</a></li>
+  <li><a href="#上传文件" id="toc-上传文件" class="nav-link" data-scroll-target="#上传文件"><span class="header-section-number">8.4.3</span> 上传文件</a></li>
+  <li><a href="#文件内容提取" id="toc-文件内容提取" class="nav-link" data-scroll-target="#文件内容提取"><span class="header-section-number">8.4.4</span> 文件内容提取</a></li>
+  <li><a href="#检索知识库" id="toc-检索知识库" class="nav-link" data-scroll-target="#检索知识库"><span class="header-section-number">8.4.5</span> 检索知识库</a></li>
+  <li><a href="#调用知识库" id="toc-调用知识库" class="nav-link" data-scroll-target="#调用知识库"><span class="header-section-number">8.4.6</span> 调用知识库</a></li>
+  <li><a href="#删除文件" id="toc-删除文件" class="nav-link" data-scroll-target="#删除文件"><span class="header-section-number">8.4.13</span> 删除文件</a></li>
+  <li><a href="#删除知识库" id="toc-删除知识库" class="nav-link" data-scroll-target="#删除知识库"><span class="header-section-number">8.4.14</span> 删除知识库</a></li>
+  <li><a href="#用量查询" id="toc-用量查询" class="nav-link" data-scroll-target="#用量查询"><span class="header-section-number">8.4.15</span> 用量查询</a></li>
+  </ul></li>
+  <li><a href="#基于文件的问答" id="toc-基于文件的问答" class="nav-link" data-scroll-target="#基于文件的问答"><span class="header-section-number">8.5</span> 基于文件的问答</a>
+  <ul class="collapse">
+  <li><a href="#删除文件-1" id="toc-删除文件-1" class="nav-link" data-scroll-target="#删除文件-1"><span class="header-section-number">8.5.1</span> 删除文件</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">智谱开放平台</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="https://open.bigmodel.cn">智谱 AI 开放平台</a>提供一系列具有不同功能和定价的大模型，包括通用大模型、超拟人大模型、图像大模型、向量大模型等，并且支持使用您的私有数据对模型进行微调。</p>
+<section id="模型清单" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="模型清单"><span class="header-section-number">8.1</span> 模型清单</h2>
+<p>智谱AI 开放平台提供了包括通用大模型、图像大模型、超拟人大模型、向量大模型等多种模型。</p>
+<section id="语言模型" class="level3" data-number="8.1.1">
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="语言模型"><span class="header-section-number">8.1.1</span> 语言模型</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 59%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">模型</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">上下文</th>
+<th style="text-align: left;">最大输出</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GLM-4-Plus</td>
+<td style="text-align: left;"><strong>高智能旗舰</strong>: 性能全面提升，长文本和复杂任务能力显著增强</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GLM-4-0520</td>
+<td style="text-align: left;"><strong>高智能模型</strong>：适用于处理高度复杂和多样化的任务</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GLM-4-Long</td>
+<td style="text-align: left;"><strong>超长输入</strong>：专为处理超长文本和记忆型任务设计</td>
+<td style="text-align: left;">1M</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GLM-4-AirX</td>
+<td style="text-align: left;"><strong>极速推理</strong>：具有超快的推理速度和强大的推理效果</td>
+<td style="text-align: left;">8K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GLM-4-Air</td>
+<td style="text-align: left;"><strong>高性价比</strong>：推理能力和价格之间最平衡的模型</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GLM-4-Flash</td>
+<td style="text-align: left;"><strong>免费调用</strong>：智谱AI首个免费API，零成本调用大模型。</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GLM-4V</td>
+<td style="text-align: left;"><strong>图像理解</strong>：具备图像理解能力和推理能力</td>
+<td style="text-align: left;">2K</td>
+<td style="text-align: left;">1k</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GLM-4-AllTools</td>
+<td style="text-align: left;"><strong>Agent模型</strong>：自主规划和执行复杂任务</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GLM-4</td>
+<td style="text-align: left;"><strong>旧版旗舰</strong>：发布于2024年1月16日，目前已被GLM-4-0520取代</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4K</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="多模态模型" class="level3" data-number="8.1.2">
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="多模态模型"><span class="header-section-number">8.1.2</span> 多模态模型</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 60%">
+<col style="width: 10%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">模型</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">最大输入</th>
+<th style="text-align: left;">输出分辨率</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GLM-4V-Plus</td>
+<td style="text-align: left;"><strong>视频和图像理解</strong>：具备视频内容和多图片的理解能力</td>
+<td style="text-align: left;">8K</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GLM-4V</td>
+<td style="text-align: left;"><strong>图像理解</strong>：具备图像理解能力和推理能力</td>
+<td style="text-align: left;">2K</td>
+<td style="text-align: left;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CogVideoX</td>
+<td style="text-align: left;"><strong>视频生成</strong>：输入文本或图片即可轻松制作视频</td>
+<td style="text-align: left;">0.5K</td>
+<td style="text-align: left;">1440x960</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CogView-3.5</td>
+<td style="text-align: left;"><strong>图片生成</strong>：根据用户文字描述生成高质量图像，支持多图片尺寸</td>
+<td style="text-align: left;">1k</td>
+<td style="text-align: left;">1024x1024<br>
+768x1344<br>
+864x1152 等</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CogView-3</td>
+<td style="text-align: left;"><strong>图片生成</strong>：根据用户文字描述快速、精准生成图像</td>
+<td style="text-align: left;">1k</td>
+<td style="text-align: left;">1024x1024</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="向量模型" class="level3" data-number="8.1.3">
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="向量模型"><span class="header-section-number">8.1.3</span> 向量模型</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 48%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">模型</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">最大输入</th>
+<th style="text-align: left;">向量维度</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Embedding-3</td>
+<td style="text-align: left;"><strong>最新模型</strong>：支持自定义向量维度</td>
+<td style="text-align: left;">8K</td>
+<td style="text-align: left;">2048</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Embedding-2</td>
+<td style="text-align: left;"><strong>旧版模型</strong>：目前已被Embedding-3取代</td>
+<td style="text-align: left;">8K</td>
+<td style="text-align: left;">1024</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="其他模型" class="level3" data-number="8.1.4">
+<h3 data-number="8.1.4" class="anchored" data-anchor-id="其他模型"><span class="header-section-number">8.1.4</span> 其他模型</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 65%">
+<col style="width: 9%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">模型</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">上下文</th>
+<th style="text-align: left;">最大输出</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ChatGLM-3</td>
+<td style="text-align: left;"><strong>拟人模型</strong>：适用于情感陪伴和虚拟角色。</td>
+<td style="text-align: left;">4K</td>
+<td style="text-align: left;">2K</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Emohaa</td>
+<td style="text-align: left;"><strong>心理模型</strong>：具备专业咨询能力，帮助用户理解情感并应对情绪问题。</td>
+<td style="text-align: left;">8K</td>
+<td style="text-align: left;">4k</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CodeGeeX-4</td>
+<td style="text-align: left;"><strong>代码模型</strong>：适用于代码自动补全任务</td>
+<td style="text-align: left;">128K</td>
+<td style="text-align: left;">4k</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+关键概念
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>GLM</strong></p>
+<p>GLM 全名 General Language Model ，是一款基于自回归填空的预训练语言模型。ChatGLM系列模型，支持相对复杂的自然语言指令，并且能够解决困难的推理类问题。该模型配备了易于使用的 API 接口，允许开发者轻松将其融入各类应用，广泛应用于智能客服、虚拟主播、聊天机器人等诸多领域。</p>
+<p><strong>Embedding</strong></p>
+<p>Embedding 是一种将数据（如文本）转化为向量形式的表示方法，这种表示方式确保了在某些特定方面相似的数据在向量空间中彼此接近，而与之不相关的数据则相距较远。通过将文本字符串转换为向量，使得数据能够有效用于搜索、聚类、推荐系统、异常检测和分类等应用场景。</p>
+<p><strong>Token</strong></p>
+<p>Token 是模型用来表示自然语言文本的基本单位，可以直观的理解为“字”或“词”；通常 1 个中文词语、1 个英文单词、1 个数字或 1 个符号计为 1 个token。</p>
+<p>一般情况下 ChatGLM 系列模型中 token 和字数的换算比例约为 1:1.8 ，但因为不同模型的分词不同，所以换算比例也存在差异，每一次实际处理 token 数量以模型返回为准，您可以从返回结果的 usage 中查看。</p>
+</div>
+</div>
+</section>
+</section>
+<section id="语言模型-1" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="语言模型-1"><span class="header-section-number">8.2</span> 语言模型</h2>
+<p>GLM-4 提供了多款模型，适用于各种应用场景。</p>
+<p>模型编码：<code>glm-4-plus</code>、<code>glm-4-0520</code>、<code>glm-4</code> 、<code>glm-4-air</code>、<code>glm-4-airx</code>、<code>glm-4-long</code>、 <code>glm-4-flash</code>。</p>
+<section id="使用-openai-sdk" class="level3" data-number="8.2.1">
+<h3 data-number="8.2.1" class="anchored" data-anchor-id="使用-openai-sdk"><span class="header-section-number">8.2.1</span> 使用 OpenAI SDK</h3>
+<p>使用 OpenAI SDK 创建 Client，示例如下：</p>
+<div id="af84e640" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># format output</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span> os.getenv(<span class="st">"ZHIPUAI_API_KEY"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    base_url<span class="op">=</span><span class="st">"https://open.bigmodel.cn/api/paas/v4/"</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>以下代码是 GLM-4 的对话调用示例，请注意：</p>
+<ul>
+<li><code>temperature</code>：参数的区间为 <code>(0,1)</code></li>
+<li><code>do_sample = False (temperature = 0)</code>：在 OpenAI 调用中并不适用</li>
+</ul>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 提交对话请求</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>completion <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"GLM-4-Flash"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"system"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: <span class="st">"你是一个聪明且富有创造力的小说作家"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: (</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                <span class="st">"请你作为童话故事大王，写一篇短篇童话故事，"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                <span class="st">"故事的主题是要永远保持一颗善良的心，要能够"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                <span class="st">"激发儿童的学习兴趣和想象力，同时也能够帮助"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">"儿童更好地理解和接受故事中所蕴含的道理和价值观。"</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    top_p<span class="op">=</span><span class="fl">0.7</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    temperature<span class="op">=</span><span class="fl">0.9</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(completion.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>标题：《星星的魔法书》</p>
+<p>从前，在一个遥远的星星王国里，住着一群拥有星星光芒的孩子们。他们每天在夜空中闪烁，为人们带来温暖和希望。在这个王国里，有一颗特别明亮的星星，名叫小星。小星不仅光芒璀璨，还拥有一本神奇的魔法书。</p>
+<p>这本魔法书里记载着无数的智慧和故事，它能够把书中的文字变成真实的世界。小星的魔法书是星星王国的宝藏，而小星是这本书的守护者。</p>
+<p>有一天，小星在翻阅魔法书时，发现了一个新故事。故事讲述了一个名叫小兔的森林小动物，它因为善良和勇敢，得到了星星的祝福，拥有了神奇的力量。</p>
+<p>小星被这个故事深深吸引，它决定将这个故事变成现实，让森林里的孩子们都能感受到善良的力量。于是，小星将魔法书中的文字召唤到现实世界，创造了一个充满奇幻色彩的森林。</p>
+<p>森林里，小兔和它的朋友们住在一座美丽的小木屋里。他们每天在森林里玩耍，帮助其他小动物解决问题。小兔总是用心倾听，用善良的行动温暖着每一个朋友的心。</p>
+<p>有一天，森林里的小河被一块巨大的石头堵住了，水无法流淌，小动物们都非常苦恼。小兔想起了小星的魔法书，它决定去寻找帮助。</p>
+<p>小兔来到了小星的森林，它请求小星帮助解决河流的问题。小星微笑着告诉小兔，真正的帮助来自于内心的善良和勇气。于是，小星给了小兔一本小书，书中记载着如何用善良的力量去改变世界。</p>
+<p>小兔带着小书回到了森林，它用自己的善良感染了每一个动物。大家齐心协力，用树枝和叶子搭建了一个小桥，让河水重新流淌起来。</p>
+<p>森林里的动物们为小兔的善良欢呼，他们开始明白，每个人都有能力用善良的心去改变世界。小兔的故事在森林里传开了，每个孩子都受到了启发。</p>
+<p>星星王国的孩子们也被这个故事感动，他们纷纷效仿小兔，用自己的善良去帮助他人。小星的魔法书成为了他们学习和成长的指南。</p>
+<p>从此，星星王国的孩子们在夜空中闪烁着更加明亮的光芒，他们用善良的心照亮了整个世界。而小星的魔法书，也成为了永恒的传说，激励着每一个孩子永远保持一颗善良的心。</p>
+<p>故事结束，但善良的力量永远流传。愿每一个孩子都能在成长的道路上，拥有这样一颗光芒四射的善良之心。</p>
+</section>
+<section id="使用智谱ai-sdk" class="level3" data-number="8.2.2">
+<h3 data-number="8.2.2" class="anchored" data-anchor-id="使用智谱ai-sdk"><span class="header-section-number">8.2.2</span> 使用智谱AI SDK</h3>
+<p>使用智谱AI SDK 可以更方便的创建 client 和使用模型提供的附加功能。</p>
+<div id="3205f036" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> zhipuai <span class="im">import</span> ZhipuAI</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> ZhipuAI(api_key<span class="op">=</span>os.getenv(<span class="st">"ZHIPUAI_API_KEY"</span>)) <span class="co"># 请填写您自己的APIKey</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>tools <span class="op">=</span> [{</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"type"</span>: <span class="st">"web_search"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"web_search"</span>: {</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"enable"</span>: <span class="va">True</span> <span class="co">#默认为关闭状态（False） 禁用：False，启用：True。</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>messages <span class="op">=</span> [{</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"role"</span>: <span class="st">"user"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"content"</span>: <span class="st">"中国 2024 年一季度的GDP是多少 "</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>}]</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"GLM-4-Flash"</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>messages,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>tools</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response.choices[<span class="dv">0</span>].message)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CompletionMessage(content='中国2024年一季度的国内生产总值（GDP）为296299亿元人民币。这一数据是根据国家统计局的初步核算得出的，按不变价格计算，同比增长5.3%，比上年四季度环比增长1.6%。', role='assistant', tool_calls=None)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="多模态模型-1" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="多模态模型-1"><span class="header-section-number">8.3</span> 多模态模型</h2>
+<section id="文生视频" class="level3" data-number="8.3.1">
+<h3 data-number="8.3.1" class="anchored" data-anchor-id="文生视频"><span class="header-section-number">8.3.1</span> 文生视频</h3>
+<p>CogVideoX 是由智谱AI开发的视频生成大模型，具备强大的视频生成能力、只需输入文本或图片就可以轻松完成视频制作。本指南将教您如何系统地构建提示词，从而生成专业级别的视频作品。</p>
+<p>提示词的精确度与细节水平直接影响视频内容的质量。采用结构化提示词可以极大提升视频内容的符合度和专业性。以下是构建提示词的关键组成部分：</p>
+<p><strong>提示词 = (镜头语言 +景别角度+ 光影) + 主体 (主体描述) + 主体运动 +场景 (场景描述) + (氛围)</strong></p>
+<ul>
+<li><p>镜头语言:通过镜头的各种应用以及镜头之间的衔接和切换来传达故事或信息，并创造出特定的视觉效果和情感氛围。如镜头平移，推近、拉远、升降拍摄、摇摄、跟随拍摄、手持拍摄、无人机航拍等;</p></li>
+<li><p>景别角度：控制相机与被摄对象之间距离和角度，实现不同的视觉效果和情感表达。如大全景、中景、近景 、鸟瞰视角 、跟随视角、鱼眼效果等;</p></li>
+<li><p>光影:光影是赋予摄影作品灵魂的关键元素，光影的运用可以使照片更具深度，更具情感，我们可以通过光影创造出富有层次感和情感表达力的作品。如自然光、丁达尔效应、柔和散射、硬光直射 、逆光剪影、三点布光等;</p></li>
+<li><p>主体:主体是视频中的主要表现对象。如儿童、狮子、向日葵，汽车、城堡等;</p></li>
+<li><p>主体描述:对主体外貌细节和肢体姿态等的描述，如人物的服饰、动物的毛色、植物的颜色、物体的状态和建筑的风格;</p></li>
+<li><p>主体运动:对主体运动状态的描述，包括静止和运动等，运动状态不宜过于复杂，符合6s视频内可以展现的画面即可，</p></li>
+<li><p>场景: 场景是主体所处的环境，包括前景、背景等;</p></li>
+<li><p>场景描述:对主体所处环境的细节描述。如都市环境、乡村风光、工业区等;</p></li>
+<li><p>氛围:对预期视频画面的氛围描述。如喧嚣繁忙、悬疑惊悚、宁静舒适等;</p></li>
+</ul>
+</section>
+<section id="图生视频" class="level3" data-number="8.3.2">
+<h3 data-number="8.3.2" class="anchored" data-anchor-id="图生视频"><span class="header-section-number">8.3.2</span> 图生视频</h3>
+<p>CogVideoX 可以将用户提供的静态图像转化为 6 秒的动态视频。为达到最佳效果，推荐上传比例为3:2的图片，并且文件格式为 PNG 或 JPEG，文件大小不超过5MB。提示词建议使用“主体（背景）+ 运动描述”的表达方式。</p>
+</section>
+<section id="文生图片" class="level3" data-number="8.3.3">
+<h3 data-number="8.3.3" class="anchored" data-anchor-id="文生图片"><span class="header-section-number">8.3.3</span> 文生图片</h3>
+<p>CogView-3-Plus使用Transformer架构训练扩散模型，优化了效果并验证了参数量提升的效益。我们还构建了高质量图像微调数据集，使模型生成更符合指令且美学评分更高的图像，效果接近MJ-V6和FLUX等一流模型。</p>
+</section>
+<section id="图片视频理解" class="level3" data-number="8.3.4">
+<h3 data-number="8.3.4" class="anchored" data-anchor-id="图片视频理解"><span class="header-section-number">8.3.4</span> 图片视频理解</h3>
+<p>GLM-4V-Plus 集图像理解与视频理解能力于一体的多模态模型。</p>
+</section>
+</section>
+<section id="增强检索" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="增强检索"><span class="header-section-number">8.4</span> 增强检索</h2>
+<p>通过在大语言模型生成答案之前，先从知识库中检索相关知识，然后将相关知识作为背景信息输入给大模型，有效地提升内容的准确性和相关性。</p>
+<section id="创建知识库" class="level3" data-number="8.4.1">
+<h3 data-number="8.4.1" class="anchored" data-anchor-id="创建知识库"><span class="header-section-number">8.4.1</span> 创建知识库</h3>
+<p>用于管理文件，支持上传多个文件，并通过关联知识库 ID 后进行调用。</p>
+<div id="5c5a589c" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>knowledgeDB <span class="op">=</span> client.knowledge.create(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    embedding_id<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"default"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    description<span class="op">=</span><span class="st">"the default knowledge database"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(knowledgeDB.<span class="bu">id</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="32ae6e2d" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-stdout">
+<pre><code>1835987442205917184</code></pre>
+</div>
+</div>
+</section>
+<section id="请求知识库文件列表" class="level3" data-number="8.4.2">
+<h3 data-number="8.4.2" class="anchored" data-anchor-id="请求知识库文件列表"><span class="header-section-number">8.4.2</span> 请求知识库文件列表</h3>
+<div id="6b723ac5" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 请求知识库文件列表</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>knowledge_files <span class="op">=</span> client.knowledge.document.<span class="bu">list</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    purpose<span class="op">=</span><span class="st">"retrieval"</span>,   <span class="co">#支持retrieval</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    knowledge_id<span class="op">=</span>knowledgeDB.<span class="bu">id</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(knowledge_files)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>DocumentPage(list=[DocumentData(id='1835992620149698560', custom_separator=['\n'], sentence_size=202, length=123750, word_num=1469, name='Kraken2.pdf', url='https://cdn-enterprise-document.bigmodel.cn/knowledge/93037CDE114D4C72A23FC15189EF8FBD.pdf?e=1727637428&amp;token=YsX0TFbWddOwmx008e_eINoC4Oe-PFD_fGIbivRa:WTwlabzg5hvea03zmdUBsqKl5WU=', embedding_stat=1, failInfo=None, knowledge_type=1, parse_image=0), DocumentData(id='1835989396608970752', custom_separator=['\n'], sentence_size=202, length=123750, word_num=1469, name='Kraken2.pdf', url='https://cdn-enterprise-document.bigmodel.cn/knowledge/CBC4FE6CDC1D41B090CA8670F85CB092.pdf?e=1727637428&amp;token=YsX0TFbWddOwmx008e_eINoC4Oe-PFD_fGIbivRa:6sCGlbkbuPA8uv0u9zws8Rd7618=', embedding_stat=1, failInfo=None, knowledge_type=1, parse_image=0)], object=None, total=2)</code></pre>
+</div>
+</div>
+</section>
+<section id="上传文件" class="level3" data-number="8.4.3">
+<h3 data-number="8.4.3" class="anchored" data-anchor-id="上传文件"><span class="header-section-number">8.4.3</span> 上传文件</h3>
+<p>支持将doc、docx、pdf、xlsx类型文件上传到知识库，支持自定义文件切片的大小和规则。文件大小不得超过 50 MB，总数为 100 个文件。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: asis</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>resp <span class="op">=</span> client.knowledge.document.create(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">file</span><span class="op">=</span><span class="bu">open</span>(<span class="st">"example/Kraken2.pdf"</span>, <span class="st">"rb"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    purpose<span class="op">=</span><span class="st">"retrieval"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    knowledge_id<span class="op">=</span>knowledgeDB.<span class="bu">id</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    sentence_size<span class="op">=</span><span class="dv">202</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    custom_separator<span class="op">=</span>[<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(resp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="a76214c6" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-stdout">
+<pre><code>DocumentData(id='1835992620149698560', custom_separator=['\n'], sentence_size=202, length=123750, word_num=1469, name='Kraken2.pdf', url='https://cdn-enterprise-document.bigmodel.cn/knowledge/93037CDE114D4C72A23FC15189EF8FBD.pdf?e=1727637428&amp;token=YsX0TFbWddOwmx008e_eINoC4Oe-PFD_fGIbivRa:WTwlabzg5hvea03zmdUBsqKl5WU=', embedding_stat=1, failInfo=None, knowledge_type=1, parse_image=0)</code></pre>
+</div>
+</div>
+</section>
+<section id="文件内容提取" class="level3" data-number="8.4.4">
+<h3 data-number="8.4.4" class="anchored" data-anchor-id="文件内容提取"><span class="header-section-number">8.4.4</span> 文件内容提取</h3>
+<p>文件内容提取仅适用于以 <code>purpose="file-extract"</code> 为目的上传的文件。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 文件内容抽取</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>file_content <span class="op">=</span> client.files.content(file_id<span class="op">=</span>knowledge_files.<span class="bu">list</span>[<span class="dv">0</span>].<span class="bu">id</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(file_content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="检索知识库" class="level3" data-number="8.4.5">
+<h3 data-number="8.4.5" class="anchored" data-anchor-id="检索知识库"><span class="header-section-number">8.4.5</span> 检索知识库</h3>
+<div id="dfaa66e9" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>knowledge_list <span class="op">=</span> client.knowledge.query(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    page<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    size<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>pprint(knowledge_list.model_dump())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'list': [{'background': 'blue',
+           'bucket_id': None,
+           'customer_identifier': '',
+           'description': 'the default knowledge database',
+           'document_size': 2,
+           'embedding_id': 3,
+           'icon': 'question',
+           'id': '1835987442205917184',
+           'length': 247500,
+           'name': 'default',
+           'word_num': 2938}],
+ 'object': None,
+ 'total': 1}</code></pre>
+</div>
+</div>
+<p>创建知识库后，您将获得一个知识库ID。调用模型服务时，传入知识库ID，使大模型能获取相关内容以响应用户查询。</p>
+</section>
+<section id="调用知识库" class="level3" data-number="8.4.6">
+<h3 data-number="8.4.6" class="anchored" data-anchor-id="调用知识库"><span class="header-section-number">8.4.6</span> 调用知识库</h3>
+<p>创建知识库后，您将获得一个知识库ID。调用模型服务时，传入知识库ID，使大模型能获取相关内容以响应用户查询。</p>
+<div id="567f0a7a" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>question <span class="op">=</span> <span class="st">"Kraken2的安装方法"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>knowledge <span class="op">=</span> <span class="st">"默认知识库"</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"GLM-4-Flash"</span>,  <span class="co"># 填写需要调用的模型名称</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: question},</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    tools<span class="op">=</span>[</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">"type"</span>: <span class="st">"retrieval"</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">"retrieval"</span>: {</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"knowledge_id"</span>: knowledgeDB.<span class="bu">id</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"prompt_template"</span>: <span class="st">"从文档“</span><span class="sc">{{</span><span class="st">knowledge</span><span class="sc">}}</span><span class="st">” 中找问题“</span><span class="sc">{{</span><span class="st">question</span><span class="sc">}}</span><span class="st">”的答案，找到答案就仅使用文档语句回答问题，找不到答案就用自身知识回答并且告诉用户该信息不是来自文档。</span><span class="ch">\n</span><span class="st">不要复述问题，直接开始回答。"</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    stream<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>Markdown(response.choices[<span class="dv">0</span>].message.content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="8">
+<p>Kraken2是一款广泛使用的基因比对软件，适用于将序列与参考基因组进行比对。以下是安装Kraken2的步骤，以Linux操作系统为例：</p>
+<section id="安装依赖" class="level3" data-number="8.4.7">
+<h3 data-number="8.4.7" class="anchored" data-anchor-id="安装依赖"><span class="header-section-number">8.4.7</span> 1. 安装依赖</h3>
+<p>Kraken2需要一些依赖库，首先需要安装这些依赖。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装依赖</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> automake autoconf libtool libboost-all-dev zlib1g-dev libssl-dev libncurses5-dev libbz2-dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="下载kraken2" class="level3" data-number="8.4.8">
+<h3 data-number="8.4.8" class="anchored" data-anchor-id="下载kraken2"><span class="header-section-number">8.4.8</span> 2. 下载Kraken2</h3>
+<p>从Kraken2的GitHub页面下载最新版本的源代码。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 下载源代码</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/DerrickWood/Kraken2.git</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> Kraken2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="编译安装" class="level3" data-number="8.4.9">
+<h3 data-number="8.4.9" class="anchored" data-anchor-id="编译安装"><span class="header-section-number">8.4.9</span> 3. 编译安装</h3>
+<p>在下载的源代码目录中，运行以下命令进行编译和安装。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置编译</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./configure</span> <span class="at">--prefix</span><span class="op">=</span>/usr/local/kraaken2</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 编译</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">make</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> make install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="检查安装" class="level3" data-number="8.4.10">
+<h3 data-number="8.4.10" class="anchored" data-anchor-id="检查安装"><span class="header-section-number">8.4.10</span> 4. 检查安装</h3>
+<p>确保Kraken2已经正确安装，可以通过以下命令检查。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查Kraken2版本</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kraken2</span> <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="使用kraken2" class="level3" data-number="8.4.11">
+<h3 data-number="8.4.11" class="anchored" data-anchor-id="使用kraken2"><span class="header-section-number">8.4.11</span> 5. 使用Kraken2</h3>
+<p>安装完成后，您可以使用Kraken2进行基因比对。以下是一个简单的示例：</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用Kraken2进行比对</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kraken2</span> <span class="at">-t</span> 4 <span class="at">-o</span> output kraken_db/kraaken_db.kdb reads.fna</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>这里，<code>-t 4</code>表示使用4个线程，<code>-o output</code>指定输出文件的目录，<code>kraken_db/kraaken_db.kdb</code>是Kraken2的参考数据库，<code>reads.fna</code>是您要比对的序列文件。</p>
+</section>
+<section id="注意事项" class="level3" data-number="8.4.12">
+<h3 data-number="8.4.12" class="anchored" data-anchor-id="注意事项"><span class="header-section-number">8.4.12</span> 注意事项</h3>
+<ol type="1">
+<li>根据您的系统环境，可能需要调整依赖安装命令。</li>
+<li>如果您需要将Kraken2安装到其他路径，可以在<code>configure</code>命令中指定<code>--prefix</code>。</li>
+</ol>
+<p>希望这些步骤能够帮助您成功安装和使用Kraken2！</p>
+</section>
+</div>
+</div>
+</section>
+<section id="删除文件" class="level3" data-number="8.4.13">
+<h3 data-number="8.4.13" class="anchored" data-anchor-id="删除文件"><span class="header-section-number">8.4.13</span> 删除文件</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> client.files.delete(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    file_id<span class="op">=</span><span class="st">"文件id"</span>      <span class="co">#支持retrieval、batch、fine-tune、file-extract文件</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="删除知识库" class="level3" data-number="8.4.14">
+<h3 data-number="8.4.14" class="anchored" data-anchor-id="删除知识库"><span class="header-section-number">8.4.14</span> 删除知识库</h3>
+<p>使用下面的语句删除知识库。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> client.knowledge.delete(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    knowledge_id<span class="op">=</span><span class="st">"xxxxxxxxxxxx"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="用量查询" class="level3" data-number="8.4.15">
+<h3 data-number="8.4.15" class="anchored" data-anchor-id="用量查询"><span class="header-section-number">8.4.15</span> 用量查询</h3>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> client.knowledge.used()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>pprint(result.model_dump_json(), width <span class="op">=</span> <span class="dv">72</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>‘{“used”:{“word_num”:2938,“length”:247500},“total”:{“word_num”:5000000,“length”:1073741824}}’</p>
+</section>
+</section>
+<section id="基于文件的问答" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="基于文件的问答"><span class="header-section-number">8.5</span> 基于文件的问答</h2>
+<p><code>GLM-4-Long</code> 最长支持200万字符上下文，结合文件问答功能。</p>
+<div id="50301376" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 上传并提取文本内容</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>file_01 <span class="op">=</span> client.files.create(<span class="bu">file</span><span class="op">=</span>Path(<span class="st">"example/Kraken2.pdf"</span>), purpose<span class="op">=</span><span class="st">"file-extract"</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>content_01 <span class="op">=</span> json.loads(client.files.content(file_01.<span class="bu">id</span>).content)[<span class="st">"content"</span>]</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 上传并提取文本内容</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>file_02 <span class="op">=</span> client.files.create(<span class="bu">file</span><span class="op">=</span>Path(<span class="st">"example/gaoch-cv.md"</span>), purpose<span class="op">=</span><span class="st">"file-extract"</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>content_02 <span class="op">=</span> json.loads(client.files.content(file_02.<span class="bu">id</span>).content)[<span class="st">"content"</span>]</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 生成请求消息，将不同文件的内容放入消息中</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>message_content <span class="op">=</span> (</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"请对以下论文进行分析，并且生成一份论文综述：</span><span class="ch">\n\n</span><span class="st">"</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"第一篇论文内容如下：</span><span class="ch">\n</span><span class="st">"</span>    </span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>content_01<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"第二篇论文内容如下：</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"</span><span class="sc">{</span>content_02<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"glm-4-long"</span>,  </span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    messages<span class="op">=</span>[</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: message_content}</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response.choices[<span class="dv">0</span>].message)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="删除文件-1" class="level3" data-number="8.5.1">
+<h3 data-number="8.5.1" class="anchored" data-anchor-id="删除文件-1"><span class="header-section-number">8.5.1</span> 删除文件</h3>
+<p>请求文件列表，然后利用 <code>file_id</code> 删除文件。</p>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 请求文件列表</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> client.files.<span class="bu">list</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    purpose<span class="op">=</span><span class="st">"file-extract"</span>,    <span class="co">#支持batch、file-extract、fine-tune</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> client.files.delete(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    file_id<span class="op">=</span><span class="st">"文件id"</span>      <span class="co">#支持retrieval、batch、fine-tune、file-extract文件</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./moonshot-kimi.html" class="pagination-link" aria-label="Moonshot Kimi">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Moonshot Kimi</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./grounding-dino.html" class="pagination-link" aria-label="DDS Could">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">DDS Could</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

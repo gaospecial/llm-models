@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Hugging Face – 大模型平台和应用实例</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./huggingface-models.html" rel="next">
+<link href="./setup-env.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/videojs/video.min.js"></script>
+<link href="site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./huggingface.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hugging Face</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">大模型平台和应用实例</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">设置运行环境</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hugging Face Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./moonshot-kimi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Moonshot Kimi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bigmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">智谱开放平台</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grounding-dino.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">DDS Could</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./langchain-chatchat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">本地知识库</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./openai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">OpenAI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./coze.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Coze</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./volcengine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">火山引擎</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">研究概要</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./llama.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Llama 3.2</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./object-detection-of-microfluidic-chip.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gradio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#安装" id="toc-安装" class="nav-link active" data-scroll-target="#安装"><span class="header-section-number">4.1</span> 安装</a></li>
+  <li><a href="#配置-gpu-加速" id="toc-配置-gpu-加速" class="nav-link" data-scroll-target="#配置-gpu-加速"><span class="header-section-number">4.2</span> 配置 GPU 加速</a></li>
+  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline"><span class="header-section-number">4.3</span> Pipeline</a>
+  <ul class="collapse">
+  <li><a href="#文本分类-text-classification" id="toc-文本分类-text-classification" class="nav-link" data-scroll-target="#文本分类-text-classification"><span class="header-section-number">4.3.1</span> 文本分类 (<code>text-classification</code>)</a></li>
+  <li><a href="#命名实体识别-ner" id="toc-命名实体识别-ner" class="nav-link" data-scroll-target="#命名实体识别-ner"><span class="header-section-number">4.3.2</span> 命名实体识别 (<code>ner</code>)</a></li>
+  <li><a href="#问答-question-answering" id="toc-问答-question-answering" class="nav-link" data-scroll-target="#问答-question-answering"><span class="header-section-number">4.3.3</span> 问答 (<code>question-answering</code>)</a></li>
+  <li><a href="#文本生成-text-generation" id="toc-文本生成-text-generation" class="nav-link" data-scroll-target="#文本生成-text-generation"><span class="header-section-number">4.3.4</span> 文本生成 (<code>text-generation</code>)</a></li>
+  <li><a href="#翻译-translation" id="toc-翻译-translation" class="nav-link" data-scroll-target="#翻译-translation"><span class="header-section-number">4.3.5</span> 翻译 (<code>translation</code>)</a></li>
+  <li><a href="#文本摘要-summarization" id="toc-文本摘要-summarization" class="nav-link" data-scroll-target="#文本摘要-summarization"><span class="header-section-number">4.3.6</span> 文本摘要 (<code>summarization</code>)</a></li>
+  </ul></li>
+  <li><a href="#运行机制" id="toc-运行机制" class="nav-link" data-scroll-target="#运行机制"><span class="header-section-number">4.4</span> 运行机制</a>
+  <ul class="collapse">
+  <li><a href="#配置模型和参数" id="toc-配置模型和参数" class="nav-link" data-scroll-target="#配置模型和参数"><span class="header-section-number">4.4.1</span> 配置模型和参数</a></li>
+  <li><a href="#本地模型的存储和管理" id="toc-本地模型的存储和管理" class="nav-link" data-scroll-target="#本地模型的存储和管理"><span class="header-section-number">4.4.2</span> 本地模型的存储和管理</a></li>
+  <li><a href="#配置一个翻译器" id="toc-配置一个翻译器" class="nav-link" data-scroll-target="#配置一个翻译器"><span class="header-section-number">4.4.3</span> 配置一个翻译器</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hugging Face</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>【HuggingFace 10分钟快速入门（一），利用Transformers，Pipeline探索AI。】</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://www.bilibili.com/video/BV1vN41127ob/?share_source=copy_web&amp;vd_source=d345aeeaedba2347709dc8ca7b1b5cb1"></video></div>
+<p>Hugging Face 是一个专注于人工智能（AI）和机器学习（ML）的平台，特别以自然语言处理（NLP）工具和模型而闻名。它提供了一个丰富的开源生态系统，供研究人员、开发者和数据科学家使用。其中，最著名的工具之一是 <strong>Transformers</strong> 库，这个库包含了多种预训练的模型（如BERT、GPT、T5等），这些模型可以用于各种 任务，如文本生成、翻译、问答、情感分析等。</p>
+<p>Hugging Face 还提供了 <strong>Hub</strong>，一个模型托管平台，用户可以在上面分享和下载各种预训练的AI模型。此外，它还支持自定义训练模型和通过API进行推理。Hugging Face 的平台和社区非常活跃，是当前AI和NLP领域的重要资源之一。</p>
+<section id="安装" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="安装"><span class="header-section-number">4.1</span> 安装</h2>
+<ol type="1">
+<li><p>安装机器学习基础库（pytorch 或者 TensorFlow）。 首先创建一个 Conda 环境，然后安装 Pytorch。<code>conda install pytorch::pytorch torchvision torchaudio -c pytorch</code></p></li>
+<li><p>安装 transformers： <code>pip install transformers datasets evaluate accelerate</code>。</p></li>
+</ol>
+</section>
+<section id="配置-gpu-加速" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="配置-gpu-加速"><span class="header-section-number">4.2</span> 配置 GPU 加速</h2>
+<p>Pytorch 支持 CUDA（NVIDIA）和 MPS（Mac）平台的 GPU 加速，所以这里检测一下硬件环境。</p>
+<div id="d065446f" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># select the device for computation</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> torch.cuda.is_available():</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"cuda"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> torch.backends.mps.is_available():</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"mps"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"cpu"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"using device: </span><span class="sc">{</span>device<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>using device: mps</code></pre>
+</div>
+</div>
+</section>
+<section id="pipeline" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="pipeline"><span class="header-section-number">4.3</span> Pipeline</h2>
+<p><code>pipeline</code> 是 <code>transformers</code> 库中的一个高层接口，旨在简化模型的使用。它封装了模型的加载、输入处理、预测和输出处理的细节，使得用户可以以更简单的方式执行常见任务。</p>
+<p>在 Hugging Face Transformers 库中，pipelines 可以被分为不同的类别，以适应音频、计算机视觉、自然语言处理（NLP）和多模态任务。以下是这些类别中常见的 pipelines：</p>
+<ol type="1">
+<li><strong>音频（Audio）</strong>:
+<ul>
+<li>语音识别（Speech Recognition）: 将音频转换为文本。</li>
+<li>语音合成（Text-to-Speech）: 将文本转换为语音。</li>
+<li>语音分类（Speech Classification）: 对音频进行分类，如情绪识别。</li>
+</ul></li>
+<li><strong>计算机视觉（Computer Vision）</strong>:
+<ul>
+<li>图像分类（Image Classification）: 识别图像中的主要对象或场景。</li>
+<li>对象检测（Object Detection）: 识别并定位图像中的对象。</li>
+<li>图像分割（Image Segmentation）: 将图像分割成多个部分或对象。</li>
+<li>图像生成（Image Generation）: 根据文本描述生成图像。</li>
+</ul></li>
+<li><strong>自然语言处理（NLP）</strong>:
+<ul>
+<li>文本分类（Text Classification）: 对文本进行分类，如情感分析。</li>
+<li>命名实体识别（Named Entity Recognition, NER）: 识别文本中的实体。</li>
+<li>问答（Question Answering）: 从文本中找到问题的答案。</li>
+<li>文本生成（Text Generation）: 生成新的文本内容。</li>
+<li>摘要（Summarization）: 生成文本的摘要。</li>
+<li>翻译（Translation）: 将文本从一种语言翻译成另一种语言。</li>
+</ul></li>
+<li><strong>多模态（Multimodal）</strong>:
+<ul>
+<li>视觉问答（Visual Question Answering, VQA）: 结合图像和文本问题，提供答案。</li>
+<li>图像字幕生成（Image Captioning）: 为图像生成描述性文本。</li>
+<li>视频问答（Video Question Answering）: 根据视频内容回答问题。</li>
+<li>多模态情感分析（Multimodal Sentiment Analysis）: 结合文本、音频和视觉信息进行情感分析。</li>
+</ul></li>
+</ol>
+<p>这些 pipelines 利用了预训练的模型，可以处理各种任务，从单一模态的音频或图像处理到结合多种模态信息的复杂任务。用户可以根据自己的需求选择合适的模型和pipeline来实现特定的任务。</p>
+<div id="5c732908" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> inspect</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipelines</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 获取 transformers.pipeline 模块中的所有成员</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>pipeline_members <span class="op">=</span> inspect.getmembers(pipelines)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 过滤出类，并且名称以 'Pipeline' 结尾</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pipeline_classes <span class="op">=</span> [name <span class="cf">for</span> name, obj <span class="kw">in</span> pipeline_members <span class="cf">if</span> inspect.isclass(obj) <span class="kw">and</span> name.endswith(<span class="st">'Pipeline'</span>)]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 打印符合条件的类名称</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Classes ending with 'Pipeline':"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> class_name <span class="kw">in</span> pipeline_classes:</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(class_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes ending with 'Pipeline':
+AudioClassificationPipeline
+AutomaticSpeechRecognitionPipeline
+DepthEstimationPipeline
+DocumentQuestionAnsweringPipeline
+FeatureExtractionPipeline
+FillMaskPipeline
+ImageClassificationPipeline
+ImageFeatureExtractionPipeline
+ImageSegmentationPipeline
+ImageToImagePipeline
+ImageToTextPipeline
+MaskGenerationPipeline
+NerPipeline
+ObjectDetectionPipeline
+Pipeline
+QuestionAnsweringPipeline
+SummarizationPipeline
+TableQuestionAnsweringPipeline
+Text2TextGenerationPipeline
+TextClassificationPipeline
+TextGenerationPipeline
+TextToAudioPipeline
+TokenClassificationPipeline
+TranslationPipeline
+VideoClassificationPipeline
+VisualQuestionAnsweringPipeline
+ZeroShotAudioClassificationPipeline
+ZeroShotClassificationPipeline
+ZeroShotImageClassificationPipeline
+ZeroShotObjectDetectionPipeline</code></pre>
+</div>
+</div>
+<p>以下是一些常见的 <code>pipeline</code> 类型和它们的应用场景：</p>
+<section id="文本分类-text-classification" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="文本分类-text-classification"><span class="header-section-number">4.3.1</span> 文本分类 (<code>text-classification</code>)</h3>
+<p>用于对输入文本进行分类，例如情感分析。</p>
+<div id="8388e90a" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint  <span class="co"># pretty print</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>classifier <span class="op">=</span> pipeline(<span class="st">'text-classification'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> classifier(<span class="st">"I love using transformers!"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'label': 'POSITIVE', 'score': 0.9994327425956726}]</code></pre>
+</div>
+</div>
+</section>
+<section id="命名实体识别-ner" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="命名实体识别-ner"><span class="header-section-number">4.3.2</span> 命名实体识别 (<code>ner</code>)</h3>
+<p>用于识别文本中的命名实体（如人名、地点、组织等）。</p>
+<div id="03568bef" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ner <span class="op">=</span> pipeline(<span class="st">'ner'</span>, device <span class="op">=</span> device)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> ner(<span class="st">"Hugging Face is based in New York City."</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'end': 2,
+  'entity': 'I-ORG',
+  'index': 1,
+  'score': 0.9736425,
+  'start': 0,
+  'word': 'Hu'},
+ {'end': 7,
+  'entity': 'I-ORG',
+  'index': 2,
+  'score': 0.7939442,
+  'start': 2,
+  'word': '##gging'},
+ {'end': 12,
+  'entity': 'I-ORG',
+  'index': 3,
+  'score': 0.9046833,
+  'start': 8,
+  'word': 'Face'},
+ {'end': 28,
+  'entity': 'I-LOC',
+  'index': 7,
+  'score': 0.9990658,
+  'start': 25,
+  'word': 'New'},
+ {'end': 33,
+  'entity': 'I-LOC',
+  'index': 8,
+  'score': 0.99908113,
+  'start': 29,
+  'word': 'York'},
+ {'end': 38,
+  'entity': 'I-LOC',
+  'index': 9,
+  'score': 0.99939454,
+  'start': 34,
+  'word': 'City'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="问答-question-answering" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="问答-question-answering"><span class="header-section-number">4.3.3</span> 问答 (<code>question-answering</code>)</h3>
+<p>用于从给定上下文中回答问题。</p>
+<div id="2e957bbc" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>question_answerer <span class="op">=</span> pipeline(<span class="st">'question-answering'</span>, device <span class="op">=</span> device)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> question_answerer(question<span class="op">=</span><span class="st">"What is the capital of France?"</span>, context<span class="op">=</span><span class="st">"The capital of France is Paris."</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'answer': 'Paris', 'end': 30, 'score': 0.9863283038139343, 'start': 25}</code></pre>
+</div>
+</div>
+</section>
+<section id="文本生成-text-generation" class="level3" data-number="4.3.4">
+<h3 data-number="4.3.4" class="anchored" data-anchor-id="文本生成-text-generation"><span class="header-section-number">4.3.4</span> 文本生成 (<code>text-generation</code>)</h3>
+<p>用于生成文本，例如生成续写或对话。</p>
+<div id="0cae939e" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> pipeline(<span class="st">'text-generation'</span>, device <span class="op">=</span> device)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> generator(<span class="st">"Once upon a time"</span>, max_length<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'generated_text': 'Once upon a time, when I was young, I became obsessed '
+                    'with seeing people I was in the know. I had never seen, '
+                    'seen, even heard of, or read anything about how to get to '
+                    'know the people I knew. It was like'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="翻译-translation" class="level3" data-number="4.3.5">
+<h3 data-number="4.3.5" class="anchored" data-anchor-id="翻译-translation"><span class="header-section-number">4.3.5</span> 翻译 (<code>translation</code>)</h3>
+<p>用于将文本从一种语言翻译成另一种语言。</p>
+<div id="1248cee7" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>translator <span class="op">=</span> pipeline(<span class="st">'translation_en_to_fr'</span>, device <span class="op">=</span> device)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> translator(<span class="st">"Hello, how are you?"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'translation_text': 'Bonjour, comment êtes-vous?'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="文本摘要-summarization" class="level3" data-number="4.3.6">
+<h3 data-number="4.3.6" class="anchored" data-anchor-id="文本摘要-summarization"><span class="header-section-number">4.3.6</span> 文本摘要 (<code>summarization</code>)</h3>
+<p>用于对长文本进行摘要，提取主要内容。</p>
+<div id="cfade9a0" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>summarizer <span class="op">=</span> pipeline(<span class="st">'summarization'</span>, device <span class="op">=</span> device)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> summarizer(<span class="st">"Hugging Face is creating a tool that democratizes AI. The library will support various tasks and models."</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'summary_text': ' Hugging Face is creating a tool that democratizes AI . The '
+                  'library will support various tasks and models . Hugging '
+                  'face is creating an AI tool that can be used to help people '
+                  'learn more about AI . It will be available in the U.S. for '
+                  'free .'}]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="运行机制" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="运行机制"><span class="header-section-number">4.4</span> 运行机制</h2>
+<p>使用 Hugging Face 的 <code>pipeline</code> 运行任务时，任务默认是在本地执行的。</p>
+<p>当你使用 <code>pipeline</code> 函数时，它会加载一个预训练的模型（可以是 Hugging Face Hub 上的模型，也可以是你本地的模型），然后在你的本地机器上执行推理任务。这意味着所有计算都是在你的本地计算机上进行的，而不是在 Hugging Face 的服务器上进行的。</p>
+<p>不过，<code>pipeline</code> 也可以访问在线的模型存储库。如果你指定了一个在线模型（例如 Hugging Face Hub 上的某个模型），那么 <code>pipeline</code> 会先从在线存储库下载模型到本地，然后在本地运行推理任务。因此，即使你访问的是在线模型，执行过程仍然是在本地完成的。</p>
+<p>本地运行推理，可以很方便的执行批处理任务。</p>
+<div id="db9f015d" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>classifier <span class="op">=</span> pipeline(<span class="st">"sentiment-analysis"</span>, device<span class="op">=</span>device)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> classifier([<span class="st">"We are very happy to show you the 🤗 Transformers library."</span>, <span class="st">"We hope you don't hate it."</span>])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> result <span class="kw">in</span> results:</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"label: </span><span class="sc">{</span>result[<span class="st">'label'</span>]<span class="sc">}</span><span class="ss">, with score: </span><span class="sc">{</span><span class="bu">round</span>(result[<span class="st">'score'</span>], <span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>label: POSITIVE, with score: 0.9998
+label: NEGATIVE, with score: 0.5309</code></pre>
+</div>
+</div>
+<section id="配置模型和参数" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="配置模型和参数"><span class="header-section-number">4.4.1</span> 配置模型和参数</h3>
+<p><code>pipeline</code> 会自动下载和使用默认的预训练模型。但是有些任务可能没有指定模型，这时候就需要配置模型参数。此外，如果需要使用特定的模型，也可以在 <code>pipeline</code> 构造函数中指定模型名称。</p>
+<p><code>pipeline</code> 会根据任务类型自动处理输入和输出。例如，文本分类任务的输出通常是每个类别的概率，而翻译任务的输出是翻译后的文本。如果提供的任务名称不正确，<code>pipeline</code> 可能会抛出错误。如果模型不适合特定任务，也可能会得到不准确的结果或遇到运行时错误。</p>
+<p>下面的示例中，我们针对 <code>ZeroShotClassificationPipeline</code> 任务指定使用了 Facebook 的 <code>bart-large-mnli</code> 模型。</p>
+<div id="1ff53fbf" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>oracle <span class="op">=</span> pipeline(<span class="st">"zero-shot-classification"</span>, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                  model<span class="op">=</span><span class="st">"facebook/bart-large-mnli"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                  device<span class="op">=</span>device)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>oracle(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"I have a problem with my iphone that needs to be resolved asap!!"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    candidate_labels<span class="op">=</span>[<span class="st">"urgent"</span>, <span class="st">"not urgent"</span>, <span class="st">"phone"</span>, <span class="st">"tablet"</span>, <span class="st">"computer"</span>],</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>{'sequence': 'I have a problem with my iphone that needs to be resolved asap!!',
+ 'labels': ['urgent', 'phone', 'computer', 'not urgent', 'tablet'],
+ 'scores': [0.5036347508430481,
+  0.47880011796951294,
+  0.012600583024322987,
+  0.0026557755190879107,
+  0.002308781025931239]}</code></pre>
+</div>
+</div>
+<div id="0a196e0c" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>oracle(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"I have a problem with my iphone that needs to be resolved asap!!"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    candidate_labels<span class="op">=</span>[<span class="st">"english"</span>, <span class="st">"german"</span>],</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>{'sequence': 'I have a problem with my iphone that needs to be resolved asap!!',
+ 'labels': ['english', 'german'],
+ 'scores': [0.8135165572166443, 0.18648339807987213]}</code></pre>
+</div>
+</div>
+<p>整个流程以及本地模型的安装和运行情况：</p>
+<ol type="1">
+<li><strong>模型下载</strong>：
+<ul>
+<li>当你指定 <code>model="facebook/bart-large-mnli"</code> 时，Hugging Face 的 <code>transformers</code> 库会从 Hugging Face Hub 下载这个预训练模型（<code>facebook/bart-large-mnli</code>）。</li>
+<li>模型下载后，会被存储在你的本地文件系统中，默认位置通常是 <code>~/.cache/huggingface/transformers/</code> 目录下。如果你有自定义的缓存目录设置，模型将下载到指定位置。</li>
+</ul></li>
+<li><strong>模型加载</strong>：
+<ul>
+<li>下载完成后，<code>pipeline</code> 会将该模型加载到内存中。这包括模型的权重、配置文件以及与之相关的词汇表（tokenizer）。</li>
+</ul></li>
+<li><strong>任务执行</strong>：
+<ul>
+<li>当你使用 <code>oracle</code> 这个 <code>pipeline</code> 对象来进行零样本分类任务时，所有的计算和推理（inference）都是在你的本地机器上执行的。这包括文本的预处理、模型的前向传播计算、以及后处理和输出结果。</li>
+</ul></li>
+</ol>
+</section>
+<section id="本地模型的存储和管理" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="本地模型的存储和管理"><span class="header-section-number">4.4.2</span> 本地模型的存储和管理</h3>
+<ul>
+<li><p><strong>存储位置</strong>：模型的权重文件、配置文件和词汇表会存储在 <code>~/.cache/huggingface/hub/</code> 下的一个以模型名称命名的目录中。例如：<code>~/.cache/huggingface/hub/models--facebook--bart-large-mnli/</code>。</p></li>
+<li><p><strong>缓存机制</strong>：如果你再次使用同一个模型（如 <code>facebook/bart-large-mnli</code>），<code>pipeline</code> 会直接从本地缓存中加载模型，而不会再次从 Hugging Face Hub 下载，除非你手动清除缓存或指定下载新的模型版本。</p></li>
+</ul>
+</section>
+<section id="配置一个翻译器" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="配置一个翻译器"><span class="header-section-number">4.4.3</span> 配置一个翻译器</h3>
+<p>上面我们调用一个翻译器，将英文翻译为法文。</p>
+<div id="02aaadbe" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>en_fr_translator <span class="op">=</span> pipeline(<span class="st">"translation_en_to_fr"</span>, device<span class="op">=</span>device)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>en_fr_translator(<span class="st">"How old are you?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>[{'translation_text': ' quel âge êtes-vous?'}]</code></pre>
+</div>
+</div>
+<p>不过，调用 <code>pipeline("tranlation_en_to_zh")</code> 却会出错。这是因为：虽然 “translation_en_to_zh” 是一个有效的任务标识符，但它并不是直接指定模型的名称。这时，需要显式指定模型名称来避免这种情况：</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>这里还需要安装一个缺失的模块：<code>SentencePiece</code>。</p>
+<p><code>SentencePiece</code> 是一个用于文本分词和词汇生成的工具，它在自然语言处理（NLP）任务中非常有用，尤其是在训练和使用基于子词单元的模型时。<code>SentencePiece</code> 由 Google 开发，作为一种无语言依赖的方法，它可以处理几乎任何语言的文本数据。</p>
+<p><strong><code>SentencePiece</code> 的主要功能</strong></p>
+<ol type="1">
+<li><strong>子词单元（Subword Units）生成</strong>:
+<ul>
+<li><code>SentencePiece</code> 不依赖于语言的特定词汇表，而是通过数据驱动的方法生成子词单元。它通过分析训练数据中的常见字符序列，生成适合该数据集的子词单元，这些子词单元可以是完整的词、词的一部分（如词缀、词根）、甚至是单个字符。</li>
+<li>这在处理低资源语言或多语言任务时特别有用，因为它可以生成跨语言的统一词汇表，减少OOV（Out of Vocabulary，词汇表外的词）问题。</li>
+</ul></li>
+<li><strong>BPE（Byte-Pair Encoding）和 Unigram 模型</strong>:
+<ul>
+<li><code>SentencePiece</code> 支持多种子词分割方法，包括 BPE（Byte-Pair Encoding）和 Unigram 模型。BPE 是一种常用的子词分割算法，通过频繁地合并字符对来生成子词单元。Unigram 模型则是一种基于概率的模型，它根据子词单元的概率来分割文本。</li>
+</ul></li>
+<li><strong>语言无关性</strong>:
+<ul>
+<li>与传统的分词器不同，<code>SentencePiece</code> 不需要依赖于空格或其他特定的标记来分割词语。这使得它在处理没有明确单词边界的语言（如中文、日文、泰语等）时非常有效。</li>
+</ul></li>
+<li><strong>处理未归一化的文本</strong>:
+<ul>
+<li><code>SentencePiece</code> 可以直接处理未经归一化的原始文本（如带有标点符号的文本），这在实际应用中非常有用，避免了对数据进行预处理的需求。</li>
+</ul></li>
+</ol>
+<p><strong>使用 <code>SentencePiece</code> 的场景</strong></p>
+<ul>
+<li><strong>机器翻译</strong>: 在训练机器翻译模型时，使用 <code>SentencePiece</code> 可以将输入和输出文本分割成子词单元，减少词汇表大小，并提高模型的泛化能力。</li>
+<li><strong>预训练语言模型</strong>: 诸如 BERT、GPT、T5 等模型在预训练时，通常使用 <code>SentencePiece</code> 生成子词单元词汇表，这些词汇表有助于处理多语言数据和稀有词汇。</li>
+<li><strong>文本生成</strong>: 在生成任务中，子词单元可以更好地表示稀有或长尾词汇，减少生成过程中出现的OOV问题。</li>
+</ul>
+<p><code>SentencePiece</code> 是一个强大的分词工具，它通过生成数据驱动的子词单元词汇表，在 NLP 任务中广泛使用，特别是在处理多语言文本和训练深度学习模型时。</p>
+</div>
+</div>
+<div id="5016cc2a" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>translator <span class="op">=</span> pipeline(<span class="st">"translation_en_to_zh"</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                      model<span class="op">=</span><span class="st">"Helsinki-NLP/opus-mt-en-zh"</span>, device<span class="op">=</span>device)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>translator(<span class="st">"This is a introduction to Huggingface."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>[{'translation_text': '这是哈ggingface的介绍。'}]</code></pre>
+</div>
+</div>
+<p>结果很一般。这是因为翻译任务不仅需要模型支持，还需要有一个中文的分词器。而默认的分词器不适合进行中文分词的任务。下面，我们优化一下分词器的设置。</p>
+<div id="2712f5f7" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelWithLMHead,AutoTokenizer,pipeline</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mode_name <span class="op">=</span> <span class="st">'liam168/trans-opus-mt-en-zh'</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelWithLMHead.from_pretrained(mode_name)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(mode_name)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>translation <span class="op">=</span> pipeline(<span class="st">"translation_en_to_zh"</span>, </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                      model<span class="op">=</span>model, </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                      tokenizer<span class="op">=</span>tokenizer, device<span class="op">=</span>device)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>translation(<span class="st">'This is a introduction to Huggingface.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>[{'translation_text': '这是"抱起脸"的引言'}]</code></pre>
+</div>
+</div>
+<p>让我们逐行解释代码的含义：</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelWithLMHead, AutoTokenizer, pipeline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>AutoModelWithLMHead</code></strong>: 这是一个自动加载语言模型（Language Model）的类，通常用于加载带有语言建模头的模型。<code>LMHead</code> 代表语言模型的输出层。</li>
+<li><strong><code>AutoTokenizer</code></strong>: 这是一个自动加载适当的分词器（tokenizer）的类。分词器用于将输入文本转换为模型可以处理的令牌（tokens）序列。</li>
+<li><strong><code>pipeline</code></strong>: 这是 Hugging Face 的高层 API，它提供了各种 NLP 任务的预定义管道（pipeline），如文本分类、翻译、文本生成等。</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>mode_name <span class="op">=</span> <span class="st">'liam168/trans-opus-mt-en-zh'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>mode_name</code></strong>: 这是一个字符串变量，存储了模型的名称或路径。这里的 <code>liam168/trans-opus-mt-en-zh</code> 是在 Hugging Face 模型库中的一个模型名称，表示一个预训练的从英语到中文翻译的模型。</li>
+</ul>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelWithLMHead.from_pretrained(mode_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>AutoModelWithLMHead.from_pretrained(mode_name)</code></strong>: 这行代码加载了 <code>liam168/trans-opus-mt-en-zh</code> 模型的预训练权重和配置。<code>from_pretrained</code> 方法从 Hugging Face 的模型库下载（如果尚未下载）并加载该模型到内存中。</li>
+</ul>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(mode_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>AutoTokenizer.from_pretrained(mode_name)</code></strong>: 这行代码加载了与模型配套的分词器。分词器将输入的英文句子转换为模型所需的令牌（tokens），并且会执行必要的文本预处理。</li>
+</ul>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>translation <span class="op">=</span> pipeline(<span class="st">"translation_en_to_zh"</span>, model<span class="op">=</span>model, tokenizer<span class="op">=</span>tokenizer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer)</code></strong>: 这里使用了 <code>pipeline</code> 函数来创建一个翻译管道，指定了任务类型为 <code>"translation_en_to_zh"</code>（从英语到中文的翻译），并传入了之前加载的模型和分词器。这个管道封装了翻译任务的所有步骤，使得翻译文本变得简单且易于使用。</li>
+</ul>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>translation(<span class="st">'This is a introduction to Huggingface.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>translation('This is a introduction to Huggingface.')</code></strong>: 这行代码调用了翻译管道，将输入的英文句子 <code>"This is a introduction to Huggingface."</code> 翻译为中文。管道会自动执行以下步骤：
+<ol type="1">
+<li>使用 <code>tokenizer</code> 将输入的英文句子分词为令牌。</li>
+<li>将令牌输入到 <code>model</code> 中进行翻译。</li>
+<li>生成的中文令牌序列被解码成自然语言文本。</li>
+</ol></li>
+</ul>
+<p>最终输出会是 <code>"This is a introduction to Huggingface."</code> 的中文翻译版本，例如 <code>"这是对 Huggingface 的介绍。"</code>（具体翻译结果可能有所不同，取决于模型的性能）。</p>
+<p>这段代码通过加载 Hugging Face 提供的预训练模型和分词器，实现了从英语到中文的自动翻译任务，并且通过使用高层的 <code>pipeline</code> API，简化了翻译任务的执行。</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./setup-env.html" class="pagination-link" aria-label="设置运行环境">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">设置运行环境</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./huggingface-models.html" class="pagination-link" aria-label="Hugging Face Model">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hugging Face Model</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<script>videojs(video_shortcode_videojs_video1);</script>
+
+
+
+
+</body></html>
