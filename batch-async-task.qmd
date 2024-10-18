@@ -1,0 +1,296 @@
+# 批量异步任务
+
+## 跟踪进度
+
+在 R 中，`apply` 函数本身并不提供进度条的功能，但可以结合 `pbapply` 包来实现进度显示。`pbapply` 是 `apply` 家族函数的增强版，支持显示进度条。
+
+### 安装和使用 `pbapply` 包
+
+1. **安装 `pbapply` 包**：
+
+   ```r
+   install.packages("pbapply")
+   ```
+
+2. **使用 `pbapply::pblapply()` 代替 `apply()`**：
+
+   `pbapply` 包中的函数与 `apply` 系列函数接口相同，只是多了进度条显示功能。以下是一个示例，展示如何使用 `pblapply()` 处理每一行并显示进度：
+
+   ```{r}
+   library(pbapply)
+
+   # 创建一个示例 data.frame
+   df = data.frame(a = 1:1000, b = rnorm(1000))
+
+   # 使用 pblapply 显示 apply 的进度
+   result = pbapply(df, 1, function(row) {
+     Sys.sleep(0.01)  # 模拟一些需要时间的计算
+     sum(row)         # 计算每一行的和
+   })
+   ```
+
+### `pbapply` 包中的其他常用函数：
+
+- `pblapply()`：用于 `lapply` 类的操作。
+- `pbapply()`：用于 `apply` 类操作（与 `apply()` 类似）。
+- `pbmclapply()`：用于并行化 `lapply` 操作（仅适用于 UNIX-like 系统）。
+
+通过这种方法，你可以方便地在 R 中显示 `apply` 执行的进度，尤其适用于处理大型数据集时跟踪计算进度。
+
+## 缓存
+
+为了自动缓存 `pbapply` 的执行进度，你可以使用 `memoise` 包，它能将函数的执行结果进行缓存，避免重复计算。结合 `pbapply`，你可以将每次处理的结果缓存起来，以便下次调用时可以直接使用缓存的数据。
+
+### 安装和使用 `memoise` 包
+
+1. **安装 `memoise` 包**：
+
+   ```r
+   install.packages("memoise")
+   ```
+
+2. **将处理函数缓存起来**：
+
+   使用 `memoise::memoise()` 对函数进行缓存处理。这样，`pbapply` 在每次执行时，都会检查是否已经缓存过该结果。
+
+   ```{r}
+   library(pbapply)
+   library(memoise)
+
+   # 示例：对每一行的计算进行缓存
+   my_function = function(row) {
+     Sys.sleep(0.01)  # 模拟一些耗时操作
+     sum(row)         # 简单计算每行的和
+   }
+
+   # 对函数进行缓存
+   cached_function = memoise(my_function)
+   ```
+
+   定义好了缓存函数后，就可以使用 `pbapply` 并结合缓存来处理数据了。在第一次运行时，函数会执行并缓存结果。在后续的运行中，如果输入相同，函数会直接从缓存中返回结果，从而提高效率。
+
+   下面是第一次运行的结果：
+
+   ```{r}
+   # 使用 pbapply 并结合缓存
+   set.seed(123)
+   df = data.frame(a = 1:1000, b = rnorm(1000))
+   system.time(result <- pbapply(df, 1, cached_function))
+   ```
+
+   再次运行同样的代码，结果会从缓存中直接返回：
+
+   ```{r}
+   set.seed(123)
+   df = data.frame(a = 1:1000, b = rnorm(1000))
+   system.time(result <- pbapply(df, 1, cached_function))
+   ```
+
+   第二次运行时，由于结果已经缓存，所以速度更快。不过，需要注意的是，缓存只对同一个函数有效，如果函数定义不同，缓存不会生效。重新定义缓存函数后，哪怕函数的内部逻辑完全相同，缓存也会失效。
+
+### 工作原理：
+
+- `memoise` 将函数 `my_function` 的结果缓存起来。当 `pbapply` 再次调用该函数处理相同的输入时，系统会直接从缓存中读取结果，而不是重新执行。
+- 对于每一行处理的结果，都会被缓存。即使你多次运行相同的操作，已经计算过的部分会从缓存中直接加载，大幅提高效率。
+
+### 可选的存储方式：
+
+`memoise` 还支持不同的存储方式（例如文件系统、数据库、内存等），你可以将缓存的数据存储在持久化的存储中，这样即使 R 会话关闭，也能保留缓存结果：
+
+```r
+# 使用本地文件系统缓存
+cached_function = memoise(my_function, cache = cache_filesystem("cache"))
+```
+
+这样可以在未来的会话中继续使用缓存，提高计算的效率并避免重复执行相同的任务。
+
+### 自定义缓存键
+
+在 `memoise` 中，缓存的唯一键是基于输入参数的值自动生成的，使用的是参数的哈希值。这意味着当传递给函数的参数内容相同时，`memoise` 会识别并使用已经缓存的结果，而无需重复计算。
+
+然而，有时你可能希望更明确地控制如何生成这些缓存键。你可以通过以下方式确保缓存键的唯一性：
+
+#### 默认行为（自动基于参数生成键）
+
+`memoise` 会默认根据函数的输入参数内容来生成哈希值。例如：
+
+```r
+library(memoise)
+
+# 定义一个简单的函数
+my_function = function(x) {
+  Sys.sleep(1)  # 模拟计算延迟
+  x^2           # 返回平方
+}
+
+# 缓存该函数
+cached_function = memoise(my_function)
+
+# 调用函数，memoise 将自动根据 x 的值生成缓存
+cached_function(10)  # 第一次调用，会执行
+cached_function(10)  # 第二次调用，会从缓存中返回结果
+```
+
+在上面的例子中，`memoise` 会根据 `x=10` 生成哈希键，下次调用相同输入时会直接返回缓存结果。
+
+#### 自定义键生成方法
+
+如果你需要自定义键的生成方式，可以使用 `digest` 包来手动生成缓存键。通过将输入参数转换成哈希值作为缓存键来精确控制缓存行为。
+
+例如：
+
+```r
+library(memoise)
+library(digest)
+
+# 自定义的函数，手动生成缓存键
+my_custom_memoise = function(f) {
+  mem_f = memoise(function(...) {
+    # 使用 digest 手动生成唯一键，基于输入参数的哈希值
+    cache_key = digest(list(...))
+    message("Cache key: ", cache_key)
+    f(...)
+  })
+  return(mem_f)
+}
+
+# 定义一个函数
+my_function = function(x) {
+  Sys.sleep(1)
+  x^2
+}
+
+# 将函数缓存，并自定义缓存键生成
+cached_function = my_custom_memoise(my_function)
+
+# 调用函数时会生成并输出自定义的缓存键
+cached_function(10)
+cached_function(10)
+cached_function(20)  # 对于不同的输入，缓存键会不同
+```
+
+#### 缓存至数据库
+
+`memoise` 还支持将缓存数据存储在数据库中，这样可以实现更灵活的缓存管理和跨会话使用。以下是一些常见的数据库缓存方式：
+
+1. 使用 SQLite 数据库：
+
+    ```r
+    library(memoise)
+    library(DBI)
+    library(RSQLite)
+
+    # 创建 SQLite 数据库连接
+    con = dbConnect(SQLite(), dbname = "cache.sqlite")
+
+    # 将缓存数据存储在数据库中
+    cached_function = memoise(my_function, cache = cache_dbi(con))
+    ```
+
+2. 使用 Redis 数据库：
+
+    ```r
+    library(memoise)
+    library(redis)
+
+    # 创建 Redis 连接
+    con = redisConnect()
+
+    # 将缓存数据存储在 Redis 中
+    cached_function = memoise(my_function, cache = cache_redis(con))
+    ```
+
+3. 使用 Memcached 数据库：
+
+    ```r
+    library(memoise)
+    library(memcached)
+
+    # 创建 Memcached 连接
+    con = memcached("localhost", port = 11211)
+
+    # 将缓存数据存储在 Memcached 中
+    cached_function = memoise(my_function, cache = cache_memcached(con))
+    ```
+
+这些方法允许你将缓存数据存储在不同的数据库中，从而实现更灵活的缓存管理和跨会话使用。
+
+
+## 动态控制批次执行
+
+为了动态控制批次的执行，并确保正在执行的运算不超过 `batch_size`，你可以使用 R 的异步编程或并发工具包，比如 `future` 和 `future.apply`，结合 `Sys.sleep()` 控制批次提交的速率。
+
+你可以通过以下步骤来实现：
+
+### 使用 `future` 包实现动态分批
+
+`future` 包允许你异步地运行函数，并通过限制同时进行的任务数量来动态控制批次。通过监控并发执行的数量，如果低于 `batch_size`，则自动启动新的任务，否则等待 1 秒再检查。
+
+### 代码示例
+
+```{r}
+library(future)
+library(future.apply)
+
+# 设定最大并行执行任务数为 batch_size
+batch_size = 10
+
+# 使用多线程计划
+plan(multisession, workers = batch_size)
+
+# 示例数据
+df = data.frame(a = 1:100, b = rnorm(100))
+
+# 定义处理函数
+process_function = function(row) {
+  Sys.sleep(runif(1, 0.1, 0.5))  # 模拟耗时任务
+  sum(row)      # 返回每行的和
+}
+
+# 动态控制批次执行
+results = list()  # 用于存储结果
+futures = list()  # 用于存储每个 future
+
+# 将每行分成任务提交
+for (i in 1:nrow(df)) {
+    # 检查当前运行中的任务数量
+    current_tasks = futures[!sapply(futures, resolved)]
+
+    # 如果当前运行中的任务数量达到 batch_size，等待 1 秒
+    while (length(current_tasks) >= batch_size) {
+    # 打印当前运行中的任务数量
+    message("当前运行中的任务数量：", length(current_tasks))
+    # 等待 1 秒
+    Sys.sleep(1)
+    # 更新当前运行中的任务
+    current_tasks = futures[!sapply(futures, resolved)]
+  }
+  
+  # 提交新的任务，并保持追踪
+  futures[[i]] = future({
+    process_function(df[i, ])
+  })
+
+}
+
+# 收集所有结果
+results = future::value(futures) |> unlist()
+
+# 展示结果
+testthat::expect_equal(rowSums(df), results)
+```
+
+### 代码说明
+
+1. **`future` 和 `future.apply`**：`future` 包允许将任务异步提交，通过 `plan(multisession, workers = batch_size)` 限制同时运行的任务数。
+2. **动态任务调度**：
+   - 每次新任务提交前，检查当前运行中的任务数量（`length(futures)`）。
+   - 如果运行中的任务达到 `batch_size`，程序会等待 1 秒，再次检查任务数量，确保不超出最大并行数。
+   - 当低于 `batch_size` 时，新的任务才会被提交。
+3. **结果收集**：使用 `future::value(futures)` 来获取所有任务的计算结果。
+
+### 其他优化
+
+- **性能优化**：你可以根据任务的实际耗时调整 `batch_size` 和 `Sys.sleep()` 的时间，以适应不同的运算负载。
+
+通过这种方法，你可以确保批次执行数不会超过 `batch_size`，并且动态提交新任务，从而实现更灵活的任务管理。
