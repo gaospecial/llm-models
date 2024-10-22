@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>17&nbsp; 检测微流控芯片中的物体 – 大模型平台和应用实例</title>
+<title>18&nbsp; 检测微流控芯片中的物体 – 大模型平台和应用实例</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./gradio.html" rel="next">
-<link href="./llama.html" rel="prev">
+<link href="./batch-async-task.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -115,7 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./object-detection-of-microfluidic-chip.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./object-detection-of-microfluidic-chip.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -244,14 +244,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./batch-async-task.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">批量异步任务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./object-detection-of-microfluidic-chip.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gradio.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -270,10 +276,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#读取并显示图像" id="toc-读取并显示图像" class="nav-link active" data-scroll-target="#读取并显示图像"><span class="header-section-number">17.1</span> 读取并显示图像</a></li>
-  <li><a href="#使用高斯模糊" id="toc-使用高斯模糊" class="nav-link" data-scroll-target="#使用高斯模糊"><span class="header-section-number">17.2</span> 使用高斯模糊</a></li>
-  <li><a href="#使用canny边缘检测" id="toc-使用canny边缘检测" class="nav-link" data-scroll-target="#使用canny边缘检测"><span class="header-section-number">17.3</span> 使用Canny边缘检测</a></li>
-  <li><a href="#使用-groundingdino-检测微流控芯片" id="toc-使用-groundingdino-检测微流控芯片" class="nav-link" data-scroll-target="#使用-groundingdino-检测微流控芯片"><span class="header-section-number">17.4</span> 使用 GroundingDino 检测微流控芯片</a></li>
+  <li><a href="#读取并显示图像" id="toc-读取并显示图像" class="nav-link active" data-scroll-target="#读取并显示图像"><span class="header-section-number">18.1</span> 读取并显示图像</a></li>
+  <li><a href="#使用高斯模糊" id="toc-使用高斯模糊" class="nav-link" data-scroll-target="#使用高斯模糊"><span class="header-section-number">18.2</span> 使用高斯模糊</a></li>
+  <li><a href="#使用canny边缘检测" id="toc-使用canny边缘检测" class="nav-link" data-scroll-target="#使用canny边缘检测"><span class="header-section-number">18.3</span> 使用Canny边缘检测</a></li>
+  <li><a href="#使用-groundingdino-检测微流控芯片" id="toc-使用-groundingdino-检测微流控芯片" class="nav-link" data-scroll-target="#使用-groundingdino-检测微流控芯片"><span class="header-section-number">18.4</span> 使用 GroundingDino 检测微流控芯片</a></li>
   </ul>
 </nav>
     </div>
@@ -282,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></h1>
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></h1>
 </div>
 
 
@@ -301,8 +307,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>现在有一个微流控芯片的显微图像，需要检测其中的物体。这个物体是圆形的、白色的圆点，有黑色的边缘，一般会形成放射状的图案。</p>
 <p><img src="example/images/microfluidic-chip.jpg" class="img-fluid"></p>
-<section id="读取并显示图像" class="level2" data-number="17.1">
-<h2 data-number="17.1" class="anchored" data-anchor-id="读取并显示图像"><span class="header-section-number">17.1</span> 读取并显示图像</h2>
+<section id="读取并显示图像" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="读取并显示图像"><span class="header-section-number">18.1</span> 读取并显示图像</h2>
 <div id="0983fa3f" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -325,8 +331,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="使用高斯模糊" class="level2" data-number="17.2">
-<h2 data-number="17.2" class="anchored" data-anchor-id="使用高斯模糊"><span class="header-section-number">17.2</span> 使用高斯模糊</h2>
+<section id="使用高斯模糊" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="使用高斯模糊"><span class="header-section-number">18.2</span> 使用高斯模糊</h2>
 <p>这段代码主要实现了图像的预处理和可视化。</p>
 <p>首先，使用 OpenCV 库读取图像并将其转换为灰度图，这样可以减少计算量并简化后续处理。</p>
 <p>然后，应用高斯模糊来减少图像中的噪声，这有助于提高后续边缘检测的准确性。高斯模糊使用 9x9 的核，可以有效平滑图像而不会过度模糊重要特征。</p>
@@ -366,8 +372,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="使用canny边缘检测" class="level2" data-number="17.3">
-<h2 data-number="17.3" class="anchored" data-anchor-id="使用canny边缘检测"><span class="header-section-number">17.3</span> 使用Canny边缘检测</h2>
+<section id="使用canny边缘检测" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="使用canny边缘检测"><span class="header-section-number">18.3</span> 使用Canny边缘检测</h2>
 <p>Canny 边缘检测是一种广泛使用的图像处理技术，用于识别图像中的边缘。它由 John F. Canny 在 1986 年提出，被认为是一种非常有效的边缘检测算法。Canny 边缘检测的主要步骤包括：</p>
 <ol type="1">
 <li><p>高斯滤波： 首先对图像进行高斯模糊，以减少噪声。这一步已经在前面的代码中完成。</p></li>
@@ -432,8 +438,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="使用-groundingdino-检测微流控芯片" class="level2" data-number="17.4">
-<h2 data-number="17.4" class="anchored" data-anchor-id="使用-groundingdino-检测微流控芯片"><span class="header-section-number">17.4</span> 使用 GroundingDino 检测微流控芯片</h2>
+<section id="使用-groundingdino-检测微流控芯片" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="使用-groundingdino-检测微流控芯片"><span class="header-section-number">18.4</span> 使用 GroundingDino 检测微流控芯片</h2>
 <p>在这个部分,我们将使用 GroundingDino 模型来检测微流控芯片中的白点。GroundingDino 是一个强大的目标检测模型,可以根据文本提示来定位和分割图像中的对象。以下是代码的主要步骤和功能:</p>
 <ol type="1">
 <li>准备图像和提示:
@@ -974,13 +980,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./llama.html" class="pagination-link" aria-label="Llama 3.2">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Llama 3.2</span></span>
+      <a href="./batch-async-task.html" class="pagination-link" aria-label="批量异步任务">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">批量异步任务</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./gradio.html" class="pagination-link" aria-label="Gradio">
-        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Gradio</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

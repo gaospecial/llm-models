@@ -244,14 +244,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./batch-async-task.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">批量异步任务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./object-detection-of-microfluidic-chip.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gradio.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -351,7 +357,7 @@ Note
 <p>Grounding DINO 在开放场景目标检测中展现出了强大的表现，并在很多研究和应用中取得了显著成果。</p>
 </div>
 </div>
-<div id="68255a0e" class="cell" data-execution_count="1">
+<div id="f38da674" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -446,18 +452,19 @@ Note
 <section id="提交任务" class="level3" data-number="9.1.2">
 <h3 data-number="9.1.2" class="anchored" data-anchor-id="提交任务"><span class="header-section-number">9.1.2</span> 提交任务</h3>
 <p>设置 Body。</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用网络图片的示例</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> {</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"image"</span>: <span class="st">"https://playground/grounding_DINO-1.5/02.jpg"</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prompts"</span>: [</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"window covering"</span>},</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"dinner table"</span>}</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"model"</span>: <span class="st">'GroundingDino-1.5-Pro'</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"targets"</span>: [<span class="st">"bbox"</span>]</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="1a8cbe09" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"image"</span>: <span class="st">"https://playground/grounding_DINO-1.5/02.jpg"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prompts"</span>: [</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"window covering"</span>},</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"dinner table"</span>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"model"</span>: <span class="st">'GroundingDino-1.5-Pro'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"targets"</span>: [<span class="st">"bbox"</span>]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>如果使用本地图片，需要进行 base64 编码转换。</p>
-<div id="077ce1e4" class="cell" data-execution_count="2">
+<div id="30b9c82e" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> base64</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image_base64(image_path):</span>
@@ -482,7 +489,7 @@ Note
 </div>
 </div>
 <p>将图片的 base64 编码与 mime type 组成一个字符串，可以传递给 body 参数。</p>
-<div id="82a70cf2" class="cell" data-execution_count="3">
+<div id="5a5b06f2" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> mimetypes</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> image2base64_with_mime(image_path):</span>
@@ -508,26 +515,27 @@ Note
 </div>
 </div>
 <p>提示文本也是必需参数。</p>
-<div id="adc867ba" class="cell" data-execution_count="4">
+<div id="3d485e22" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>prompts <span class="op">=</span> [</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"green leaf"</span>},</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"white root"</span>},</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"leaf"</span>},</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"root"</span>},</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"plate"</span>},</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"mark"</span>},</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"seedling"</span>}</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 完整的 body 信息</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> {</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"image"</span>: image,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prompts"</span>: prompts,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"model"</span>: <span class="st">'GroundingDino-1.5-Pro'</span>,</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"targets"</span>: [<span class="st">"bbox"</span>]</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"seedling"</span>},</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"green leaf"</span>},</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"withered leaf"</span>},</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 完整的 body 信息</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> {</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"image"</span>: image,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prompts"</span>: prompts,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"model"</span>: <span class="st">'GroundingDino-1.5-Pro'</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"targets"</span>: [<span class="st">"bbox"</span>]</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>提交并获取结果。</p>
-<div id="75a500ba" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>max_retries <span class="op">=</span> <span class="dv">60</span>  <span class="co"># max retry times</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>max_retries <span class="op">=</span> <span class="dv">60</span>  <span class="co"># max retry times</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>retry_count <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># send request</span></span>
@@ -566,61 +574,60 @@ Note
 <span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'get task resp: </span><span class="sc">{</span>resp<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>resp<span class="sc">.</span>text<span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
 <span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Error: </span><span class="sc">{</span>resp<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>resp<span class="sc">.</span>text<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="2428b890" class="cell" data-execution_count="6">
+<div id="5fbc7c15" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-stdout">
 <pre><code>{'code': 0,
- 'data': {'task_uuid': 'd045178b-1464-4f9e-a174-fe3831abc73e'},
+ 'data': {'task_uuid': '4cc0ca70-9e00-4698-9386-2776cbd9bc0d'},
  'msg': 'ok'}
-'task_uuid:d045178b-1464-4f9e-a174-fe3831abc73e'
+'task_uuid:4cc0ca70-9e00-4698-9386-2776cbd9bc0d'
 {'code': 0,
  'data': {'error': None,
           'result': {'mask_url': None,
-                     'objects': [{'bbox': [223.06446838378906,
-                                           35.035160064697266,
-                                           272.95477294921875,
-                                           61.655147552490234],
-                                  'category': 'green leaf',
-                                  'score': 0.27744603157043457},
-                                 {'bbox': [272.7744140625,
-                                           33.38804244995117,
-                                           333.6698913574219,
-                                           65.36283874511719],
-                                  'category': 'green leaf',
-                                  'score': 0.25876155495643616},
-                                 {'bbox': [285.2734375,
-                                           76.83197784423828,
-                                           313.98486328125,
-                                           113.02987670898438],
-                                  'category': 'green leaf',
-                                  'score': 0.2526818513870239},
-                                 {'bbox': [16.204608917236328,
-                                           162.24551391601562,
-                                           326.1462097167969,
-                                           332.5343017578125],
-                                  'category': 'white root',
-                                  'score': 0.3498225212097168},
-                                 {'bbox': [-0.044403523206710815,
-                                           0.6356537342071533,
-                                           354.9541320800781,
-                                           348.5513000488281],
+                     'objects': [{'bbox': [-0.19334310293197632,
+                                           1.469710350036621,
+                                           1773.765869140625,
+                                           1747.221435546875],
                                   'category': 'plate',
-                                  'score': 0.5082138776779175},
-                                 {'bbox': [27.883333206176758,
-                                           14.915810585021973,
-                                           87.8292465209961,
-                                           50.41350173950195],
+                                  'score': 0.6576007008552551},
+                                 {'bbox': [143.88165283203125,
+                                           73.70735931396484,
+                                           432.5969543457031,
+                                           248.65553283691406],
                                   'category': 'mark',
-                                  'score': 0.34625986218452454},
-                                 {'bbox': [273.0254211425781,
-                                           286.09423828125,
-                                           327.3944091796875,
-                                           321.43170166015625],
+                                  'score': 0.3864704370498657},
+                                 {'bbox': [1368.73193359375,
+                                           1434.9140625,
+                                           1633.30908203125,
+                                           1605.239013671875],
                                   'category': 'mark',
-                                  'score': 0.26843780279159546}]},
-          'session_id': 'a2148db20aaa4a09ac4faab99f0e916e',
+                                  'score': 0.3484154939651489},
+                                 {'bbox': [1112.5635986328125,
+                                           180.6923370361328,
+                                           1361.9908447265625,
+                                           303.2415466308594],
+                                  'category': 'green leaf',
+                                  'score': 0.3173876404762268},
+                                 {'bbox': [1439.4031982421875,
+                                           387.93609619140625,
+                                           1567.3350830078125,
+                                           563.5098266601562],
+                                  'category': 'green leaf',
+                                  'score': 0.28551268577575684},
+                                 {'bbox': [1212.9088134765625,
+                                           558.487548828125,
+                                           1326.8262939453125,
+                                           646.2600708007812],
+                                  'category': 'green leaf',
+                                  'score': 0.2655079662799835},
+                                 {'bbox': [1361.4508056640625,
+                                           172.87673950195312,
+                                           1473.9033203125,
+                                           267.9229431152344],
+                                  'category': 'green leaf',
+                                  'score': 0.256084144115448}]},
+          'session_id': '50d8c56e8548497aaf2e91a310f128de',
           'status': 'success',
-          'uuid': 'd045178b-1464-4f9e-a174-fe3831abc73e'},
+          'uuid': '9248e4dd-8050-4edf-8e95-f1c03a690648'},
  'msg': 'ok'}</code></pre>
 </div>
 </div>
@@ -628,7 +635,7 @@ Note
 <section id="处理结果" class="level3" data-number="9.1.3">
 <h3 data-number="9.1.3" class="anchored" data-anchor-id="处理结果"><span class="header-section-number">9.1.3</span> 处理结果</h3>
 <p>将检测的结果标在图片上面。</p>
-<div id="3ba39762" class="cell" data-execution_count="7">
+<div id="71205046" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算识别到的类型数目</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> category_num(data):</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 初始化一个字典用于存储每个 category 的计数</span></span>
@@ -714,7 +721,7 @@ Note
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="grounding-dino_files/figure-html/cell-8-output-1.png" width="663" height="660" class="figure-img"></p>
+<p><img src="grounding-dino_files/figure-html/cell-8-output-1.png" width="2613" height="2457" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -840,7 +847,7 @@ Note
 <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'get task resp: </span><span class="sc">{</span>resp<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>resp<span class="sc">.</span>text<span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
 <span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Error: </span><span class="sc">{</span>resp<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>resp<span class="sc">.</span>text<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="a1aa235b" class="cell" data-execution_count="8">
+<div id="71dfbbb4" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
 <pre><code>{}</code></pre>
 </div>
@@ -848,7 +855,7 @@ Note
 </section>
 <section id="处理结果-1" class="level3" data-number="9.2.3">
 <h3 data-number="9.2.3" class="anchored" data-anchor-id="处理结果-1"><span class="header-section-number">9.2.3</span> 处理结果</h3>
-<div id="5d03f1a3" class="cell" data-execution_count="9">
+<div id="b834425a" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot_with_result(image_path, json_resp)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -916,7 +923,7 @@ Note
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'get task resp: </span><span class="sc">{</span>resp<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>resp<span class="sc">.</span>text<span class="sc">}</span><span class="ss">'</span>)</span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
 <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Error: </span><span class="sc">{</span>resp1<span class="sc">.</span>status_code<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>resp1<span class="sc">.</span>text<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div id="bfa7cd6f" class="cell" data-execution_count="10">
+<div id="1988dad7" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-stdout">
 <pre><code>{'code': 0, 'msg': 'ok', 'data': {'task_uuid': 'ebff4e6f-35db-4c7f-9f46-72034bd462af'}}
 {'code': 0,
@@ -929,7 +936,7 @@ Note
  'msg': 'ok'}</code></pre>
 </div>
 </div>
-<div id="91c8c3f4" class="cell" data-execution_count="11">
+<div id="37f086cb" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>prompt_image <span class="op">=</span> <span class="st">"example/images/left_17.jpeg"</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>infer_image <span class="op">=</span> <span class="st">"example/images/right_17.jpeg"</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -963,7 +970,7 @@ Note
 <section id="使用-sdk-调用" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="使用-sdk-调用"><span class="header-section-number">9.4</span> 使用 SDK 调用</h2>
 <p>配置 <code>client</code>。</p>
-<div id="23ea9ec9" class="cell" data-execution_count="12">
+<div id="3633dd9e" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Initialize the client with your API token.</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dds_cloudapi_sdk <span class="im">import</span> Config</span>
@@ -974,7 +981,7 @@ Note
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> Client(config)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>运行任务的一般流程如下。</p>
-<div id="1329866b" class="cell" data-execution_count="13">
+<div id="c124371d" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Upload local image to the server and get the URL.</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>infer_image_url <span class="op">=</span> <span class="st">"https://dev.deepdataspace.com/static/04_a.ae28c1d6.jpg"</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># infer_image_url = client.upload_file("path/to/infer/image.jpg")  </span></span>
@@ -1022,7 +1029,7 @@ Note
 </div>
 <section id="检测任务" class="level3" data-number="9.4.1">
 <h3 data-number="9.4.1" class="anchored" data-anchor-id="检测任务"><span class="header-section-number">9.4.1</span> 检测任务</h3>
-<div id="e7612b7e" class="cell" data-execution_count="14">
+<div id="16350bc3" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dds_cloudapi_sdk <span class="im">import</span> Config</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dds_cloudapi_sdk <span class="im">import</span> Client</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dds_cloudapi_sdk <span class="im">import</span> DetectionTask</span>
@@ -1035,7 +1042,7 @@ Note
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> Config(token)</span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> Client(config)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="f90a734a" class="cell" data-execution_count="15">
+<div id="b493a94a" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: run the task by DetectionTask class</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># image_url = "https://algosplt.oss-cn-shenzhen.aliyuncs.com/test_files/tasks/detection/iron_man.jpg"</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># if you are processing local image file, upload them to DDS server to get the image url</span></span>
@@ -1044,8 +1051,8 @@ Note
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>task <span class="op">=</span> DetectionTask(</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    image_url<span class="op">=</span>image_url,</span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    prompts<span class="op">=</span>[TextPrompt(text<span class="op">=</span><span class="st">"plate"</span>), </span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>             TextPrompt(text<span class="op">=</span><span class="st">"green leaf"</span>), </span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>             TextPrompt(text<span class="op">=</span><span class="st">'white root'</span>),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>             TextPrompt(text<span class="op">=</span><span class="st">"leaf"</span>), </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>             TextPrompt(text<span class="op">=</span><span class="st">'primary root'</span>),</span>
 <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>             TextPrompt(text<span class="op">=</span><span class="st">"mark"</span>),</span>
 <span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>             TextPrompt(text<span class="op">=</span><span class="st">"seedlings"</span>)],</span>
 <span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    targets<span class="op">=</span>[DetectionTarget.Mask, DetectionTarget.BBox],  <span class="co"># detect both bbox and mask</span></span>
@@ -1053,11 +1060,11 @@ Note
 <span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>运行任务。</p>
-<div id="93d5a55e" class="cell" data-execution_count="16">
+<div id="12bac66f" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>client.run_task(task)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> task.result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="58141b31" class="cell" data-execution_count="17">
+<div id="4fdd8ef7" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用缓存的结果</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
@@ -1090,7 +1097,7 @@ Note
 </div>
 <p>这个含有 mask 的图像，标记了检测到的物体的范围。</p>
 <p><img src="example/results/detection-result-mask.png" class="img-fluid"></p>
-<div id="2569066a" class="cell" data-execution_count="18">
+<div id="bb6d8712" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image, ImageDraw</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> patches</span>
@@ -1135,7 +1142,7 @@ Note
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="grounding-dino_files/figure-html/cell-19-output-1.png" width="659" height="660" class="figure-img"></p>
+<p><img src="grounding-dino_files/figure-html/cell-19-output-1.png" width="661" height="648" class="figure-img"></p>
 </figure>
 </div>
 </div>

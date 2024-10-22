@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>18&nbsp; Gradio – 大模型平台和应用实例</title>
+<title>19&nbsp; Gradio – 大模型平台和应用实例</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -118,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gradio.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gradio.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Gradio</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -247,14 +247,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./batch-async-task.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">批量异步任务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./object-detection-of-microfluidic-chip.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gradio.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -273,13 +279,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#用于情感分析的-app" id="toc-用于情感分析的-app" class="nav-link active" data-scroll-target="#用于情感分析的-app"><span class="header-section-number">18.1</span> 用于情感分析的 APP</a></li>
-  <li><a href="#在线服务" id="toc-在线服务" class="nav-link" data-scroll-target="#在线服务"><span class="header-section-number">18.2</span> 在线服务</a></li>
-  <li><a href="#在-quarto-中显示" id="toc-在-quarto-中显示" class="nav-link" data-scroll-target="#在-quarto-中显示"><span class="header-section-number">18.3</span> 在 Quarto 中显示</a>
+  <li><a href="#用于情感分析的-app" id="toc-用于情感分析的-app" class="nav-link active" data-scroll-target="#用于情感分析的-app"><span class="header-section-number">19.1</span> 用于情感分析的 APP</a></li>
+  <li><a href="#在线服务" id="toc-在线服务" class="nav-link" data-scroll-target="#在线服务"><span class="header-section-number">19.2</span> 在线服务</a></li>
+  <li><a href="#在-quarto-中显示" id="toc-在-quarto-中显示" class="nav-link" data-scroll-target="#在-quarto-中显示"><span class="header-section-number">19.3</span> 在 Quarto 中显示</a>
   <ul class="collapse">
-  <li><a href="#启动-gradio-服务" id="toc-启动-gradio-服务" class="nav-link" data-scroll-target="#启动-gradio-服务"><span class="header-section-number">18.3.1</span> 1. 启动 Gradio 服务</a></li>
-  <li><a href="#在-quarto-文档中嵌入-gradio-应用" id="toc-在-quarto-文档中嵌入-gradio-应用" class="nav-link" data-scroll-target="#在-quarto-文档中嵌入-gradio-应用"><span class="header-section-number">18.3.2</span> 2. 在 Quarto 文档中嵌入 Gradio 应用</a></li>
-  <li><a href="#渲染-quarto-文档" id="toc-渲染-quarto-文档" class="nav-link" data-scroll-target="#渲染-quarto-文档"><span class="header-section-number">18.3.3</span> 3. 渲染 Quarto 文档</a></li>
+  <li><a href="#启动-gradio-服务" id="toc-启动-gradio-服务" class="nav-link" data-scroll-target="#启动-gradio-服务"><span class="header-section-number">19.3.1</span> 1. 启动 Gradio 服务</a></li>
+  <li><a href="#在-quarto-文档中嵌入-gradio-应用" id="toc-在-quarto-文档中嵌入-gradio-应用" class="nav-link" data-scroll-target="#在-quarto-文档中嵌入-gradio-应用"><span class="header-section-number">19.3.2</span> 2. 在 Quarto 文档中嵌入 Gradio 应用</a></li>
+  <li><a href="#渲染-quarto-文档" id="toc-渲染-quarto-文档" class="nav-link" data-scroll-target="#渲染-quarto-文档"><span class="header-section-number">19.3.3</span> 3. 渲染 Quarto 文档</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -289,7 +295,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Gradio</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Gradio</span></h1>
 </div>
 
 
@@ -314,8 +320,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>一键分享</strong>：提供一键生成可分享链接的功能，方便他人使用和测试模型。</li>
 <li><strong>集成方便</strong>：可以与现有的机器学习框架（如 TensorFlow、PyTorch）无缝集成。</li>
 </ol>
-<section id="用于情感分析的-app" class="level2" data-number="18.1">
-<h2 data-number="18.1" class="anchored" data-anchor-id="用于情感分析的-app"><span class="header-section-number">18.1</span> 用于情感分析的 APP</h2>
+<section id="用于情感分析的-app" class="level2" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="用于情感分析的-app"><span class="header-section-number">19.1</span> 用于情感分析的 APP</h2>
 <p>下面是一个简单的示例代码，展示如何使用 Gradio 创建一个可以输入文本并返回情感分析结果的界面：</p>
 <div id="bbdb8d93" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> gradio <span class="im">as</span> gr</span>
@@ -353,8 +359,8 @@ To create a public link, set `share=True` in `launch()`.</code></pre>
 </div>
 <p>你可以在本地运行这个代码，并通过生成的链接访问和测试情感分析模型。</p>
 </section>
-<section id="在线服务" class="level2" data-number="18.2">
-<h2 data-number="18.2" class="anchored" data-anchor-id="在线服务"><span class="header-section-number">18.2</span> 在线服务</h2>
+<section id="在线服务" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="在线服务"><span class="header-section-number">19.2</span> 在线服务</h2>
 <p>还可以通过 <code>iface.launch(share=True)</code> 将服务发布到 gradio.live 网站上：<a href="https://e7ce7d908c95c155b5.gradio.live/?" class="uri">https://e7ce7d908c95c155b5.gradio.live/?</a>。</p>
 <p>注意：这个分享链接会很快失效。</p>
 <p>这时，可以使用 <code>gradio_client</code> 库中的 <code>Client</code> 类与一个远程 Gradio 应用进行交互。</p>
@@ -390,20 +396,20 @@ To create a public link, set `share=True` in `launch()`.</code></pre>
 </ul>
 <p>通过这种方式，你可以方便地与远程 Gradio 应用进行交互，发送请求并获取预测结果。</p>
 </section>
-<section id="在-quarto-中显示" class="level2" data-number="18.3">
-<h2 data-number="18.3" class="anchored" data-anchor-id="在-quarto-中显示"><span class="header-section-number">18.3</span> 在 Quarto 中显示</h2>
+<section id="在-quarto-中显示" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="在-quarto-中显示"><span class="header-section-number">19.3</span> 在 Quarto 中显示</h2>
 <p>要在 Quarto 中正确显示 Gradio 的输出结果，你需要确保以下几点：</p>
 <ol type="1">
 <li><strong>Gradio 服务正常运行</strong>：你需要在本地或远程服务器上启动 Gradio 服务。</li>
 <li><strong>在 Quarto 文档中嵌入 Gradio 应用</strong>：你可以在 Quarto 文档中嵌入一个 iframe 来显示 Gradio 应用的输出。</li>
 </ol>
 <p>下面是一个详细的步骤：</p>
-<section id="启动-gradio-服务" class="level3" data-number="18.3.1">
-<h3 data-number="18.3.1" class="anchored" data-anchor-id="启动-gradio-服务"><span class="header-section-number">18.3.1</span> 1. 启动 Gradio 服务</h3>
+<section id="启动-gradio-服务" class="level3" data-number="19.3.1">
+<h3 data-number="19.3.1" class="anchored" data-anchor-id="启动-gradio-服务"><span class="header-section-number">19.3.1</span> 1. 启动 Gradio 服务</h3>
 <p>首先，确保你的 Gradio 服务正在运行。例如，可以使用上面的代码启动 Gradio 应用。</p>
 </section>
-<section id="在-quarto-文档中嵌入-gradio-应用" class="level3" data-number="18.3.2">
-<h3 data-number="18.3.2" class="anchored" data-anchor-id="在-quarto-文档中嵌入-gradio-应用"><span class="header-section-number">18.3.2</span> 2. 在 Quarto 文档中嵌入 Gradio 应用</h3>
+<section id="在-quarto-文档中嵌入-gradio-应用" class="level3" data-number="19.3.2">
+<h3 data-number="19.3.2" class="anchored" data-anchor-id="在-quarto-文档中嵌入-gradio-应用"><span class="header-section-number">19.3.2</span> 2. 在 Quarto 文档中嵌入 Gradio 应用</h3>
 <p>在你的 Quarto 文档中（例如，<code>document.qmd</code>），你可以通过 iframe 嵌入 Gradio 应用。确保你使用的是 <code>.qmd</code> 文件格式，并在其中嵌入 Gradio 的链接。</p>
 <p>下面是一个示例 Quarto 文档：</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Gradio Application</span></span>
@@ -413,8 +419,8 @@ To create a public link, set `share=True` in `launch()`.</code></pre>
 <iframe src="https://e7ce7d908c95c155b5.gradio.live/?">
 </iframe>
 </section>
-<section id="渲染-quarto-文档" class="level3" data-number="18.3.3">
-<h3 data-number="18.3.3" class="anchored" data-anchor-id="渲染-quarto-文档"><span class="header-section-number">18.3.3</span> 3. 渲染 Quarto 文档</h3>
+<section id="渲染-quarto-文档" class="level3" data-number="19.3.3">
+<h3 data-number="19.3.3" class="anchored" data-anchor-id="渲染-quarto-文档"><span class="header-section-number">19.3.3</span> 3. 渲染 Quarto 文档</h3>
 <p>使用 Quarto 渲染文档：</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>这将生成一个 HTML 文件，其中嵌入了你的 Gradio 应用。打开生成的 HTML 文件，即可在浏览器中查看并与 Gradio 应用进行交互。</p>
@@ -848,7 +854,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./object-detection-of-microfluidic-chip.html" class="pagination-link" aria-label="检测微流控芯片中的物体">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
