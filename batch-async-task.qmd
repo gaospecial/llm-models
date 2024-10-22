@@ -39,7 +39,7 @@
 
 ## 缓存
 
-为了自动缓存 `pbapply` 的执行进度，你可以使用 `memoise` 包，它能将函数的执行结果进行缓存，避免重复计算。结合 `pbapply`，你可以将每次处理的结果缓存起来，以便下次调用时可以直接使用缓存的数据。
+为了自动缓存 `pbapply` 的执行进度，你可以使用 `memoise` 包，它能将函数的执行结果进行缓存，避免重复计算。它可以缓存到内容、本地文件系统、Google cloud storage、AWS cloud storage 等。结合 `pbapply`，你可以将每次处理的结果缓存起来，以便下次调用时可以直接使用缓存的数据。
 
 ### 安装和使用 `memoise` 包
 
@@ -139,7 +139,7 @@ cached_function(10)  # 第二次调用，会从缓存中返回结果
 
 例如：
 
-```r
+```{r}
 library(memoise)
 library(digest)
 
@@ -169,51 +169,110 @@ cached_function(10)
 cached_function(20)  # 对于不同的输入，缓存键会不同
 ```
 
-#### 缓存至数据库
+### 保存缓存到 sqlite 数据库
 
-`memoise` 还支持将缓存数据存储在数据库中，这样可以实现更灵活的缓存管理和跨会话使用。以下是一些常见的数据库缓存方式：
+```{r}
+#' SQLite Database Cache
+#'
+#' Use a cache in a SQLite database that will persist between R sessions.
+#'
+#' @param con A DBI connection object to a SQLite database.
+#' @param table_name Name of the table to use for caching. Default: "cache".
+#'
+#' @examples
+#'
+#' \dontrun{
+#' library(DBI)
+#' library(RSQLite)
+#' 
+#' # 创建 SQLite 数据库连接
+#' con <- dbConnect(SQLite(), dbname = "cache.sqlite")
+#' 
+#' # 使用 SQLite 缓存
+#' db_cache <- cache_dbi(con)
+#' 
+#' mem_runif <- memoise(runif, cache = db_cache)
+#' }
+#'
+#' @export
+#' @inheritParams cache_memory
+cache_dbi <- function(con, algo = "xxhash64", table_name = "cache") {
+  if (!(requireNamespace("digest"))) { stop("Package `digest` must be installed for `cache_dbi()`.") }
+  if (!(requireNamespace("DBI"))) { stop("Package `DBI` must be installed for `cache_dbi()`.") }
 
-1. 使用 SQLite 数据库：
+  if (!grepl("^[A-Za-z0-9_]+$", table_name)) {
+    stop("Invalid table name")
+  }
 
-    ```r
-    library(memoise)
-    library(DBI)
-    library(RSQLite)
+  # 创建缓存表
+  DBI::dbExecute(con, sprintf("CREATE TABLE IF NOT EXISTS %s (key TEXT PRIMARY KEY, value BLOB)", table_name))
 
-    # 创建 SQLite 数据库连接
-    con = dbConnect(SQLite(), dbname = "cache.sqlite")
+  # 重置缓存
+  cache_reset <- function() {
+    DBI::dbExecute(con, sprintf("DELETE FROM %s", table_name))
+  }
 
-    # 将缓存数据存储在数据库中
-    cached_function = memoise(my_function, cache = cache_dbi(con))
-    ```
+  # 设置缓存
+  cache_set <- function(key, value) {
+    serialized_value <- serialize(value, NULL)  # 序列化 R 对象
+    DBI::dbExecute(con, sprintf("INSERT OR REPLACE INTO %s (key, value) VALUES (?, ?)", table_name),
+                   params = list(key, list(serialized_value)))  # 用 list 包裹 serialized_value
+  }
 
-2. 使用 Redis 数据库：
+  # 获取缓存
+  cache_get <- function(key) {
+    result <- DBI::dbGetQuery(con, sprintf("SELECT value FROM %s WHERE key = ?", table_name),
+                              params = list(key))
+    if (nrow(result) == 0) {
+      return(NULL)
+    }
+    unserialize(result$value[[1]])  # 反序列化第一个值
+  }
 
-    ```r
-    library(memoise)
-    library(redis)
+  # 检查缓存是否存在
+  cache_has_key <- function(key) {
+    result <- DBI::dbGetQuery(con, sprintf("SELECT 1 FROM %s WHERE key = ? LIMIT 1", table_name),
+                              params = list(key))
+    nrow(result) > 0
+  }
 
-    # 创建 Redis 连接
-    con = redisConnect()
+  # 删除缓存
+  cache_drop_key <- function(key) {
+    DBI::dbExecute(con, sprintf("DELETE FROM %s WHERE key = ?", table_name),
+                   params = list(key))
+  }
 
-    # 将缓存数据存储在 Redis 中
-    cached_function = memoise(my_function, cache = cache_redis(con))
-    ```
+  list(
+    digest = function(...) digest::digest(..., algo = algo),
+    reset = cache_reset,
+    set = cache_set,
+    get = cache_get,
+    has_key = cache_has_key,
+    drop_key = cache_drop_key,
+    keys = function() DBI::dbGetQuery(con, sprintf("SELECT key FROM %s", table_name))$key
+  )
+}
 
-3. 使用 Memcached 数据库：
+```
 
-    ```r
-    library(memoise)
-    library(memcached)
+```{r}
+library(memoise)
+library(DBI)
+library(RSQLite)
 
-    # 创建 Memcached 连接
-    con = memcached("localhost", port = 11211)
+# 创建 SQLite 数据库连接
+con = dbConnect(SQLite(), dbname = "cache.sqlite")
+on.exit(dbDisconnect(con))
 
-    # 将缓存数据存储在 Memcached 中
-    cached_function = memoise(my_function, cache = cache_memcached(con))
-    ```
+# 将缓存数据存储在数据库中
+cached_function = memoise(my_function, cache = cache_dbi(con))
 
-这些方法允许你将缓存数据存储在不同的数据库中，从而实现更灵活的缓存管理和跨会话使用。
+cached_function(10)
+cached_function(10)
+cached_function(20)
+```
+
+
 
 
 ## 动态控制批次执行
@@ -253,11 +312,11 @@ futures = list()  # 用于存储每个 future
 
 # 将每行分成任务提交
 for (i in 1:nrow(df)) {
-    # 检查当前运行中的任务数量
-    current_tasks = futures[!sapply(futures, resolved)]
+  # 检查当前运行中的任务数量
+  current_tasks = futures[!sapply(futures, resolved)]
 
-    # 如果当前运行中的任务数量达到 batch_size，等待 1 秒
-    while (length(current_tasks) >= batch_size) {
+  # 如果当前运行中的任务数量达到 batch_size，等待 1 秒
+  while (length(current_tasks) >= batch_size) {
     # 打印当前运行中的任务数量
     message("当前运行中的任务数量：", length(current_tasks))
     # 等待 1 秒
@@ -269,7 +328,7 @@ for (i in 1:nrow(df)) {
   # 提交新的任务，并保持追踪
   futures[[i]] = future({
     process_function(df[i, ])
-  })
+  }, seed = TRUE)
 
 }
 
@@ -294,3 +353,86 @@ testthat::expect_equal(rowSums(df), results)
 - **性能优化**：你可以根据任务的实际耗时调整 `batch_size` 和 `Sys.sleep()` 的时间，以适应不同的运算负载。
 
 通过这种方法，你可以确保批次执行数不会超过 `batch_size`，并且动态提交新任务，从而实现更灵活的任务管理。
+
+## 包装成一个函数
+
+函数采用 pbapply 显示进度，`batch_size` 设定批次大小，`fun` 接受命令（如果这个命令是一个 memorise 函数则直接使用，如果不是则将其自动缓存），缓存默认使用 `cache_filesystem`，缓存文件地址为 `cache_dir` 目录下的 `id` 文件夹，必需 id 由用户提供。
+
+```{r}
+batch_async_task <- function(df, fun, id, wait_time = 1, batch_size = 10, cache_dir = "cache") {
+  # 导入必要的包
+  require(future)
+  require(future.apply)
+  require(pbapply)
+  require(memoise)
+    
+  # 检查并创建缓存目录
+  dir_path <- file.path(cache_dir, id)
+  if (!dir.exists(dir_path)) {
+    dir.create(dir_path, recursive = TRUE)
+  }
+  
+  # 如果fun是memoise函数，则提出 warning，并使用fun 
+  if (inherits(fun, "memoised")) {
+    warning("Fun is already a memoised function. It will be used directly. `cache_dir` will be ignored.")
+  } else {
+    # 如果fun不是memoise函数，则将其缓存
+    fun <- memoise(fun, cache = cache_filesystem(dir_path))
+  }
+  
+  # 设置future计划
+  plan(multisession, workers = batch_size)
+  
+  # 初始化future列表
+  futures <- vector("list", nrow(df))
+  
+  # 使用pbapply显示进度
+  results <- pblapply(1:nrow(df), function(i) {
+    # 检查当前运行中的任务数量
+    current_tasks <- futures[!sapply(futures, resolved)]
+    
+    # 如果当前运行中的任务数量达到batch_size，等待
+    while (length(current_tasks) >= batch_size) {
+      Sys.sleep(wait_time)
+      current_tasks <- futures[!sapply(futures, resolved)]
+    }
+    
+    # 提交新的任务
+    futures[[i]] <- future({
+      fun(df[i, ])
+    })
+    
+    # 返回future
+    futures[[i]]
+  })
+  
+  # 收集所有结果
+  results <- future::value(results)
+  
+  return(results)
+}
+```
+
+```{r}
+# 示例数据
+set.seed(123)
+df = data.frame(a = 1:100, b = rnorm(100))
+
+# 定义处理函数
+process_function = function(row) {
+  Sys.sleep(0.1)  # 模拟耗时任务
+  sum(row)      # 返回每行的和
+}
+
+# 定义 cached_process_function
+cached_process_function <- memoise(process_function, cache = cache_filesystem("cache"))
+```
+
+```{r}
+# 运行函数
+result1 <- batch_async_task(df, process_function, id = "test")
+
+result2 <- batch_async_task(df, cached_process_function, id = "test")
+
+testthat::expect_equal(result1, result2)
+```
