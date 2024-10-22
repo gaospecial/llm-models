@@ -171,6 +171,8 @@ cached_function(20)  # 对于不同的输入，缓存键会不同
 
 ### 保存缓存到 sqlite 数据库
 
+使用 `cache_filesystem` 缓存时，缓存数据会保存在文件系统中，会涉及比较多的磁盘读写运算，当处理量较大时，会严重影响性能。而且每一次函数调用都会生成一个文件，管理起来也不方便。因此，这里扩展了一个 `cache_dbi()` 函数，使用数据库来缓存数据。
+
 ```{r}
 #' SQLite Database Cache
 #'
@@ -255,6 +257,8 @@ cache_dbi <- function(con, algo = "xxhash64", table_name = "cache") {
 
 ```
 
+下面，使用 `cache_dbi()` 函数来缓存数据：
+
 ```{r}
 library(memoise)
 library(DBI)
@@ -273,13 +277,57 @@ cached_function(20)
 ```
 
 
-
-
 ## 动态控制批次执行
 
-为了动态控制批次的执行，并确保正在执行的运算不超过 `batch_size`，你可以使用 R 的异步编程或并发工具包，比如 `future` 和 `future.apply`，结合 `Sys.sleep()` 控制批次提交的速率。
+为了动态控制批次的执行，并确保正在执行的运算不超过 `batch_size`，你可以使用 R 的异步编程或并发工具包，比如 `parallel` 和 `future`，结合 `Sys.sleep()` 控制批次提交的速率。
 
-你可以通过以下步骤来实现：
+### 使用 `parallel` 包实现动态分批
+
+以下是使用 `parallel` 包执行 `batch_size` 个并发操作的示例：
+
+```{r}
+#| eval: false
+library(parallel)
+
+# 示例数据
+df = data.frame(a = 1:100, b = rnorm(100))
+
+# 定义处理函数
+process_function = function(row) {
+  Sys.sleep(runif(1, 0.1, 0.5))  # 模拟耗时任务
+  sum(row)      # 返回每行的和
+}
+
+# 比较串行和并行处理的性能
+
+# 串行处理
+start_time_serial = Sys.time()
+results_serial = lapply(1:nrow(df), function(i) {
+  process_function(df[i, ])
+})
+end_time_serial = Sys.time()
+time_serial = difftime(end_time_serial, start_time_serial, units = "secs")
+
+# 并行处理
+start_time_parallel = Sys.time()
+results_parallel = mclapply(1:nrow(df), function(i) {
+  process_function(df[i, ])
+}, mc.cores = parallel::detectCores() - 1)  # 使用可用核心数减1
+end_time_parallel = Sys.time()
+time_parallel = difftime(end_time_parallel, start_time_parallel, units = "secs")
+
+# 计算性能提升
+speedup = as.numeric(time_serial) / as.numeric(time_parallel)
+
+# 输出结果
+cat("串行处理时间：", time_serial, "秒\n")
+cat("并行处理时间：", time_parallel, "秒\n")
+cat("性能提升：", round(speedup, 2), "倍\n")
+
+# 验证结果正确性
+testthat::expect_equal(rowSums(df), unlist(results_serial))
+testthat::expect_equal(rowSums(df), unlist(results_parallel))
+```
 
 ### 使用 `future` 包实现动态分批
 
@@ -288,6 +336,7 @@ cached_function(20)
 ### 代码示例
 
 ```{r}
+#| eval: false
 library(future)
 library(future.apply)
 
@@ -347,67 +396,40 @@ testthat::expect_equal(rowSums(df), results)
    - 如果运行中的任务达到 `batch_size`，程序会等待 1 秒，再次检查任务数量，确保不超出最大并行数。
    - 当低于 `batch_size` 时，新的任务才会被提交。
 3. **结果收集**：使用 `future::value(futures)` 来获取所有任务的计算结果。
-
-### 其他优化
-
-- **性能优化**：你可以根据任务的实际耗时调整 `batch_size` 和 `Sys.sleep()` 的时间，以适应不同的运算负载。
+4. **错误处理**：使用 `tryCatch` 捕获错误，并输出错误信息。
 
 通过这种方法，你可以确保批次执行数不会超过 `batch_size`，并且动态提交新任务，从而实现更灵活的任务管理。
 
 ## 包装成一个函数
 
-函数采用 pbapply 显示进度，`batch_size` 设定批次大小，`fun` 接受命令（如果这个命令是一个 memorise 函数则直接使用，如果不是则将其自动缓存），缓存默认使用 `cache_filesystem`，缓存文件地址为 `cache_dir` 目录下的 `id` 文件夹，必需 id 由用户提供。
+### 函数定义
+
+函数采用 pbapply 显示进度，`batch_size` 设定批次大小，`fun` 接受命令（如果这个命令是一个 memorise 函数则直接使用，如果不是则将其自动缓存），缓存默认使用 `cache_dbi()`，缓存文件地址为 `db_file` 文件，由用户提供。
 
 ```{r}
-batch_async_task <- function(df, fun, id, wait_time = 1, batch_size = 10, cache_dir = "cache") {
-  # 导入必要的包
-  require(future)
-  require(future.apply)
-  require(pbapply)
-  require(memoise)
-    
-  # 检查并创建缓存目录
-  dir_path <- file.path(cache_dir, id)
-  if (!dir.exists(dir_path)) {
-    dir.create(dir_path, recursive = TRUE)
-  }
+run_task_with_cache <- function(df, fun, db_file) {
+
+  # 检查并创建缓存
+  con = DBI::dbConnect(RSQLite::SQLite(), dbname = db_file)
+  on.exit(DBI::dbDisconnect(con))
   
   # 如果fun是memoise函数，则提出 warning，并使用fun 
   if (inherits(fun, "memoised")) {
-    warning("Fun is already a memoised function. It will be used directly. `cache_dir` will be ignored.")
+    warning("Fun is already a memoised function. It will be used directly. `db_file` will be ignored.")
   } else {
     # 如果fun不是memoise函数，则将其缓存
-    fun <- memoise(fun, cache = cache_filesystem(dir_path))
+    fun <- memoise::memoise(fun, cache = cache_dbi(con))
   }
   
-  # 设置future计划
-  plan(multisession, workers = batch_size)
-  
-  # 初始化future列表
-  futures <- vector("list", nrow(df))
-  
-  # 使用pbapply显示进度
-  results <- pblapply(1:nrow(df), function(i) {
-    # 检查当前运行中的任务数量
-    current_tasks <- futures[!sapply(futures, resolved)]
-    
-    # 如果当前运行中的任务数量达到batch_size，等待
-    while (length(current_tasks) >= batch_size) {
-      Sys.sleep(wait_time)
-      current_tasks <- futures[!sapply(futures, resolved)]
-    }
-    
-    # 提交新的任务
-    futures[[i]] <- future({
-      fun(df[i, ])
-    })
-    
-    # 返回future
-    futures[[i]]
+  # 执行计算
+  results = pbapply::pblapply(1:nrow(df), function(i) {
+    row = df[i, ]
+    result = tryCatch(fun(row), error = function(e) {
+        message("错误发生在第 ", i, " 行: ", e$message)
+        return(NA)
+      })
+    return(result)
   })
-  
-  # 收集所有结果
-  results <- future::value(results)
   
   return(results)
 }
@@ -415,7 +437,7 @@ batch_async_task <- function(df, fun, id, wait_time = 1, batch_size = 10, cache_
 
 ```{r}
 # 示例数据
-set.seed(123)
+set.seed(123456)
 df = data.frame(a = 1:100, b = rnorm(100))
 
 # 定义处理函数
@@ -424,15 +446,125 @@ process_function = function(row) {
   sum(row)      # 返回每行的和
 }
 
-# 定义 cached_process_function
-cached_process_function <- memoise(process_function, cache = cache_filesystem("cache"))
 ```
 
 ```{r}
 # 运行函数
-result1 <- batch_async_task(df, process_function, id = "test")
+result <- run_task_with_cache(df, process_function, db_file = "cache.sqlite")
 
-result2 <- batch_async_task(df, cached_process_function, id = "test")
-
-testthat::expect_equal(result1, result2)
+testthat::expect_equal(unlist(result), rowSums(df))
 ```
+
+### 并行计算
+
+并行计算可以使用 `future` 包，或者 `parallel` 包。但是在显示进度条、数据库访问方面实现起来有一定难度，特别是涉及到数据库访问的并发问题，暂时没有很好的解决方案。因此，考虑使用数据拆分的方法，拆成多个批次，每个批次使用一个进程，每个进程使用一个数据库连接，这样就可以避免并发问题。
+
+
+## 进度条
+
+在 R 中，可以使用多个包来显示现代化的进度条，其中最常用的包包括：
+
+1. **`progressr`**：一个强大的进度条包，可以显示并行任务的进度条。
+2. **`progress`**：一个简单的、可高度自定义的进度条包。
+3. **`cli`**：可以结合进度条显示，也可以显示丰富的命令行界面元素。
+4. **`pbapply`**：适用于 `*apply` 系列函数的进度条集成。
+
+以下是这些包的基本用法：
+
+1. 使用 `progressr` 包
+
+`progressr` 包可以用来显示并行任务的进度条。以下是一个使用 `future` 和 `furrr` 包进行并行计算，并使用 `progressr` 显示进度的示例：
+
+```{r}
+#| eval: false
+library(future)
+library(furrr)
+library(progressr)
+
+plan(multisession, workers = 4)
+
+data <- 1:100
+
+time_consuming_task <- function(x) {
+  Sys.sleep(0.01)
+  return(x^2)
+}
+
+with_progress({
+  p <- progressor(steps = length(data))
+  
+  results <- future_map(data, function(x) {
+    result <- time_consuming_task(x)
+    p()
+    return(result)
+  })
+})
+```
+
+2. 使用 `progress` 包
+
+`progress` 包提供了简单易用的进度条，同时可以进行高度自定义。
+
+```{r}
+#| eval: false
+# 安装并加载 progress 包
+# install.packages("progress")
+library(progress)
+
+# 创建一个进度条
+pb = progress_bar$new(
+  format = "  downloading [:bar] :percent in :elapsed",
+  total = 100, clear = FALSE, width = 60
+)
+
+# 模拟一个任务并更新进度条
+for (i in 1:100) {
+  Sys.sleep(0.01)  # 模拟耗时任务
+  pb$tick()  # 每次循环时，进度条前进一格
+}
+```
+
+3. 使用 `cli` 包
+
+`cli` 包不仅提供进度条，还可以创建富文本命令行界面。
+
+```{r}
+#| eval: false
+# 安装并加载 cli 包
+# install.packages("cli")
+library(cli)
+
+# 创建并显示进度条
+pb = cli_progress_bar("Computing", 
+                      total = 100, 
+                      format = " {cli::pb_bar} {cli::pb_percent} ETA: {cli::pb_eta}")
+
+for (i in 1:100) {
+  Sys.sleep(0.05)  # 模拟任务
+  cli_progress_update()  # 更新进度条
+}
+
+message("Done!")
+cli_progress_done()  # 任务完成时清除进度条
+```
+
+4. 使用 `pbapply` 包
+  
+如果你经常使用 `apply` 系列函数，`pbapply` 包可以在它们的基础上添加进度条。
+
+```{r}
+#| eval: false
+# 安装并加载 pbapply 包
+#install.packages("pbapply")
+library(pbapply)
+
+# 使用 pbapply 中的 pbsapply 代替 sapply，自动添加进度条
+result = pbsapply(1:100, function(x) {
+  Sys.sleep(0.01)  # 模拟任务
+  x^2
+})
+```
+
+这几个包都提供了现代化的进度条显示，你可以根据自己的需求选择最合适的。
+
+
