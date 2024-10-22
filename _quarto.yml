@@ -30,6 +30,7 @@ book:
     - volcengine.qmd
     - research-summary.qmd
     - llama.qmd
+    - batch-async-task.qmd
     - object-detection-of-microfluidic-chip.qmd
     - gradio.qmd
     - references.qmd
