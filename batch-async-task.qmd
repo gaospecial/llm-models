@@ -265,15 +265,18 @@ library(DBI)
 library(RSQLite)
 
 # 创建 SQLite 数据库连接
-con = dbConnect(SQLite(), dbname = "cache.sqlite")
+con = dbConnect(SQLite(), dbname = tempfile())
 on.exit(dbDisconnect(con))
 
 # 将缓存数据存储在数据库中
 cached_function = memoise(my_function, cache = cache_dbi(con))
 
-cached_function(10)
-cached_function(10)
-cached_function(20)
+# 第一次运行
+system.time(cached_function(10))
+# 第二次运行
+system.time(cached_function(10))
+# 第三次运行
+system.time(cached_function(20))
 ```
 
 
