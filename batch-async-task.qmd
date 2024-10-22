@@ -266,7 +266,7 @@ library(RSQLite)
 
 # 创建 SQLite 数据库连接
 con = dbConnect(SQLite(), dbname = tempfile())
-on.exit(dbDisconnect(con))
+# on.exit(dbDisconnect(con))
 
 # 将缓存数据存储在数据库中
 cached_function = memoise(my_function, cache = cache_dbi(con))
