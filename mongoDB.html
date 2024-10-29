@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>18&nbsp; MongoDB 数据库 – 大模型平台和应用实例</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./object-detection-of-microfluidic-chip.html" rel="next">
+<link href="./batch-async-task.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./mongoDB.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">MongoDB 数据库</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">大模型平台和应用实例</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">设置运行环境</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hugging Face Model</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./moonshot-kimi.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Moonshot Kimi</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bigmodel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">智谱开放平台</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grounding-dino.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">DDS Could</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./langchain-chatchat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">本地知识库</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./openai.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">OpenAI</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./coze.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Coze</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./volcengine.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">火山引擎</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./research-summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">研究概要</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./llama.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Llama 3.2</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./batch-async-task.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">批量异步任务</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mongoDB.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">MongoDB 数据库</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./object-detection-of-microfluidic-chip.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gradio.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Gradio</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#选择-mongodb-的理由" id="toc-选择-mongodb-的理由" class="nav-link active" data-scroll-target="#选择-mongodb-的理由"><span class="header-section-number">18.1</span> 选择 MongoDB 的理由</a>
+  <ul class="collapse">
+  <li><a href="#可选的数据库架构" id="toc-可选的数据库架构" class="nav-link" data-scroll-target="#可选的数据库架构"><span class="header-section-number">18.1.1</span> 可选的数据库架构</a></li>
+  <li><a href="#mongodb-的并行查询能力" id="toc-mongodb-的并行查询能力" class="nav-link" data-scroll-target="#mongodb-的并行查询能力"><span class="header-section-number">18.1.2</span> MongoDB 的并行查询能力</a></li>
+  </ul></li>
+  <li><a href="#安装-mongodb" id="toc-安装-mongodb" class="nav-link" data-scroll-target="#安装-mongodb"><span class="header-section-number">18.2</span> 安装 MongoDB</a>
+  <ul class="collapse">
+  <li><a href="#使用-homebrew-安装-mongodb" id="toc-使用-homebrew-安装-mongodb" class="nav-link" data-scroll-target="#使用-homebrew-安装-mongodb"><span class="header-section-number">18.2.1</span> 使用 Homebrew 安装 MongoDB</a></li>
+  <li><a href="#启动-mongodb-服务" id="toc-启动-mongodb-服务" class="nav-link" data-scroll-target="#启动-mongodb-服务"><span class="header-section-number">18.2.2</span> 启动 MongoDB 服务</a></li>
+  <li><a href="#验证-mongodb-是否启动成功" id="toc-验证-mongodb-是否启动成功" class="nav-link" data-scroll-target="#验证-mongodb-是否启动成功"><span class="header-section-number">18.2.3</span> 验证 MongoDB 是否启动成功</a></li>
+  <li><a href="#停止-mongodb-服务" id="toc-停止-mongodb-服务" class="nav-link" data-scroll-target="#停止-mongodb-服务"><span class="header-section-number">18.2.4</span> 停止 MongoDB 服务</a></li>
+  <li><a href="#配置-mongodb-以支持远程连接可选" id="toc-配置-mongodb-以支持远程连接可选" class="nav-link" data-scroll-target="#配置-mongodb-以支持远程连接可选"><span class="header-section-number">18.2.5</span> 配置 MongoDB 以支持远程连接（可选）</a></li>
+  </ul></li>
+  <li><a href="#在阿里云配置-mongodb" id="toc-在阿里云配置-mongodb" class="nav-link" data-scroll-target="#在阿里云配置-mongodb"><span class="header-section-number">18.3</span> 在阿里云配置 MongoDB</a>
+  <ul class="collapse">
+  <li><a href="#安装-mongodb-1" id="toc-安装-mongodb-1" class="nav-link" data-scroll-target="#安装-mongodb-1"><span class="header-section-number">18.3.1</span> 安装 MongoDB</a></li>
+  <li><a href="#启动-mongodb-服务-1" id="toc-启动-mongodb-服务-1" class="nav-link" data-scroll-target="#启动-mongodb-服务-1"><span class="header-section-number">18.3.2</span> 启动 MongoDB 服务</a></li>
+  <li><a href="#配置-mongodb-对外服务" id="toc-配置-mongodb-对外服务" class="nav-link" data-scroll-target="#配置-mongodb-对外服务"><span class="header-section-number">18.3.3</span> 配置 MongoDB 对外服务</a></li>
+  <li><a href="#配置防火墙和安全组" id="toc-配置防火墙和安全组" class="nav-link" data-scroll-target="#配置防火墙和安全组"><span class="header-section-number">18.3.4</span> 配置防火墙和安全组</a></li>
+  <li><a href="#创建用户并启用认证可选" id="toc-创建用户并启用认证可选" class="nav-link" data-scroll-target="#创建用户并启用认证可选"><span class="header-section-number">18.3.5</span> 创建用户并启用认证（可选）</a></li>
+  </ul></li>
+  <li><a href="#在-python-中使用-mongodb" id="toc-在-python-中使用-mongodb" class="nav-link" data-scroll-target="#在-python-中使用-mongodb"><span class="header-section-number">18.4</span> 在 Python 中使用 MongoDB</a>
+  <ul class="collapse">
+  <li><a href="#连接-mongodb" id="toc-连接-mongodb" class="nav-link" data-scroll-target="#连接-mongodb"><span class="header-section-number">18.4.1</span> 连接 MongoDB</a></li>
+  <li><a href="#存储响应" id="toc-存储响应" class="nav-link" data-scroll-target="#存储响应"><span class="header-section-number">18.4.2</span> 存储响应</a></li>
+  <li><a href="#检索缓存响应" id="toc-检索缓存响应" class="nav-link" data-scroll-target="#检索缓存响应"><span class="header-section-number">18.4.3</span> 检索缓存响应</a></li>
+  <li><a href="#自动清理过期缓存" id="toc-自动清理过期缓存" class="nav-link" data-scroll-target="#自动清理过期缓存"><span class="header-section-number">18.4.4</span> 自动清理过期缓存</a></li>
+  <li><a href="#示例使用" id="toc-示例使用" class="nav-link" data-scroll-target="#示例使用"><span class="header-section-number">18.4.5</span> 示例使用</a></li>
+  <li><a href="#注意" id="toc-注意" class="nav-link" data-scroll-target="#注意"><span class="header-section-number">18.4.6</span> 注意</a></li>
+  </ul></li>
+  <li><a href="#在-r-中使用-mongodb" id="toc-在-r-中使用-mongodb" class="nav-link" data-scroll-target="#在-r-中使用-mongodb"><span class="header-section-number">18.5</span> 在 R 中使用 MongoDB</a>
+  <ul class="collapse">
+  <li><a href="#安装-mongolite-包" id="toc-安装-mongolite-包" class="nav-link" data-scroll-target="#安装-mongolite-包"><span class="header-section-number">18.5.1</span> 安装 <code>mongolite</code> 包</a></li>
+  <li><a href="#连接-mongodb-1" id="toc-连接-mongodb-1" class="nav-link" data-scroll-target="#连接-mongodb-1"><span class="header-section-number">18.5.2</span> 连接 MongoDB</a></li>
+  <li><a href="#插入数据" id="toc-插入数据" class="nav-link" data-scroll-target="#插入数据"><span class="header-section-number">18.5.3</span> 插入数据</a></li>
+  <li><a href="#查询数据" id="toc-查询数据" class="nav-link" data-scroll-target="#查询数据"><span class="header-section-number">18.5.4</span> 查询数据</a></li>
+  <li><a href="#更新数据" id="toc-更新数据" class="nav-link" data-scroll-target="#更新数据"><span class="header-section-number">18.5.5</span> 更新数据</a></li>
+  <li><a href="#删除数据" id="toc-删除数据" class="nav-link" data-scroll-target="#删除数据"><span class="header-section-number">18.5.6</span> 删除数据</a></li>
+  <li><a href="#断开连接" id="toc-断开连接" class="nav-link" data-scroll-target="#断开连接"><span class="header-section-number">18.5.7</span> 断开连接</a></li>
+  <li><a href="#示例总结" id="toc-示例总结" class="nav-link" data-scroll-target="#示例总结"><span class="header-section-number">18.5.8</span> 示例总结</a></li>
+  </ul></li>
+  <li><a href="#本地和阿里云-mongodb-的同步" id="toc-本地和阿里云-mongodb-的同步" class="nav-link" data-scroll-target="#本地和阿里云-mongodb-的同步"><span class="header-section-number">18.6</span> 本地和阿里云 MongoDB 的同步</a>
+  <ul class="collapse">
+  <li><a href="#使用-mongodump-和-mongorestore-手动同步" id="toc-使用-mongodump-和-mongorestore-手动同步" class="nav-link" data-scroll-target="#使用-mongodump-和-mongorestore-手动同步"><span class="header-section-number">18.6.1</span> 使用 <code>mongodump</code> 和 <code>mongorestore</code> 手动同步</a></li>
+  <li><a href="#使用-mongodb-同步工具-mongosync" id="toc-使用-mongodb-同步工具-mongosync" class="nav-link" data-scroll-target="#使用-mongodb-同步工具-mongosync"><span class="header-section-number">18.6.2</span> 使用 MongoDB 同步工具 <code>mongosync</code></a></li>
+  <li><a href="#设置-mongodb-的副本集replica-set" id="toc-设置-mongodb-的副本集replica-set" class="nav-link" data-scroll-target="#设置-mongodb-的副本集replica-set"><span class="header-section-number">18.6.3</span> 设置 MongoDB 的副本集（Replica Set）</a></li>
+  </ul></li>
+  <li><a href="#与-postgresql-的对比" id="toc-与-postgresql-的对比" class="nav-link" data-scroll-target="#与-postgresql-的对比"><span class="header-section-number">18.7</span> 与 PostgreSQL 的对比</a>
+  <ul class="collapse">
+  <li><a href="#创建缓存表" id="toc-创建缓存表" class="nav-link" data-scroll-target="#创建缓存表"><span class="header-section-number">18.7.1</span> 创建缓存表</a></li>
+  <li><a href="#在-python-中实现缓存存储和检索" id="toc-在-python-中实现缓存存储和检索" class="nav-link" data-scroll-target="#在-python-中实现缓存存储和检索"><span class="header-section-number">18.7.2</span> 在 Python 中实现缓存存储和检索</a></li>
+  <li><a href="#示例使用-1" id="toc-示例使用-1" class="nav-link" data-scroll-target="#示例使用-1"><span class="header-section-number">18.7.3</span> 示例使用</a></li>
+  <li><a href="#定期清理过期缓存" id="toc-定期清理过期缓存" class="nav-link" data-scroll-target="#定期清理过期缓存"><span class="header-section-number">18.7.4</span> 定期清理过期缓存</a></li>
+  <li><a href="#总结" id="toc-总结" class="nav-link" data-scroll-target="#总结"><span class="header-section-number">18.7.5</span> 总结</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">MongoDB 数据库</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>大语言模型的数据，都是以 JSON 格式存储的。选择合适的数据库，对于数据存储和查询的性能，至关重要。经过调研，MongoDB 是存储 JSON 格式数据的最佳选择。</p>
+<section id="选择-mongodb-的理由" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="选择-mongodb-的理由"><span class="header-section-number">18.1</span> 选择 MongoDB 的理由</h2>
+<section id="可选的数据库架构" class="level3" data-number="18.1.1">
+<h3 data-number="18.1.1" class="anchored" data-anchor-id="可选的数据库架构"><span class="header-section-number">18.1.1</span> 可选的数据库架构</h3>
+<p>对于缓存大模型的响应，推荐使用以下几种数据库，具体选择取决于对缓存效率、持久性、以及查询能力的需求：</p>
+<section id="redis" class="level4" data-number="18.1.1.1">
+<h4 data-number="18.1.1.1" class="anchored" data-anchor-id="redis"><span class="header-section-number">18.1.1.1</span> Redis</h4>
+<p>Redis 是一个<strong>内存数据库</strong>，速度快，适合实时缓存大模型的响应，尤其是在对数据进行频繁读写操作时。可以通过设置过期时间来自动清除旧数据，适合需要高吞吐和低延迟的场景。</p>
+<p><strong>优势：</strong></p>
+<ul>
+<li>高速缓存，响应时间极快。</li>
+<li>支持自动过期策略，有助于管理缓存空间。</li>
+<li>可以使用 RedisJSON 插件来更好地支持 JSON 数据结构。</li>
+</ul>
+</section>
+<section id="memcached" class="level4" data-number="18.1.1.2">
+<h4 data-number="18.1.1.2" class="anchored" data-anchor-id="memcached"><span class="header-section-number">18.1.1.2</span> Memcached</h4>
+<p>Memcached 是一种高性能的分布式<strong>内存缓存</strong>系统，适用于纯缓存用途。和 Redis 类似，它可以快速存取数据，但不支持持久化存储，适合在系统重启后可以清空缓存的场景。</p>
+<p><strong>优势：</strong></p>
+<ul>
+<li>极快的读写速度。</li>
+<li>占用内存小，适合简单的缓存场景。</li>
+<li>适用于缓存结构简单且无需持久化的响应。</li>
+</ul>
+</section>
+<section id="mongodb" class="level4" data-number="18.1.1.3">
+<h4 data-number="18.1.1.3" class="anchored" data-anchor-id="mongodb"><span class="header-section-number">18.1.1.3</span> MongoDB</h4>
+<p>如果希望缓存数据并在应用重启后保持响应数据持久化，MongoDB 是一个选择。它对 JSON 数据支持良好，且能持久化存储。适合那些不仅需要缓存，还希望在缓存中做简单数据分析和检索的场景。</p>
+<p><strong>优势：</strong></p>
+<ul>
+<li>JSON 存储和持久化能力。</li>
+<li>支持灵活查询和索引，适合做更复杂的检索。</li>
+</ul>
+</section>
+<section id="postgresql" class="level4" data-number="18.1.1.4">
+<h4 data-number="18.1.1.4" class="anchored" data-anchor-id="postgresql"><span class="header-section-number">18.1.1.4</span> PostgreSQL</h4>
+<p>PostgreSQL 也支持 JSON 数据格式，并且提供良好的查询和索引能力。如果需要持久性和较复杂的数据操作，也可以选择 PostgreSQL，但速度会稍逊于内存数据库。</p>
+</section>
+</section>
+<section id="mongodb-的并行查询能力" class="level3" data-number="18.1.2">
+<h3 data-number="18.1.2" class="anchored" data-anchor-id="mongodb-的并行查询能力"><span class="header-section-number">18.1.2</span> MongoDB 的并行查询能力</h3>
+<p>MongoDB 的并行查询能力较强，得益于其架构设计和内置的并行处理机制。以下是 MongoDB 并行查询能力的几个主要方面：</p>
+<section id="多线程处理" class="level4" data-number="18.1.2.1">
+<h4 data-number="18.1.2.1" class="anchored" data-anchor-id="多线程处理"><span class="header-section-number">18.1.2.1</span> 多线程处理</h4>
+<p>MongoDB 是多线程的，支持同时处理多个查询请求。当并发请求增加时，MongoDB 会自动为每个请求分配独立的线程，并行执行不同的查询，提升了处理效率。</p>
+</section>
+<section id="分片sharding支持" class="level4" data-number="18.1.2.2">
+<h4 data-number="18.1.2.2" class="anchored" data-anchor-id="分片sharding支持"><span class="header-section-number">18.1.2.2</span> 分片（Sharding）支持</h4>
+<p>对于大规模的数据集，MongoDB 提供了分片功能，将数据分散到多个服务器（分片）上。每个分片可以独立处理查询请求，从而显著提高查询性能。查询请求会并行分发到不同的分片上，减少了单一节点的压力，提升了系统的可扩展性和查询效率。</p>
+</section>
+<section id="索引优化" class="level4" data-number="18.1.2.3">
+<h4 data-number="18.1.2.3" class="anchored" data-anchor-id="索引优化"><span class="header-section-number">18.1.2.3</span> 索引优化</h4>
+<p>MongoDB 支持多种索引，包括单字段索引、复合索引、地理空间索引、全文索引等。合适的索引能够极大地优化查询性能，使查询操作更快地锁定目标数据。MongoDB 的并行查询在有适当索引的情况下表现会更好，因为索引能降低每个查询的处理时间，允许系统更快地响应并发请求。</p>
+</section>
+<section id="聚合管道的并行处理" class="level4" data-number="18.1.2.4">
+<h4 data-number="18.1.2.4" class="anchored" data-anchor-id="聚合管道的并行处理"><span class="header-section-number">18.1.2.4</span> 聚合管道的并行处理</h4>
+<p>MongoDB 的聚合框架能够高效地并行处理复杂的分析查询。聚合管道的每个阶段可以由不同的线程执行，并发处理数据流。尤其在分片集群中，MongoDB 会在各个分片上并行执行聚合查询，最后合并结果，显著提升查询速度。</p>
+</section>
+<section id="内存与锁管理优化" class="level4" data-number="18.1.2.5">
+<h4 data-number="18.1.2.5" class="anchored" data-anchor-id="内存与锁管理优化"><span class="header-section-number">18.1.2.5</span> 内存与锁管理优化</h4>
+<p>MongoDB 使用锁的粒度较小，最新版本（4.2 及更高）支持文档级锁，而不是数据库或集合级锁，这减少了并发查询时的锁争用。此外，MongoDB 会将常用数据缓存到内存中，并支持对内存进行并行管理，从而提升查询速度。</p>
+</section>
+<section id="写入与查询分离" class="level4" data-number="18.1.2.6">
+<h4 data-number="18.1.2.6" class="anchored" data-anchor-id="写入与查询分离"><span class="header-section-number">18.1.2.6</span> 写入与查询分离</h4>
+<p>在主从（Primary-Secondary）架构中，读写请求可以分离，写入操作只在主节点上进行，查询可以在从节点上执行。通过将查询请求分散到不同的从节点，可以提升并行查询能力。</p>
+</section>
+</section>
+</section>
+<section id="安装-mongodb" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="安装-mongodb"><span class="header-section-number">18.2</span> 安装 MongoDB</h2>
+<p>在 macOS 中部署 MongoDB 可以通过 Homebrew 安装并配置以快速启动服务。</p>
+<section id="使用-homebrew-安装-mongodb" class="level3" data-number="18.2.1">
+<h3 data-number="18.2.1" class="anchored" data-anchor-id="使用-homebrew-安装-mongodb"><span class="header-section-number">18.2.1</span> 使用 Homebrew 安装 MongoDB</h3>
+<p>首先，确保 macOS 上安装了 <a href="https://brew.sh/">Homebrew</a>。执行以下命令来安装 MongoDB 社区版：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> tap mongodb/brew</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install mongodb-community</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="启动-mongodb-服务" class="level3" data-number="18.2.2">
+<h3 data-number="18.2.2" class="anchored" data-anchor-id="启动-mongodb-服务"><span class="header-section-number">18.2.2</span> 启动 MongoDB 服务</h3>
+<p>安装完成后，可以通过以下命令启动 MongoDB 服务：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> services start mongodb/brew/mongodb-community</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>这将 MongoDB 作为服务启动，默认会监听本地的 <code>27017</code> 端口。</p>
+</section>
+<section id="验证-mongodb-是否启动成功" class="level3" data-number="18.2.3">
+<h3 data-number="18.2.3" class="anchored" data-anchor-id="验证-mongodb-是否启动成功"><span class="header-section-number">18.2.3</span> 验证 MongoDB 是否启动成功</h3>
+<p>可以使用以下命令检查 MongoDB 是否正在运行：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> services list</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>你还可以直接使用 MongoDB Shell (<code>mongosh</code>) 连接到本地的 MongoDB 实例：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mongosh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>如果成功连接，说明 MongoDB 已正常运行。</p>
+</section>
+<section id="停止-mongodb-服务" class="level3" data-number="18.2.4">
+<h3 data-number="18.2.4" class="anchored" data-anchor-id="停止-mongodb-服务"><span class="header-section-number">18.2.4</span> 停止 MongoDB 服务</h3>
+<p>如果需要停止 MongoDB 服务，可以执行以下命令：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> services stop mongodb/brew/mongodb-community</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="配置-mongodb-以支持远程连接可选" class="level3" data-number="18.2.5">
+<h3 data-number="18.2.5" class="anchored" data-anchor-id="配置-mongodb-以支持远程连接可选"><span class="header-section-number">18.2.5</span> 配置 MongoDB 以支持远程连接（可选）</h3>
+<p>默认情况下，MongoDB 只允许本地连接。如果你想配置 MongoDB 允许远程连接，可以修改 MongoDB 的配置文件：</p>
+<ol type="1">
+<li><p>打开 MongoDB 配置文件：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> /opt/homebrew/etc/mongod.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>找到 <code>bindIp</code> 字段，将其从 <code>127.0.0.1</code> 修改为 <code>0.0.0.0</code>：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">net</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bindIp</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.0.0.0</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">27017</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>保存文件并重新启动 MongoDB 服务：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> services restart mongodb/brew/mongodb-community</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>注意</strong>：开启远程连接可能会带来安全风险，建议在生产环境中配置防火墙或限制 IP 访问。</p>
+</blockquote>
+<p>以上步骤完成后，MongoDB 已成功在 macOS 上安装并部署。</p>
+</section>
+</section>
+<section id="在阿里云配置-mongodb" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="在阿里云配置-mongodb"><span class="header-section-number">18.3</span> 在阿里云配置 MongoDB</h2>
+<p>在阿里云 Ubuntu 服务器上安装 MongoDB 并对外提供服务的步骤如下：</p>
+<section id="安装-mongodb-1" class="level3" data-number="18.3.1">
+<h3 data-number="18.3.1" class="anchored" data-anchor-id="安装-mongodb-1"><span class="header-section-number">18.3.1</span> 安装 MongoDB</h3>
+<p>MongoDB 提供了官方的 APT 仓库，可以直接通过包管理器安装最新版本。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 更新本地包索引</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装依赖包</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> gnupg</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 添加 MongoDB 官方的公钥</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-qO</span> <span class="at">-</span> https://www.mongodb.org/static/pgp/server-6.0.asc <span class="kw">|</span> <span class="fu">sudo</span> apt-key add <span class="at">-</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建 MongoDB 的 APT 源文件</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse"</span> <span class="kw">|</span> <span class="fu">sudo</span> tee /etc/apt/sources.list.d/mongodb-org-6.0.list</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 更新本地包索引</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装 MongoDB</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> mongodb-org</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="启动-mongodb-服务-1" class="level3" data-number="18.3.2">
+<h3 data-number="18.3.2" class="anchored" data-anchor-id="启动-mongodb-服务-1"><span class="header-section-number">18.3.2</span> 启动 MongoDB 服务</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start mongod</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable mongod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="配置-mongodb-对外服务" class="level3" data-number="18.3.3">
+<h3 data-number="18.3.3" class="anchored" data-anchor-id="配置-mongodb-对外服务"><span class="header-section-number">18.3.3</span> 配置 MongoDB 对外服务</h3>
+<p>默认情况下，MongoDB 只监听本地接口 <code>127.0.0.1</code>。为了让 MongoDB 对外提供服务，需要修改其配置文件，监听所有网络接口。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑 MongoDB 配置文件</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nano /etc/mongod.conf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>找到 <code>bindIp</code> 字段，将其从 <code>127.0.0.1</code> 修改为 <code>0.0.0.0</code>：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># /etc/mongod.conf</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">net</span><span class="kw">:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">port</span><span class="kw">:</span><span class="at"> </span><span class="dv">27017</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bindIp</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.0.0.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>保存文件并重启 MongoDB 服务：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart mongod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="配置防火墙和安全组" class="level3" data-number="18.3.4">
+<h3 data-number="18.3.4" class="anchored" data-anchor-id="配置防火墙和安全组"><span class="header-section-number">18.3.4</span> 配置防火墙和安全组</h3>
+<section id="阿里云安全组配置" class="level4" data-number="18.3.4.1">
+<h4 data-number="18.3.4.1" class="anchored" data-anchor-id="阿里云安全组配置"><span class="header-section-number">18.3.4.1</span> 阿里云安全组配置</h4>
+<ol type="1">
+<li>登录到阿里云控制台。</li>
+<li>进入 <strong>云服务器 ECS</strong>，选择目标实例。</li>
+<li>进入 <strong>安全组</strong> 配置，添加一条规则：
+<ul>
+<li><strong>端口范围</strong>：27017</li>
+<li><strong>授权对象</strong>：设置为允许的 IP（如 <code>0.0.0.0/0</code> 表示允许所有 IP 访问），但建议仅对可信的 IP 开放。</li>
+</ul></li>
+</ol>
+</section>
+<section id="配置-ufw-防火墙可选" class="level4" data-number="18.3.4.2">
+<h4 data-number="18.3.4.2" class="anchored" data-anchor-id="配置-ufw-防火墙可选"><span class="header-section-number">18.3.4.2</span> 配置 UFW 防火墙（可选）</h4>
+<p>若启用了 UFW 防火墙，需要添加 MongoDB 端口允许规则：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> ufw allow 27017</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="创建用户并启用认证可选" class="level3" data-number="18.3.5">
+<h3 data-number="18.3.5" class="anchored" data-anchor-id="创建用户并启用认证可选"><span class="header-section-number">18.3.5</span> 创建用户并启用认证（可选）</h3>
+<p>为了提高安全性，可以为 MongoDB 创建用户并启用身份验证。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 进入 MongoDB shell</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">mongosh</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 切换到 admin 数据库</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">use</span> admin</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建管理员用户</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">db.createUser</span><span class="er">(</span><span class="kw">{</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="ex">user:</span> <span class="st">"admin"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">pwd:</span> <span class="st">"yourpassword"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">roles:</span> [{ role: <span class="st">"root"</span>, db: <span class="st">"admin"</span> }]</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="kw">})</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>在 <code>/etc/mongod.conf</code> 文件中启用身份验证，将 <code>security</code> 设置如下：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">security</span><span class="kw">:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">authorization</span><span class="kw">:</span><span class="at"> </span><span class="st">"enabled"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>重启 MongoDB：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart mongod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>连接时需要提供用户名和密码：</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mongosh</span> <span class="at">-u</span> admin <span class="at">-p</span> yourpassword <span class="at">--authenticationDatabase</span> admin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>完成以上步骤后，MongoDB 即可在阿里云 Ubuntu 服务器上对外提供服务。</p>
+</section>
+</section>
+<section id="在-python-中使用-mongodb" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="在-python-中使用-mongodb"><span class="header-section-number">18.4</span> 在 Python 中使用 MongoDB</h2>
+<p>以下是一个在 MongoDB 中存储和检索大模型响应的示例，假设你要存储模型输入和相应的输出，并支持简单的缓存逻辑（比如通过时间戳自动清理旧响应）。</p>
+<section id="连接-mongodb" class="level3" data-number="18.4.1">
+<h3 data-number="18.4.1" class="anchored" data-anchor-id="连接-mongodb"><span class="header-section-number">18.4.1</span> 连接 MongoDB</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pymongo <span class="im">import</span> MongoClient</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 连接到 MongoDB</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> MongoClient(<span class="st">"mongodb://localhost:27017/"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> client[<span class="st">"model_cache_db"</span>]</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>collection <span class="op">=</span> db[<span class="st">"responses"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="存储响应" class="level3" data-number="18.4.2">
+<h3 data-number="18.4.2" class="anchored" data-anchor-id="存储响应"><span class="header-section-number">18.4.2</span> 存储响应</h3>
+<p>我们可以定义一个函数，将模型的输入和响应输出存储到 MongoDB 中。可以选择存储一个过期时间戳，用于后续自动清理。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cache_response(input_data, response_data, ttl_hours<span class="op">=</span><span class="dv">24</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 创建记录</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    document <span class="op">=</span> {</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"input"</span>: input_data,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"response"</span>: response_data,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"timestamp"</span>: datetime.utcnow(),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"expiry"</span>: datetime.utcnow() <span class="op">+</span> timedelta(hours<span class="op">=</span>ttl_hours)  <span class="co"># 设置过期时间</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 插入到 MongoDB</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    collection.insert_one(document)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="检索缓存响应" class="level3" data-number="18.4.3">
+<h3 data-number="18.4.3" class="anchored" data-anchor-id="检索缓存响应"><span class="header-section-number">18.4.3</span> 检索缓存响应</h3>
+<p>查询 MongoDB 时，可以通过输入数据进行查找，并筛选出未过期的响应。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_cached_response(input_data):</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    document <span class="op">=</span> collection.find_one({</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"input"</span>: input_data,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"expiry"</span>: {<span class="st">"$gt"</span>: datetime.utcnow()}  <span class="co"># 确保未过期</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> document:</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> document[<span class="st">"response"</span>]</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span>  <span class="co"># 若未找到，返回 None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="自动清理过期缓存" class="level3" data-number="18.4.4">
+<h3 data-number="18.4.4" class="anchored" data-anchor-id="自动清理过期缓存"><span class="header-section-number">18.4.4</span> 自动清理过期缓存</h3>
+<p>可以定期执行清理，将已过期的记录删除：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean_expired_cache():</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> collection.delete_many({<span class="st">"expiry"</span>: {<span class="st">"$lt"</span>: datetime.utcnow()}})</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Deleted </span><span class="sc">{</span>result<span class="sc">.</span>deleted_count<span class="sc">}</span><span class="ss"> expired cache entries."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="示例使用" class="level3" data-number="18.4.5">
+<h3 data-number="18.4.5" class="anchored" data-anchor-id="示例使用"><span class="header-section-number">18.4.5</span> 示例使用</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> {<span class="st">"question"</span>: <span class="st">"What is AI?"</span>}</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>response_data <span class="op">=</span> {<span class="st">"answer"</span>: <span class="st">"AI stands for Artificial Intelligence."</span>}</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 缓存模型响应</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>cache_response(input_data, response_data)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 查询缓存</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>cached_response <span class="op">=</span> get_cached_response(input_data)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> cached_response:</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Cache hit:"</span>, cached_response)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Cache miss"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cache hit: {'answer': 'AI stands for Artificial Intelligence.'}</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 清理过期缓存</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>clean_expired_cache()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Deleted 0 expired cache entries.</code></pre>
+</div>
+</div>
+</section>
+<section id="注意" class="level3" data-number="18.4.6">
+<h3 data-number="18.4.6" class="anchored" data-anchor-id="注意"><span class="header-section-number">18.4.6</span> 注意</h3>
+<ul>
+<li><code>ttl_hours</code> 可以根据需求设置。</li>
+<li>可以定期调用 <code>clean_expired_cache</code> 来清理过期数据。</li>
+</ul>
+</section>
+</section>
+<section id="在-r-中使用-mongodb" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="在-r-中使用-mongodb"><span class="header-section-number">18.5</span> 在 R 中使用 MongoDB</h2>
+<p>在 R 中使用 MongoDB，可以借助 <code>mongolite</code> 包，该包提供了对 MongoDB 的直接连接和操作接口，并支持数据的插入、查询、更新、删除等功能。以下是一个基本的示例，展示如何在 R 中连接 MongoDB 并执行一些常见操作。</p>
+<section id="安装-mongolite-包" class="level3" data-number="18.5.1">
+<h3 data-number="18.5.1" class="anchored" data-anchor-id="安装-mongolite-包"><span class="header-section-number">18.5.1</span> 安装 <code>mongolite</code> 包</h3>
+<p>如果还没有安装 <code>mongolite</code> 包，可以通过以下命令安装：</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mongolite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="连接-mongodb-1" class="level3" data-number="18.5.2">
+<h3 data-number="18.5.2" class="anchored" data-anchor-id="连接-mongodb-1"><span class="header-section-number">18.5.2</span> 连接 MongoDB</h3>
+<p>假设 MongoDB 在本地运行，端口为默认的 <code>27017</code>，并且数据库名称为 <code>mydatabase</code>，集合名称为 <code>mycollection</code>。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mongolite)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 连接到 MongoDB 数据库</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>mongo_connection <span class="ot">=</span> <span class="fu">mongo</span>(</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">collection =</span> <span class="st">"mycollection"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">db =</span> <span class="st">"mydatabase"</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">"mongodb://localhost:27017"</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="插入数据" class="level3" data-number="18.5.3">
+<h3 data-number="18.5.3" class="anchored" data-anchor-id="插入数据"><span class="header-section-number">18.5.3</span> 插入数据</h3>
+<p>可以使用 JSON 字符串或 R 的 <code>data.frame</code> 直接插入数据。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 插入单条 JSON 数据</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">insert</span>(<span class="st">'{"name": "Alice", "age": 30, "city": "New York"}'</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 插入多条数据（使用 data.frame）</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Bob"</span>, <span class="st">"Charlie"</span>),</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">35</span>),</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">city =</span> <span class="fu">c</span>(<span class="st">"Los Angeles"</span>, <span class="st">"Chicago"</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">insert</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="查询数据" class="level3" data-number="18.5.4">
+<h3 data-number="18.5.4" class="anchored" data-anchor-id="查询数据"><span class="header-section-number">18.5.4</span> 查询数据</h3>
+<p>使用 <code>$find()</code> 方法可以查询数据，并将结果返回为 <code>data.frame</code>。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查询所有数据</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>all_data <span class="ot">=</span> mongo_connection<span class="sc">$</span><span class="fu">find</span>(<span class="st">'{}'</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(all_data)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 带条件查询</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>filtered_data <span class="ot">=</span> mongo_connection<span class="sc">$</span><span class="fu">find</span>(<span class="st">'{"age": {"$gt": 30}}'</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(filtered_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="更新数据" class="level3" data-number="18.5.5">
+<h3 data-number="18.5.5" class="anchored" data-anchor-id="更新数据"><span class="header-section-number">18.5.5</span> 更新数据</h3>
+<p>可以使用 <code>$update()</code> 方法更新文档，传入查询条件和更新内容。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 将 name 为 "Alice" 的 age 更新为 31</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">update</span>(</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'{"name": "Alice"}'</span>, </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">'{"$set": {"age": 31}}'</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="删除数据" class="level3" data-number="18.5.6">
+<h3 data-number="18.5.6" class="anchored" data-anchor-id="删除数据"><span class="header-section-number">18.5.6</span> 删除数据</h3>
+<p>使用 <code>$remove()</code> 方法删除指定条件的数据。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 删除 age 小于 30 的文档</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">remove</span>(<span class="st">'{"age": {"$lt": 30}}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="断开连接" class="level3" data-number="18.5.7">
+<h3 data-number="18.5.7" class="anchored" data-anchor-id="断开连接"><span class="header-section-number">18.5.7</span> 断开连接</h3>
+<p>操作完成后，断开连接。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(mongo_connection)  <span class="co"># 释放连接资源</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="示例总结" class="level3" data-number="18.5.8">
+<h3 data-number="18.5.8" class="anchored" data-anchor-id="示例总结"><span class="header-section-number">18.5.8</span> 示例总结</h3>
+<p>综上，以下代码演示了完整的操作流程：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mongolite)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 连接 MongoDB</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>mongo_connection <span class="ot">=</span> <span class="fu">mongo</span>(</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">collection =</span> <span class="st">"mycollection"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">db =</span> <span class="st">"mydatabase"</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">"mongodb://localhost:27017"</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 插入数据</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">insert</span>(<span class="st">'{"name": "Alice", "age": 30, "city": "New York"}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 6
+ $ nInserted  : int 1
+ $ nMatched   : int 0
+ $ nModified  : int 0
+ $ nRemoved   : int 0
+ $ nUpserted  : int 0
+ $ writeErrors: list()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"Bob"</span>, <span class="st">"Charlie"</span>),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">35</span>),</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">city =</span> <span class="fu">c</span>(<span class="st">"Los Angeles"</span>, <span class="st">"Chicago"</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">insert</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 5
+ $ nInserted  : num 2
+ $ nMatched   : num 0
+ $ nRemoved   : num 0
+ $ nUpserted  : num 0
+ $ writeErrors: list()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查询数据</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mongo_connection<span class="sc">$</span><span class="fu">find</span>(<span class="st">'{}'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     name age        city
+1   Alice  31    New York
+2 Charlie  35     Chicago
+3   Alice  30    New York
+4     Bob  25 Los Angeles
+5 Charlie  35     Chicago</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 更新数据</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">update</span>(<span class="st">'{"name": "Alice"}'</span>, <span class="st">'{"$set": {"age": 31}}'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 3
+ $ modifiedCount: int 0
+ $ matchedCount : int 1
+ $ upsertedCount: int 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 删除数据</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>mongo_connection<span class="sc">$</span><span class="fu">remove</span>(<span class="st">'{"age": {"$lt": 30}}'</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 断开连接</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(mongo_connection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>这种方法可以让 R 用户便捷地在 MongoDB 上存储、查询和更新数据。</p>
+</section>
+</section>
+<section id="本地和阿里云-mongodb-的同步" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="本地和阿里云-mongodb-的同步"><span class="header-section-number">18.6</span> 本地和阿里云 MongoDB 的同步</h2>
+<p>要将本地的 MongoDB 数据库与阿里云服务器上的 MongoDB 实现同步，通常可以使用以下几种方法：</p>
+<section id="使用-mongodump-和-mongorestore-手动同步" class="level3" data-number="18.6.1">
+<h3 data-number="18.6.1" class="anchored" data-anchor-id="使用-mongodump-和-mongorestore-手动同步"><span class="header-section-number">18.6.1</span> 使用 <code>mongodump</code> 和 <code>mongorestore</code> 手动同步</h3>
+<p>这是最简单的一种方式，通过导出和导入数据来实现同步。</p>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li><p><strong>在本地主机上导出数据</strong>：</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mongodump</span> <span class="at">--host</span> localhost <span class="at">--port</span> 27017 <span class="at">--out</span> /path/to/dump</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>这会在指定的路径下生成数据库的备份文件。</p></li>
+<li><p><strong>将备份文件上传到阿里云服务器</strong>：</p>
+<p>使用 <code>scp</code> 命令将备份文件夹传输到阿里云服务器：</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> /path/to/dump username@aliyun_ip:/path/on/server</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>在阿里云服务器上导入数据</strong>：</p>
+<p>连接到阿里云服务器后，使用 <code>mongorestore</code> 命令将数据导入 MongoDB：</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mongorestore</span> <span class="at">--host</span> localhost <span class="at">--port</span> 27017 /path/on/server/dump</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>这种方法适合小规模的数据同步。如果数据量较大或同步频繁，不建议使用此方法。</p>
+</section>
+<section id="使用-mongodb-同步工具-mongosync" class="level3" data-number="18.6.2">
+<h3 data-number="18.6.2" class="anchored" data-anchor-id="使用-mongodb-同步工具-mongosync"><span class="header-section-number">18.6.2</span> 使用 MongoDB 同步工具 <code>mongosync</code></h3>
+<p><code>mongosync</code> 是一个专门用于同步不同 MongoDB 实例的开源工具。它支持实时同步，并适用于数据量较大且需要持续同步的场景。</p>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li><p>在本地和阿里云 MongoDB 服务器上安装 <code>mongosync</code>。</p></li>
+<li><p>配置 <code>mongosync</code> 的源和目标数据库，在本地 MongoDB 上设置为源，阿里云 MongoDB 为目标。</p></li>
+<li><p>启动 <code>mongosync</code> 进行同步。具体的命令和配置可以参考 <code>mongosync</code> 的官方文档。</p></li>
+</ol>
+</section>
+<section id="设置-mongodb-的副本集replica-set" class="level3" data-number="18.6.3">
+<h3 data-number="18.6.3" class="anchored" data-anchor-id="设置-mongodb-的副本集replica-set"><span class="header-section-number">18.6.3</span> 设置 MongoDB 的副本集（Replica Set）</h3>
+<p>如果需要长期的、实时的同步，推荐使用 MongoDB 的 <strong>副本集</strong> 功能。</p>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li><p><strong>配置本地主机和阿里云 MongoDB 为副本集成员</strong>：</p>
+<ul>
+<li><p>修改本地主机和阿里云服务器上的 MongoDB 配置文件 <code>/etc/mongod.conf</code>，设置副本集名称。例如：</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">replication</span><span class="kw">:</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">replSetName</span><span class="kw">:</span><span class="at"> </span><span class="st">"myReplicaSet"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ul></li>
+<li><p><strong>初始化副本集</strong>：</p>
+<p>在任意一个 MongoDB 实例上启动副本集：</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mongosh</span> <span class="at">--host</span> localhost <span class="at">--port</span> 27017</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rs.initiate()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>添加成员</strong>：</p>
+<p>将本地主机和阿里云 MongoDB 作为副本集成员添加。可以在 MongoDB shell 中执行：</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>rs<span class="op">.</span><span class="fu">add</span>(<span class="st">"阿里云服务器IP:27017"</span>)  <span class="co">// 阿里云服务器的MongoDB实例</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>rs<span class="op">.</span><span class="fu">add</span>(<span class="st">"localhost:27017"</span>)        <span class="co">// 本地的MongoDB实例</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>验证副本集同步</strong>：</p>
+<p>副本集启动后，MongoDB 会自动保持各个节点的数据同步。</p></li>
+</ol>
+</section>
+</section>
+<section id="与-postgresql-的对比" class="level2" data-number="18.7">
+<h2 data-number="18.7" class="anchored" data-anchor-id="与-postgresql-的对比"><span class="header-section-number">18.7</span> 与 PostgreSQL 的对比</h2>
+<p>使用 PostgreSQL 存储大语言模型的响应，以便作为缓存，可以按照以下步骤实现。我们可以创建一个包含请求数据和模型响应的表，同时记录创建时间，以便后续根据时间判断缓存是否过期。</p>
+<section id="创建缓存表" class="level3" data-number="18.7.1">
+<h3 data-number="18.7.1" class="anchored" data-anchor-id="创建缓存表"><span class="header-section-number">18.7.1</span> 创建缓存表</h3>
+<p>我们首先创建一个表来存储模型请求和响应，结构包含输入参数、响应内容、创建时间等字段。</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> model_cache (</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    input_hash <span class="dt">VARCHAR</span>(<span class="dv">64</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    request_data JSONB <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    response_data JSONB <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    created_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>);</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- 为 input_hash 字段创建唯一索引，用于快速查找缓存</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">UNIQUE</span> <span class="kw">INDEX</span> idx_input_hash <span class="kw">ON</span> model_cache (input_hash);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>input_hash</code>：对输入内容进行哈希，避免因输入内容重复而浪费存储。</li>
+<li><code>request_data</code>：存储模型的输入请求，以 JSON 格式存储。</li>
+<li><code>response_data</code>：存储模型的响应内容。</li>
+<li><code>created_at</code>：记录数据创建的时间，用于设置缓存过期策略。</li>
+</ul>
+</section>
+<section id="在-python-中实现缓存存储和检索" class="level3" data-number="18.7.2">
+<h3 data-number="18.7.2" class="anchored" data-anchor-id="在-python-中实现缓存存储和检索"><span class="header-section-number">18.7.2</span> 在 Python 中实现缓存存储和检索</h3>
+<p>以下是一个基于 Python 的示例，假设使用 <code>psycopg2</code> 库连接 PostgreSQL。此示例会在接收到新的请求时，先检查缓存，若未命中缓存则存储新响应。</p>
+<section id="导入必要库" class="level4" data-number="18.7.2.1">
+<h4 data-number="18.7.2.1" class="anchored" data-anchor-id="导入必要库"><span class="header-section-number">18.7.2.1</span> 导入必要库</h4>
+<div class="sourceCode" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> psycopg2</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> hashlib</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="设置数据库连接" class="level4" data-number="18.7.2.2">
+<h4 data-number="18.7.2.2" class="anchored" data-anchor-id="设置数据库连接"><span class="header-section-number">18.7.2.2</span> 设置数据库连接</h4>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 连接 PostgreSQL</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>connection <span class="op">=</span> psycopg2.<span class="ex">connect</span>(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    host<span class="op">=</span><span class="st">"your_postgresql_host"</span>,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    database<span class="op">=</span><span class="st">"your_database"</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    user<span class="op">=</span><span class="st">"your_user"</span>,</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    password<span class="op">=</span><span class="st">"your_password"</span></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="哈希生成函数" class="level4" data-number="18.7.2.3">
+<h4 data-number="18.7.2.3" class="anchored" data-anchor-id="哈希生成函数"><span class="header-section-number">18.7.2.3</span> 哈希生成函数</h4>
+<p>为输入请求生成唯一的哈希值，用于缓存键值。</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_hash(input_data):</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> hashlib.sha256(json.dumps(input_data, sort_keys<span class="op">=</span><span class="va">True</span>).encode()).hexdigest()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="缓存存储函数" class="level4" data-number="18.7.2.4">
+<h4 data-number="18.7.2.4" class="anchored" data-anchor-id="缓存存储函数"><span class="header-section-number">18.7.2.4</span> 缓存存储函数</h4>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cache_response(input_data, response_data, ttl_hours<span class="op">=</span><span class="dv">24</span>):</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    input_hash <span class="op">=</span> generate_hash(input_data)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> connection.cursor()</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 插入或更新响应数据</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">"""</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="st">        INSERT INTO model_cache (input_hash, request_data, response_data, created_at)</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="st">        VALUES (</span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">, </span><span class="sc">%s</span><span class="st">, NOW())</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a><span class="st">        ON CONFLICT (input_hash) DO UPDATE</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a><span class="st">        SET response_data = EXCLUDED.response_data,</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="st">            created_at = NOW();</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span>, (input_hash, json.dumps(input_data), json.dumps(response_data)))</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>    connection.commit()</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>    cursor.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="缓存查询函数" class="level4" data-number="18.7.2.5">
+<h4 data-number="18.7.2.5" class="anchored" data-anchor-id="缓存查询函数"><span class="header-section-number">18.7.2.5</span> 缓存查询函数</h4>
+<p>在接收请求时，可以先检查缓存，若命中则直接返回缓存的响应。</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_cached_response(input_data, ttl_hours<span class="op">=</span><span class="dv">24</span>):</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    input_hash <span class="op">=</span> generate_hash(input_data)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    cursor <span class="op">=</span> connection.cursor()</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 计算过期时间</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    ttl_time <span class="op">=</span> datetime.utcnow() <span class="op">-</span> timedelta(hours<span class="op">=</span>ttl_hours)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    cursor.execute(<span class="st">"""</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="st">        SELECT response_data FROM model_cache</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="st">        WHERE input_hash = </span><span class="sc">%s</span><span class="st"> AND created_at &gt; </span><span class="sc">%s</span><span class="st">;</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="st">    """</span>, (input_hash, ttl_time))</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> cursor.fetchone()</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>    cursor.close()</span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> result:</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> json.loads(result[<span class="dv">0</span>])  <span class="co"># 返回缓存的响应数据</span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span>  <span class="co"># 缓存未命中或已过期</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="示例使用-1" class="level3" data-number="18.7.3">
+<h3 data-number="18.7.3" class="anchored" data-anchor-id="示例使用-1"><span class="header-section-number">18.7.3</span> 示例使用</h3>
+<div class="sourceCode" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 模拟输入请求数据和模型响应</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> {<span class="st">"question"</span>: <span class="st">"What is AI?"</span>}</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>response_data <span class="op">=</span> {<span class="st">"answer"</span>: <span class="st">"AI stands for Artificial Intelligence."</span>}</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 存储模型响应</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>cache_response(input_data, response_data)</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 查询缓存</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>cached_response <span class="op">=</span> get_cached_response(input_data)</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> cached_response:</span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Cache hit:"</span>, cached_response)</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Cache miss"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="定期清理过期缓存" class="level3" data-number="18.7.4">
+<h3 data-number="18.7.4" class="anchored" data-anchor-id="定期清理过期缓存"><span class="header-section-number">18.7.4</span> 定期清理过期缓存</h3>
+<p>可以创建一个定期任务，清除超过指定时间的缓存数据。</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> model_cache <span class="kw">WHERE</span> created_at <span class="op">&lt;</span> NOW() <span class="op">-</span> <span class="dt">INTERVAL</span> <span class="st">'24 hours'</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="总结" class="level3" data-number="18.7.5">
+<h3 data-number="18.7.5" class="anchored" data-anchor-id="总结"><span class="header-section-number">18.7.5</span> 总结</h3>
+<p>这种方法可以让 PostgreSQL 有效地作为大语言模型的缓存存储，避免重复计算和存储不必要的数据。</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./batch-async-task.html" class="pagination-link" aria-label="批量异步任务">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">批量异步任务</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./object-detection-of-microfluidic-chip.html" class="pagination-link" aria-label="检测微流控芯片中的物体">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">检测微流控芯片中的物体</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

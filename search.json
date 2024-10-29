@@ -720,73 +720,153 @@
     ]
   },
   {
+    "objectID": "mongoDB.html",
+    "href": "mongoDB.html",
+    "title": "18  MongoDB 数据库",
+    "section": "",
+    "text": "18.1 选择 MongoDB 的理由",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#选择-mongodb-的理由",
+    "href": "mongoDB.html#选择-mongodb-的理由",
+    "title": "18  MongoDB 数据库",
+    "section": "",
+    "text": "18.1.1 可选的数据库架构\n对于缓存大模型的响应，推荐使用以下几种数据库，具体选择取决于对缓存效率、持久性、以及查询能力的需求：\n\n18.1.1.1 Redis\nRedis 是一个内存数据库，速度快，适合实时缓存大模型的响应，尤其是在对数据进行频繁读写操作时。可以通过设置过期时间来自动清除旧数据，适合需要高吞吐和低延迟的场景。\n优势：\n\n高速缓存，响应时间极快。\n支持自动过期策略，有助于管理缓存空间。\n可以使用 RedisJSON 插件来更好地支持 JSON 数据结构。\n\n\n\n18.1.1.2 Memcached\nMemcached 是一种高性能的分布式内存缓存系统，适用于纯缓存用途。和 Redis 类似，它可以快速存取数据，但不支持持久化存储，适合在系统重启后可以清空缓存的场景。\n优势：\n\n极快的读写速度。\n占用内存小，适合简单的缓存场景。\n适用于缓存结构简单且无需持久化的响应。\n\n\n\n18.1.1.3 MongoDB\n如果希望缓存数据并在应用重启后保持响应数据持久化，MongoDB 是一个选择。它对 JSON 数据支持良好，且能持久化存储。适合那些不仅需要缓存，还希望在缓存中做简单数据分析和检索的场景。\n优势：\n\nJSON 存储和持久化能力。\n支持灵活查询和索引，适合做更复杂的检索。\n\n\n\n18.1.1.4 PostgreSQL\nPostgreSQL 也支持 JSON 数据格式，并且提供良好的查询和索引能力。如果需要持久性和较复杂的数据操作，也可以选择 PostgreSQL，但速度会稍逊于内存数据库。\n\n\n\n18.1.2 MongoDB 的并行查询能力\nMongoDB 的并行查询能力较强，得益于其架构设计和内置的并行处理机制。以下是 MongoDB 并行查询能力的几个主要方面：\n\n18.1.2.1 多线程处理\nMongoDB 是多线程的，支持同时处理多个查询请求。当并发请求增加时，MongoDB 会自动为每个请求分配独立的线程，并行执行不同的查询，提升了处理效率。\n\n\n18.1.2.2 分片（Sharding）支持\n对于大规模的数据集，MongoDB 提供了分片功能，将数据分散到多个服务器（分片）上。每个分片可以独立处理查询请求，从而显著提高查询性能。查询请求会并行分发到不同的分片上，减少了单一节点的压力，提升了系统的可扩展性和查询效率。\n\n\n18.1.2.3 索引优化\nMongoDB 支持多种索引，包括单字段索引、复合索引、地理空间索引、全文索引等。合适的索引能够极大地优化查询性能，使查询操作更快地锁定目标数据。MongoDB 的并行查询在有适当索引的情况下表现会更好，因为索引能降低每个查询的处理时间，允许系统更快地响应并发请求。\n\n\n18.1.2.4 聚合管道的并行处理\nMongoDB 的聚合框架能够高效地并行处理复杂的分析查询。聚合管道的每个阶段可以由不同的线程执行，并发处理数据流。尤其在分片集群中，MongoDB 会在各个分片上并行执行聚合查询，最后合并结果，显著提升查询速度。\n\n\n18.1.2.5 内存与锁管理优化\nMongoDB 使用锁的粒度较小，最新版本（4.2 及更高）支持文档级锁，而不是数据库或集合级锁，这减少了并发查询时的锁争用。此外，MongoDB 会将常用数据缓存到内存中，并支持对内存进行并行管理，从而提升查询速度。\n\n\n18.1.2.6 写入与查询分离\n在主从（Primary-Secondary）架构中，读写请求可以分离，写入操作只在主节点上进行，查询可以在从节点上执行。通过将查询请求分散到不同的从节点，可以提升并行查询能力。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#安装-mongodb",
+    "href": "mongoDB.html#安装-mongodb",
+    "title": "18  MongoDB 数据库",
+    "section": "18.2 安装 MongoDB",
+    "text": "18.2 安装 MongoDB\n在 macOS 中部署 MongoDB 可以通过 Homebrew 安装并配置以快速启动服务。\n\n18.2.1 使用 Homebrew 安装 MongoDB\n首先，确保 macOS 上安装了 Homebrew。执行以下命令来安装 MongoDB 社区版：\nbrew tap mongodb/brew\nbrew install mongodb-community\n\n\n18.2.2 启动 MongoDB 服务\n安装完成后，可以通过以下命令启动 MongoDB 服务：\nbrew services start mongodb/brew/mongodb-community\n这将 MongoDB 作为服务启动，默认会监听本地的 27017 端口。\n\n\n18.2.3 验证 MongoDB 是否启动成功\n可以使用以下命令检查 MongoDB 是否正在运行：\nbrew services list\n你还可以直接使用 MongoDB Shell (mongosh) 连接到本地的 MongoDB 实例：\nmongosh\n如果成功连接，说明 MongoDB 已正常运行。\n\n\n18.2.4 停止 MongoDB 服务\n如果需要停止 MongoDB 服务，可以执行以下命令：\nbrew services stop mongodb/brew/mongodb-community\n\n\n18.2.5 配置 MongoDB 以支持远程连接（可选）\n默认情况下，MongoDB 只允许本地连接。如果你想配置 MongoDB 允许远程连接，可以修改 MongoDB 的配置文件：\n\n打开 MongoDB 配置文件：\nnano /opt/homebrew/etc/mongod.conf\n找到 bindIp 字段，将其从 127.0.0.1 修改为 0.0.0.0：\nnet:\n  bindIp: 0.0.0.0\n  port: 27017\n保存文件并重新启动 MongoDB 服务：\nbrew services restart mongodb/brew/mongodb-community\n\n\n注意：开启远程连接可能会带来安全风险，建议在生产环境中配置防火墙或限制 IP 访问。\n\n以上步骤完成后，MongoDB 已成功在 macOS 上安装并部署。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#在阿里云配置-mongodb",
+    "href": "mongoDB.html#在阿里云配置-mongodb",
+    "title": "18  MongoDB 数据库",
+    "section": "18.3 在阿里云配置 MongoDB",
+    "text": "18.3 在阿里云配置 MongoDB\n在阿里云 Ubuntu 服务器上安装 MongoDB 并对外提供服务的步骤如下：\n\n18.3.1 安装 MongoDB\nMongoDB 提供了官方的 APT 仓库，可以直接通过包管理器安装最新版本。\n# 更新本地包索引\nsudo apt update\n\n# 安装依赖包\nsudo apt install -y gnupg\n\n# 添加 MongoDB 官方的公钥\nwget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -\n\n# 创建 MongoDB 的 APT 源文件\necho \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list\n\n# 更新本地包索引\nsudo apt update\n\n# 安装 MongoDB\nsudo apt install -y mongodb-org\n\n\n18.3.2 启动 MongoDB 服务\nsudo systemctl start mongod\nsudo systemctl enable mongod\n\n\n18.3.3 配置 MongoDB 对外服务\n默认情况下，MongoDB 只监听本地接口 127.0.0.1。为了让 MongoDB 对外提供服务，需要修改其配置文件，监听所有网络接口。\n# 编辑 MongoDB 配置文件\nsudo nano /etc/mongod.conf\n找到 bindIp 字段，将其从 127.0.0.1 修改为 0.0.0.0：\n# /etc/mongod.conf\nnet:\n  port: 27017\n  bindIp: 0.0.0.0\n保存文件并重启 MongoDB 服务：\nsudo systemctl restart mongod\n\n\n18.3.4 配置防火墙和安全组\n\n18.3.4.1 阿里云安全组配置\n\n登录到阿里云控制台。\n进入 云服务器 ECS，选择目标实例。\n进入 安全组 配置，添加一条规则：\n\n端口范围：27017\n授权对象：设置为允许的 IP（如 0.0.0.0/0 表示允许所有 IP 访问），但建议仅对可信的 IP 开放。\n\n\n\n\n18.3.4.2 配置 UFW 防火墙（可选）\n若启用了 UFW 防火墙，需要添加 MongoDB 端口允许规则：\nsudo ufw allow 27017\n\n\n\n18.3.5 创建用户并启用认证（可选）\n为了提高安全性，可以为 MongoDB 创建用户并启用身份验证。\n# 进入 MongoDB shell\nmongosh\n\n# 切换到 admin 数据库\nuse admin\n\n# 创建管理员用户\ndb.createUser({\n  user: \"admin\",\n  pwd: \"yourpassword\",\n  roles: [{ role: \"root\", db: \"admin\" }]\n})\n在 /etc/mongod.conf 文件中启用身份验证，将 security 设置如下：\nsecurity:\n  authorization: \"enabled\"\n重启 MongoDB：\nsudo systemctl restart mongod\n连接时需要提供用户名和密码：\nmongosh -u admin -p yourpassword --authenticationDatabase admin\n完成以上步骤后，MongoDB 即可在阿里云 Ubuntu 服务器上对外提供服务。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#在-python-中使用-mongodb",
+    "href": "mongoDB.html#在-python-中使用-mongodb",
+    "title": "18  MongoDB 数据库",
+    "section": "18.4 在 Python 中使用 MongoDB",
+    "text": "18.4 在 Python 中使用 MongoDB\n以下是一个在 MongoDB 中存储和检索大模型响应的示例，假设你要存储模型输入和相应的输出，并支持简单的缓存逻辑（比如通过时间戳自动清理旧响应）。\n\n18.4.1 连接 MongoDB\n\nfrom pymongo import MongoClient\nfrom datetime import datetime, timedelta\n\n# 连接到 MongoDB\nclient = MongoClient(\"mongodb://localhost:27017/\")\ndb = client[\"model_cache_db\"]\ncollection = db[\"responses\"]\n\n\n\n18.4.2 存储响应\n我们可以定义一个函数，将模型的输入和响应输出存储到 MongoDB 中。可以选择存储一个过期时间戳，用于后续自动清理。\n\ndef cache_response(input_data, response_data, ttl_hours=24):\n    # 创建记录\n    document = {\n        \"input\": input_data,\n        \"response\": response_data,\n        \"timestamp\": datetime.utcnow(),\n        \"expiry\": datetime.utcnow() + timedelta(hours=ttl_hours)  # 设置过期时间\n    }\n    # 插入到 MongoDB\n    collection.insert_one(document)\n\n\n\n18.4.3 检索缓存响应\n查询 MongoDB 时，可以通过输入数据进行查找，并筛选出未过期的响应。\n\ndef get_cached_response(input_data):\n    document = collection.find_one({\n        \"input\": input_data,\n        \"expiry\": {\"$gt\": datetime.utcnow()}  # 确保未过期\n    })\n    if document:\n        return document[\"response\"]\n    return None  # 若未找到，返回 None\n\n\n\n18.4.4 自动清理过期缓存\n可以定期执行清理，将已过期的记录删除：\n\ndef clean_expired_cache():\n    result = collection.delete_many({\"expiry\": {\"$lt\": datetime.utcnow()}})\n    print(f\"Deleted {result.deleted_count} expired cache entries.\")\n\n\n\n18.4.5 示例使用\n\ninput_data = {\"question\": \"What is AI?\"}\nresponse_data = {\"answer\": \"AI stands for Artificial Intelligence.\"}\n\n# 缓存模型响应\ncache_response(input_data, response_data)\n\n# 查询缓存\ncached_response = get_cached_response(input_data)\nif cached_response:\n    print(\"Cache hit:\", cached_response)\nelse:\n    print(\"Cache miss\")\n\nCache hit: {'answer': 'AI stands for Artificial Intelligence.'}\n\n# 清理过期缓存\nclean_expired_cache()\n\nDeleted 0 expired cache entries.\n\n\n\n\n18.4.6 注意\n\nttl_hours 可以根据需求设置。\n可以定期调用 clean_expired_cache 来清理过期数据。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#在-r-中使用-mongodb",
+    "href": "mongoDB.html#在-r-中使用-mongodb",
+    "title": "18  MongoDB 数据库",
+    "section": "18.5 在 R 中使用 MongoDB",
+    "text": "18.5 在 R 中使用 MongoDB\n在 R 中使用 MongoDB，可以借助 mongolite 包，该包提供了对 MongoDB 的直接连接和操作接口，并支持数据的插入、查询、更新、删除等功能。以下是一个基本的示例，展示如何在 R 中连接 MongoDB 并执行一些常见操作。\n\n18.5.1 安装 mongolite 包\n如果还没有安装 mongolite 包，可以通过以下命令安装：\ninstall.packages(\"mongolite\")\n\n\n18.5.2 连接 MongoDB\n假设 MongoDB 在本地运行，端口为默认的 27017，并且数据库名称为 mydatabase，集合名称为 mycollection。\nlibrary(mongolite)\n\n# 连接到 MongoDB 数据库\nmongo_connection = mongo(\n  collection = \"mycollection\",\n  db = \"mydatabase\",\n  url = \"mongodb://localhost:27017\"\n)\n\n\n18.5.3 插入数据\n可以使用 JSON 字符串或 R 的 data.frame 直接插入数据。\n# 插入单条 JSON 数据\nmongo_connection$insert('{\"name\": \"Alice\", \"age\": 30, \"city\": \"New York\"}')\n\n# 插入多条数据（使用 data.frame）\ndata = data.frame(\n  name = c(\"Bob\", \"Charlie\"),\n  age = c(25, 35),\n  city = c(\"Los Angeles\", \"Chicago\")\n)\nmongo_connection$insert(data)\n\n\n18.5.4 查询数据\n使用 $find() 方法可以查询数据，并将结果返回为 data.frame。\n# 查询所有数据\nall_data = mongo_connection$find('{}')\nprint(all_data)\n\n# 带条件查询\nfiltered_data = mongo_connection$find('{\"age\": {\"$gt\": 30}}')\nprint(filtered_data)\n\n\n18.5.5 更新数据\n可以使用 $update() 方法更新文档，传入查询条件和更新内容。\n# 将 name 为 \"Alice\" 的 age 更新为 31\nmongo_connection$update(\n  '{\"name\": \"Alice\"}', \n  '{\"$set\": {\"age\": 31}}'\n)\n\n\n18.5.6 删除数据\n使用 $remove() 方法删除指定条件的数据。\n# 删除 age 小于 30 的文档\nmongo_connection$remove('{\"age\": {\"$lt\": 30}}')\n\n\n18.5.7 断开连接\n操作完成后，断开连接。\nrm(mongo_connection)  # 释放连接资源\n\n\n18.5.8 示例总结\n综上，以下代码演示了完整的操作流程：\n\nlibrary(mongolite)\n\n# 连接 MongoDB\nmongo_connection = mongo(\n  collection = \"mycollection\",\n  db = \"mydatabase\",\n  url = \"mongodb://localhost:27017\"\n)\n\n# 插入数据\nmongo_connection$insert('{\"name\": \"Alice\", \"age\": 30, \"city\": \"New York\"}')\n\nList of 6\n $ nInserted  : int 1\n $ nMatched   : int 0\n $ nModified  : int 0\n $ nRemoved   : int 0\n $ nUpserted  : int 0\n $ writeErrors: list()\n\ndata = data.frame(\n  name = c(\"Bob\", \"Charlie\"),\n  age = c(25, 35),\n  city = c(\"Los Angeles\", \"Chicago\")\n)\nmongo_connection$insert(data)\n\nList of 5\n $ nInserted  : num 2\n $ nMatched   : num 0\n $ nRemoved   : num 0\n $ nUpserted  : num 0\n $ writeErrors: list()\n\n# 查询数据\nprint(mongo_connection$find('{}'))\n\n     name age        city\n1   Alice  31    New York\n2 Charlie  35     Chicago\n3   Alice  30    New York\n4     Bob  25 Los Angeles\n5 Charlie  35     Chicago\n\n# 更新数据\nmongo_connection$update('{\"name\": \"Alice\"}', '{\"$set\": {\"age\": 31}}')\n\nList of 3\n $ modifiedCount: int 0\n $ matchedCount : int 1\n $ upsertedCount: int 0\n\n# 删除数据\nmongo_connection$remove('{\"age\": {\"$lt\": 30}}')\n\n# 断开连接\nrm(mongo_connection)\n\n这种方法可以让 R 用户便捷地在 MongoDB 上存储、查询和更新数据。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#本地和阿里云-mongodb-的同步",
+    "href": "mongoDB.html#本地和阿里云-mongodb-的同步",
+    "title": "18  MongoDB 数据库",
+    "section": "18.6 本地和阿里云 MongoDB 的同步",
+    "text": "18.6 本地和阿里云 MongoDB 的同步\n要将本地的 MongoDB 数据库与阿里云服务器上的 MongoDB 实现同步，通常可以使用以下几种方法：\n\n18.6.1 使用 mongodump 和 mongorestore 手动同步\n这是最简单的一种方式，通过导出和导入数据来实现同步。\n步骤：\n\n在本地主机上导出数据：\nmongodump --host localhost --port 27017 --out /path/to/dump\n这会在指定的路径下生成数据库的备份文件。\n将备份文件上传到阿里云服务器：\n使用 scp 命令将备份文件夹传输到阿里云服务器：\nscp -r /path/to/dump username@aliyun_ip:/path/on/server\n在阿里云服务器上导入数据：\n连接到阿里云服务器后，使用 mongorestore 命令将数据导入 MongoDB：\nmongorestore --host localhost --port 27017 /path/on/server/dump\n\n这种方法适合小规模的数据同步。如果数据量较大或同步频繁，不建议使用此方法。\n\n\n18.6.2 使用 MongoDB 同步工具 mongosync\nmongosync 是一个专门用于同步不同 MongoDB 实例的开源工具。它支持实时同步，并适用于数据量较大且需要持续同步的场景。\n步骤：\n\n在本地和阿里云 MongoDB 服务器上安装 mongosync。\n配置 mongosync 的源和目标数据库，在本地 MongoDB 上设置为源，阿里云 MongoDB 为目标。\n启动 mongosync 进行同步。具体的命令和配置可以参考 mongosync 的官方文档。\n\n\n\n18.6.3 设置 MongoDB 的副本集（Replica Set）\n如果需要长期的、实时的同步，推荐使用 MongoDB 的 副本集 功能。\n步骤：\n\n配置本地主机和阿里云 MongoDB 为副本集成员：\n\n修改本地主机和阿里云服务器上的 MongoDB 配置文件 /etc/mongod.conf，设置副本集名称。例如：\nreplication:\n  replSetName: \"myReplicaSet\"\n\n初始化副本集：\n在任意一个 MongoDB 实例上启动副本集：\nmongosh --host localhost --port 27017\nrs.initiate()\n添加成员：\n将本地主机和阿里云 MongoDB 作为副本集成员添加。可以在 MongoDB shell 中执行：\nrs.add(\"阿里云服务器IP:27017\")  // 阿里云服务器的MongoDB实例\nrs.add(\"localhost:27017\")        // 本地的MongoDB实例\n验证副本集同步：\n副本集启动后，MongoDB 会自动保持各个节点的数据同步。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
+    "objectID": "mongoDB.html#与-postgresql-的对比",
+    "href": "mongoDB.html#与-postgresql-的对比",
+    "title": "18  MongoDB 数据库",
+    "section": "18.7 与 PostgreSQL 的对比",
+    "text": "18.7 与 PostgreSQL 的对比\n使用 PostgreSQL 存储大语言模型的响应，以便作为缓存，可以按照以下步骤实现。我们可以创建一个包含请求数据和模型响应的表，同时记录创建时间，以便后续根据时间判断缓存是否过期。\n\n18.7.1 创建缓存表\n我们首先创建一个表来存储模型请求和响应，结构包含输入参数、响应内容、创建时间等字段。\nCREATE TABLE model_cache (\n    id SERIAL PRIMARY KEY,\n    input_hash VARCHAR(64) NOT NULL,\n    request_data JSONB NOT NULL,\n    response_data JSONB NOT NULL,\n    created_at TIMESTAMPTZ DEFAULT NOW()\n);\n\n-- 为 input_hash 字段创建唯一索引，用于快速查找缓存\nCREATE UNIQUE INDEX idx_input_hash ON model_cache (input_hash);\n\ninput_hash：对输入内容进行哈希，避免因输入内容重复而浪费存储。\nrequest_data：存储模型的输入请求，以 JSON 格式存储。\nresponse_data：存储模型的响应内容。\ncreated_at：记录数据创建的时间，用于设置缓存过期策略。\n\n\n\n18.7.2 在 Python 中实现缓存存储和检索\n以下是一个基于 Python 的示例，假设使用 psycopg2 库连接 PostgreSQL。此示例会在接收到新的请求时，先检查缓存，若未命中缓存则存储新响应。\n\n18.7.2.1 导入必要库\nimport psycopg2\nimport hashlib\nimport json\nfrom datetime import datetime, timedelta\n\n\n18.7.2.2 设置数据库连接\n# 连接 PostgreSQL\nconnection = psycopg2.connect(\n    host=\"your_postgresql_host\",\n    database=\"your_database\",\n    user=\"your_user\",\n    password=\"your_password\"\n)\n\n\n18.7.2.3 哈希生成函数\n为输入请求生成唯一的哈希值，用于缓存键值。\ndef generate_hash(input_data):\n    return hashlib.sha256(json.dumps(input_data, sort_keys=True).encode()).hexdigest()\n\n\n18.7.2.4 缓存存储函数\ndef cache_response(input_data, response_data, ttl_hours=24):\n    input_hash = generate_hash(input_data)\n    cursor = connection.cursor()\n    \n    # 插入或更新响应数据\n    cursor.execute(\"\"\"\n        INSERT INTO model_cache (input_hash, request_data, response_data, created_at)\n        VALUES (%s, %s, %s, NOW())\n        ON CONFLICT (input_hash) DO UPDATE\n        SET response_data = EXCLUDED.response_data,\n            created_at = NOW();\n    \"\"\", (input_hash, json.dumps(input_data), json.dumps(response_data)))\n    \n    connection.commit()\n    cursor.close()\n\n\n18.7.2.5 缓存查询函数\n在接收请求时，可以先检查缓存，若命中则直接返回缓存的响应。\ndef get_cached_response(input_data, ttl_hours=24):\n    input_hash = generate_hash(input_data)\n    cursor = connection.cursor()\n    \n    # 计算过期时间\n    ttl_time = datetime.utcnow() - timedelta(hours=ttl_hours)\n    \n    cursor.execute(\"\"\"\n        SELECT response_data FROM model_cache\n        WHERE input_hash = %s AND created_at &gt; %s;\n    \"\"\", (input_hash, ttl_time))\n    \n    result = cursor.fetchone()\n    cursor.close()\n    \n    if result:\n        return json.loads(result[0])  # 返回缓存的响应数据\n    return None  # 缓存未命中或已过期\n\n\n\n18.7.3 示例使用\n# 模拟输入请求数据和模型响应\ninput_data = {\"question\": \"What is AI?\"}\nresponse_data = {\"answer\": \"AI stands for Artificial Intelligence.\"}\n\n# 存储模型响应\ncache_response(input_data, response_data)\n\n# 查询缓存\ncached_response = get_cached_response(input_data)\nif cached_response:\n    print(\"Cache hit:\", cached_response)\nelse:\n    print(\"Cache miss\")\n\n\n18.7.4 定期清理过期缓存\n可以创建一个定期任务，清除超过指定时间的缓存数据。\nDELETE FROM model_cache WHERE created_at &lt; NOW() - INTERVAL '24 hours';\n\n\n18.7.5 总结\n这种方法可以让 PostgreSQL 有效地作为大语言模型的缓存存储，避免重复计算和存储不必要的数据。",
+    "crumbs": [
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>MongoDB 数据库</span>"
+    ]
+  },
+  {
     "objectID": "object-detection-of-microfluidic-chip.html",
     "href": "object-detection-of-microfluidic-chip.html",
-    "title": "18  检测微流控芯片中的物体",
+    "title": "19  检测微流控芯片中的物体",
     "section": "",
-    "text": "18.1 读取并显示图像\nfrom PIL import Image\nimport matplotlib.pyplot as plt\n\n# 加载图像\nimage_path = 'example/images/microfluidic-chip.jpg'\nimage = Image.open(image_path)\n\n# 在 Notebook 中显示图像\nplt.figure(figsize=(12, 8))\nplt.imshow(image)\nplt.axis('on')  # 显示坐标轴\nplt.show()",
+    "text": "19.1 读取并显示图像\nfrom PIL import Image\nimport matplotlib.pyplot as plt\n\n# 加载图像\nimage_path = 'example/images/microfluidic-chip.jpg'\nimage = Image.open(image_path)\n\n# 在 Notebook 中显示图像\nplt.figure(figsize=(12, 8))\nplt.imshow(image)\nplt.axis('on')  # 显示坐标轴\nplt.show()",
     "crumbs": [
-      "<span class='chapter-number'>18</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
     ]
   },
   {
     "objectID": "object-detection-of-microfluidic-chip.html#使用高斯模糊",
     "href": "object-detection-of-microfluidic-chip.html#使用高斯模糊",
-    "title": "18  检测微流控芯片中的物体",
-    "section": "18.2 使用高斯模糊",
-    "text": "18.2 使用高斯模糊\n这段代码主要实现了图像的预处理和可视化。\n首先，使用 OpenCV 库读取图像并将其转换为灰度图，这样可以减少计算量并简化后续处理。\n然后，应用高斯模糊来减少图像中的噪声，这有助于提高后续边缘检测的准确性。高斯模糊使用 9x9 的核，可以有效平滑图像而不会过度模糊重要特征。\n最后，使用 Matplotlib 库创建一个包含两个子图的图形，分别显示原始灰度图像和经过高斯模糊处理后的图像，以便直观比较处理效果。这个预处理步骤为后续的物体检测奠定了基础。\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# 读取图像并转换为灰度图\nimage = cv2.imread(image_path)\ngray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)\n\n# 应用高斯模糊以减少噪声\nblurred = cv2.GaussianBlur(gray, (9, 9), 0)\n\n# 显示模糊后的图像\nplt.figure(figsize=(10, 5))\nplt.subplot(1, 2, 1)\nplt.title(\"Original Image\")\nplt.imshow(cv2.cvtColor(gray, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.subplot(1, 2, 2)\nplt.title(\"Gaussian Blurred Image\")\nplt.imshow(cv2.cvtColor(blurred, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.tight_layout()\nplt.show()",
+    "title": "19  检测微流控芯片中的物体",
+    "section": "19.2 使用高斯模糊",
+    "text": "19.2 使用高斯模糊\n这段代码主要实现了图像的预处理和可视化。\n首先，使用 OpenCV 库读取图像并将其转换为灰度图，这样可以减少计算量并简化后续处理。\n然后，应用高斯模糊来减少图像中的噪声，这有助于提高后续边缘检测的准确性。高斯模糊使用 9x9 的核，可以有效平滑图像而不会过度模糊重要特征。\n最后，使用 Matplotlib 库创建一个包含两个子图的图形，分别显示原始灰度图像和经过高斯模糊处理后的图像，以便直观比较处理效果。这个预处理步骤为后续的物体检测奠定了基础。\n\nimport cv2\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# 读取图像并转换为灰度图\nimage = cv2.imread(image_path)\ngray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)\n\n# 应用高斯模糊以减少噪声\nblurred = cv2.GaussianBlur(gray, (9, 9), 0)\n\n# 显示模糊后的图像\nplt.figure(figsize=(10, 5))\nplt.subplot(1, 2, 1)\nplt.title(\"Original Image\")\nplt.imshow(cv2.cvtColor(gray, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.subplot(1, 2, 2)\nplt.title(\"Gaussian Blurred Image\")\nplt.imshow(cv2.cvtColor(blurred, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.tight_layout()\nplt.show()",
     "crumbs": [
-      "<span class='chapter-number'>18</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
     ]
   },
   {
     "objectID": "object-detection-of-microfluidic-chip.html#使用canny边缘检测",
     "href": "object-detection-of-microfluidic-chip.html#使用canny边缘检测",
-    "title": "18  检测微流控芯片中的物体",
-    "section": "18.3 使用Canny边缘检测",
-    "text": "18.3 使用Canny边缘检测\nCanny 边缘检测是一种广泛使用的图像处理技术，用于识别图像中的边缘。它由 John F. Canny 在 1986 年提出，被认为是一种非常有效的边缘检测算法。Canny 边缘检测的主要步骤包括：\n\n高斯滤波： 首先对图像进行高斯模糊，以减少噪声。这一步已经在前面的代码中完成。\n计算图像梯度： 使用 Sobel 算子计算图像在 x 和 y 方向的梯度。这可以找出图像中亮度变化最大的区域。\n非极大值抑制： 沿梯度方向，比较像素的梯度幅值。如果不是局部最大值，则将其抑制（设为 0）。这一步可以细化边缘。\n双阈值处理： 使用两个阈值（高阈值和低阈值）来区分强边缘、弱边缘和非边缘像素。\n边缘跟踪： 最后，通过滞后阈值法来跟踪边缘。强边缘像素被立即标记为边缘，而弱边缘像素只有在与强边缘像素相连时才被保留。\n\nCanny 边缘检测的优点包括： - 能够检测到弱边缘 - 对噪声具有较强的鲁棒性 - 能够得到较为精确的边缘定位\n在 OpenCV 中，cv2.Canny() 函数封装了这些步骤，使得边缘检测变得简单易用。在接下来的代码中，我们将使用这个函数来进行边缘检测。\n\n# 使用Canny边缘检测\nedges = cv2.Canny(blurred, 100, 200)\n\n# 定义形态学操作的核\nkernel = np.ones((2,2), np.uint8)\n\n# 应用闭运算来填充边缘之间的小间隙\nclosed_edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel, iterations=2)\n\n# 应用膨胀操作来进一步加粗边缘\ndilated_edges = cv2.dilate(closed_edges, kernel, iterations=2)\n\n# 寻找轮廓\ncontours, _ = cv2.findContours(dilated_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)\n\n# 在原图上绘制轮廓\nresult = image.copy()\ncv2.drawContours(result, contours, -1, (0, 255, 0), 2)\n\n# 显示结果\nplt.figure(figsize=(15, 5))\nplt.subplot(1, 3, 1)\nplt.title(\"Original Image\")\nplt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.subplot(1, 3, 2)\nplt.title(\"Processed Edges\")\nplt.imshow(dilated_edges, cmap='gray')\nplt.axis('off')\n\nplt.subplot(1, 3, 3)\nplt.title(\"Detected Shapes\")\nplt.imshow(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.tight_layout()\nplt.show()\n\n# 打印检测到的轮廓数量\nprint(f\"Detected contours: {len(contours)}\")\n\n\n\n\n\n\n\n\nDetected contours: 22",
+    "title": "19  检测微流控芯片中的物体",
+    "section": "19.3 使用Canny边缘检测",
+    "text": "19.3 使用Canny边缘检测\nCanny 边缘检测是一种广泛使用的图像处理技术，用于识别图像中的边缘。它由 John F. Canny 在 1986 年提出，被认为是一种非常有效的边缘检测算法。Canny 边缘检测的主要步骤包括：\n\n高斯滤波： 首先对图像进行高斯模糊，以减少噪声。这一步已经在前面的代码中完成。\n计算图像梯度： 使用 Sobel 算子计算图像在 x 和 y 方向的梯度。这可以找出图像中亮度变化最大的区域。\n非极大值抑制： 沿梯度方向，比较像素的梯度幅值。如果不是局部最大值，则将其抑制（设为 0）。这一步可以细化边缘。\n双阈值处理： 使用两个阈值（高阈值和低阈值）来区分强边缘、弱边缘和非边缘像素。\n边缘跟踪： 最后，通过滞后阈值法来跟踪边缘。强边缘像素被立即标记为边缘，而弱边缘像素只有在与强边缘像素相连时才被保留。\n\nCanny 边缘检测的优点包括： - 能够检测到弱边缘 - 对噪声具有较强的鲁棒性 - 能够得到较为精确的边缘定位\n在 OpenCV 中，cv2.Canny() 函数封装了这些步骤，使得边缘检测变得简单易用。在接下来的代码中，我们将使用这个函数来进行边缘检测。\n\n# 使用Canny边缘检测\nedges = cv2.Canny(blurred, 100, 200)\n\n# 定义形态学操作的核\nkernel = np.ones((2,2), np.uint8)\n\n# 应用闭运算来填充边缘之间的小间隙\nclosed_edges = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel, iterations=2)\n\n# 应用膨胀操作来进一步加粗边缘\ndilated_edges = cv2.dilate(closed_edges, kernel, iterations=2)\n\n# 寻找轮廓\ncontours, _ = cv2.findContours(dilated_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)\n\n# 在原图上绘制轮廓\nresult = image.copy()\ncv2.drawContours(result, contours, -1, (0, 255, 0), 2)\n\n# 显示结果\nplt.figure(figsize=(15, 5))\nplt.subplot(1, 3, 1)\nplt.title(\"Original Image\")\nplt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.subplot(1, 3, 2)\nplt.title(\"Processed Edges\")\nplt.imshow(dilated_edges, cmap='gray')\nplt.axis('off')\n\nplt.subplot(1, 3, 3)\nplt.title(\"Detected Shapes\")\nplt.imshow(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))\nplt.axis('off')\n\nplt.tight_layout()\nplt.show()\n\n# 打印检测到的轮廓数量\nprint(f\"Detected contours: {len(contours)}\")\n\n\n\n\n\n\n\n\nDetected contours: 22",
     "crumbs": [
-      "<span class='chapter-number'>18</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
     ]
   },
   {
     "objectID": "object-detection-of-microfluidic-chip.html#使用-groundingdino-检测微流控芯片",
     "href": "object-detection-of-microfluidic-chip.html#使用-groundingdino-检测微流控芯片",
-    "title": "18  检测微流控芯片中的物体",
-    "section": "18.4 使用 GroundingDino 检测微流控芯片",
-    "text": "18.4 使用 GroundingDino 检测微流控芯片\n在这个部分,我们将使用 GroundingDino 模型来检测微流控芯片中的白点。GroundingDino 是一个强大的目标检测模型,可以根据文本提示来定位和分割图像中的对象。以下是代码的主要步骤和功能:\n\n准备图像和提示:\n\n设置图像路径和上传图像\n创建文本提示 “white dots”\n\n配置检测任务:\n\n使用 DetectionTask 设置检测参数\n指定检测目标为边界框(BBox)和掩码(Mask)\n选择 GroundingDino-1.5-Pro 模型\n\n执行检测:\n\n使用 client.run_task() 运行检测任务\n获取检测结果\n\n可视化结果:\n\n遍历检测到的每个对象\n将掩码从 RLE 格式转换为 RGBA 图像\n创建图像副本并绘制检测结果\n显示原始图像、掩码叠加和边界框\n添加类别和置信度得分标签\n\n\n这段代码展示了如何使用高级目标检测模型来识别微流控芯片中的特定结构,并以可视化的方式呈现结果。\n\nimport os\nfrom dds_cloudapi_sdk import Config\nfrom dds_cloudapi_sdk import Client\nfrom dds_cloudapi_sdk import DetectionTask\nfrom dds_cloudapi_sdk import TextPrompt\nfrom dds_cloudapi_sdk import DetectionModel\nfrom dds_cloudapi_sdk import DetectionTarget\n\ntoken = os.getenv(\"DINO_API_KEY\")\nconfig = Config(token)\nclient = Client(config)\n\nimage_path = \"example/images/microfluidic-chip.jpg\"\nimage_url = client.upload_file(image_path)\nprompt = [TextPrompt(text=\"white dots surrounding by black edge\")]\n\ntask = DetectionTask(\n    image_url=image_url,\n    prompts=prompt,\n    targets=[DetectionTarget.Mask, DetectionTarget.BBox],  # detect both bbox and mask\n    model=DetectionModel.GDino1_5_Pro,  # detect with GroundingDino-1.5-Pro model\n)\n\ntask = DetectionTask(\n    image_url=image_url,\n    prompts=prompt,\n    targets=[DetectionTarget.Mask, DetectionTarget.BBox],\n    model=DetectionModel.GDino1_5_Pro,\n)\n\nclient.run_task(task)\nresult = task.result    \n\n\n# 显示检测结果\nimport matplotlib.pyplot as plt\nfrom PIL import Image, ImageDraw\nimport matplotlib.patches as patches\n\nimage = Image.open(image_path)\n\nobjects = result.objects  # the list of detected objects\nfor idx, obj in enumerate(objects):\n    # 将RLE格式转换为RGBA图像\n    mask_image = task.rle2rgba(obj.mask)\n\n    # 创建一个图像副本用于绘制\n    fig, ax = plt.subplots(1, 1, figsize=(12, 8))\n    \n    ax.imshow(image)\n    ax.imshow(mask_image, alpha=0.5)\n    \n    # 在图像上绘制掩码\n    bbox = obj.bbox\n    # 创建一个矩形框，参数为 (左上角 x, 左上角 y, 宽度, 高度)\n    rect = patches.Rectangle(\n        (bbox[0], bbox[1]),  # 左上角坐标\n        bbox[2] - bbox[0],   # 宽度\n        bbox[3] - bbox[1],   # 高度\n        linewidth=2,         # 边框宽度\n        edgecolor='red',     # 边框颜色\n        facecolor='none'     # 填充颜色\n    )\n    ax.add_patch(rect)   \n    \n    # 在图像上添加类别和分数\n    text = f\"{obj.category} {obj.score:.2f}\"\n    ax.text(bbox[0], \n              bbox[1] - 10, \n              text, \n              color='red', \n              fontsize=12)\n\n    # 显示图像\n    # plt.axis('off')  # 不显示坐标轴\n    plt.show()",
+    "title": "19  检测微流控芯片中的物体",
+    "section": "19.4 使用 GroundingDino 检测微流控芯片",
+    "text": "19.4 使用 GroundingDino 检测微流控芯片\n在这个部分,我们将使用 GroundingDino 模型来检测微流控芯片中的白点。GroundingDino 是一个强大的目标检测模型,可以根据文本提示来定位和分割图像中的对象。以下是代码的主要步骤和功能:\n\n准备图像和提示:\n\n设置图像路径和上传图像\n创建文本提示 “white dots”\n\n配置检测任务:\n\n使用 DetectionTask 设置检测参数\n指定检测目标为边界框(BBox)和掩码(Mask)\n选择 GroundingDino-1.5-Pro 模型\n\n执行检测:\n\n使用 client.run_task() 运行检测任务\n获取检测结果\n\n可视化结果:\n\n遍历检测到的每个对象\n将掩码从 RLE 格式转换为 RGBA 图像\n创建图像副本并绘制检测结果\n显示原始图像、掩码叠加和边界框\n添加类别和置信度得分标签\n\n\n这段代码展示了如何使用高级目标检测模型来识别微流控芯片中的特定结构,并以可视化的方式呈现结果。\n\nimport os\nfrom dds_cloudapi_sdk import Config\nfrom dds_cloudapi_sdk import Client\nfrom dds_cloudapi_sdk import DetectionTask\nfrom dds_cloudapi_sdk import TextPrompt\nfrom dds_cloudapi_sdk import DetectionModel\nfrom dds_cloudapi_sdk import DetectionTarget\n\ntoken = os.getenv(\"DINO_API_KEY\")\nconfig = Config(token)\nclient = Client(config)\n\nimage_path = \"example/images/microfluidic-chip.jpg\"\nimage_url = client.upload_file(image_path)\nprompt = [TextPrompt(text=\"white dots surrounding by black edge\")]\n\ntask = DetectionTask(\n    image_url=image_url,\n    prompts=prompt,\n    targets=[DetectionTarget.Mask, DetectionTarget.BBox],  # detect both bbox and mask\n    model=DetectionModel.GDino1_5_Pro,  # detect with GroundingDino-1.5-Pro model\n)\n\ntask = DetectionTask(\n    image_url=image_url,\n    prompts=prompt,\n    targets=[DetectionTarget.Mask, DetectionTarget.BBox],\n    model=DetectionModel.GDino1_5_Pro,\n)\n\nclient.run_task(task)\nresult = task.result    \n\n\n# 显示检测结果\nimport matplotlib.pyplot as plt\nfrom PIL import Image, ImageDraw\nimport matplotlib.patches as patches\n\nimage = Image.open(image_path)\n\nobjects = result.objects  # the list of detected objects\nfor idx, obj in enumerate(objects):\n    # 将RLE格式转换为RGBA图像\n    mask_image = task.rle2rgba(obj.mask)\n\n    # 创建一个图像副本用于绘制\n    fig, ax = plt.subplots(1, 1, figsize=(12, 8))\n    \n    ax.imshow(image)\n    ax.imshow(mask_image, alpha=0.5)\n    \n    # 在图像上绘制掩码\n    bbox = obj.bbox\n    # 创建一个矩形框，参数为 (左上角 x, 左上角 y, 宽度, 高度)\n    rect = patches.Rectangle(\n        (bbox[0], bbox[1]),  # 左上角坐标\n        bbox[2] - bbox[0],   # 宽度\n        bbox[3] - bbox[1],   # 高度\n        linewidth=2,         # 边框宽度\n        edgecolor='red',     # 边框颜色\n        facecolor='none'     # 填充颜色\n    )\n    ax.add_patch(rect)   \n    \n    # 在图像上添加类别和分数\n    text = f\"{obj.category} {obj.score:.2f}\"\n    ax.text(bbox[0], \n              bbox[1] - 10, \n              text, \n              color='red', \n              fontsize=12)\n\n    # 显示图像\n    # plt.axis('off')  # 不显示坐标轴\n    plt.show()",
     "crumbs": [
-      "<span class='chapter-number'>18</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
+      "<span class='chapter-number'>19</span>  <span class='chapter-title'>检测微流控芯片中的物体</span>"
     ]
   },
   {
     "objectID": "gradio.html",
     "href": "gradio.html",
-    "title": "19  Gradio",
+    "title": "20  Gradio",
     "section": "",
-    "text": "19.1 用于情感分析的 APP\n下面是一个简单的示例代码，展示如何使用 Gradio 创建一个可以输入文本并返回情感分析结果的界面：\nimport gradio as gr\nfrom transformers import pipeline\n\n# 加载情感分析模型\nsentiment_model = pipeline(\"sentiment-analysis\")\n\n# 定义一个函数来处理输入并返回结果\ndef analyze_sentiment(text):\n    result = sentiment_model(text)[0]\n    return {result['label']: result['score']}\n\n# 创建 Gradio 接口\niface = gr.Interface(\n    fn=analyze_sentiment,\n    inputs=\"text\",\n    outputs=\"label\",\n    live=True\n)\n\n# 启动界面\niface.launch()\n\nRunning on local URL:  http://127.0.0.1:7860\n\nTo create a public link, set `share=True` in `launch()`.\n你可以在本地运行这个代码，并通过生成的链接访问和测试情感分析模型。",
+    "text": "20.1 用于情感分析的 APP\n下面是一个简单的示例代码，展示如何使用 Gradio 创建一个可以输入文本并返回情感分析结果的界面：\nimport gradio as gr\nfrom transformers import pipeline\n\n# 加载情感分析模型\nsentiment_model = pipeline(\"sentiment-analysis\")\n\n# 定义一个函数来处理输入并返回结果\ndef analyze_sentiment(text):\n    result = sentiment_model(text)[0]\n    return {result['label']: result['score']}\n\n# 创建 Gradio 接口\niface = gr.Interface(\n    fn=analyze_sentiment,\n    inputs=\"text\",\n    outputs=\"label\",\n    live=True\n)\n\n# 启动界面\niface.launch()\n\nRunning on local URL:  http://127.0.0.1:7860\n\nTo create a public link, set `share=True` in `launch()`.\n你可以在本地运行这个代码，并通过生成的链接访问和测试情感分析模型。",
     "crumbs": [
-      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Gradio</span>"
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Gradio</span>"
     ]
   },
   {
     "objectID": "gradio.html#在线服务",
     "href": "gradio.html#在线服务",
-    "title": "19  Gradio",
-    "section": "19.2 在线服务",
-    "text": "19.2 在线服务\n还可以通过 iface.launch(share=True) 将服务发布到 gradio.live 网站上：https://e7ce7d908c95c155b5.gradio.live/?。\n注意：这个分享链接会很快失效。\n这时，可以使用 gradio_client 库中的 Client 类与一个远程 Gradio 应用进行交互。\n\nfrom gradio_client import Client\n\nclient = Client(\"https://e7ce7d908c95c155b5.gradio.live/\")\nresult = client.predict(\n        text=\"Hello!!\",\n        api_name=\"/predict\"\n)\nprint(result)\n\nclient = Client(\"https://e7ce7d908c95c155b5.gradio.live/\")\n\n创建 Client 实例：实例化一个 Client 对象，连接到指定的 Gradio 应用 URL。在这个例子中，URL 是 https://e7ce7d908c95c155b5.gradio.live/。\n\nresult = client.predict(\n    text=\"Hello!!\",\n    api_name=\"/predict\"\n)\n\n调用 predict 方法：\n\ntext=\"Hello!!\"：传递一个包含文本 \"Hello!!\" 的参数。\napi_name=\"/predict\"：指定要调用的 API 名称。这个名称通常是在 Gradio 应用中定义的特定端点。\n该方法会将参数发送到 Gradio 应用的 /predict 端点，并返回预测结果。\n\n\nprint(result)\n\n打印结果：将 predict 方法返回的结果打印到控制台。\n\n通过这种方式，你可以方便地与远程 Gradio 应用进行交互，发送请求并获取预测结果。",
+    "title": "20  Gradio",
+    "section": "20.2 在线服务",
+    "text": "20.2 在线服务\n还可以通过 iface.launch(share=True) 将服务发布到 gradio.live 网站上：https://e7ce7d908c95c155b5.gradio.live/?。\n注意：这个分享链接会很快失效。\n这时，可以使用 gradio_client 库中的 Client 类与一个远程 Gradio 应用进行交互。\n\nfrom gradio_client import Client\n\nclient = Client(\"https://e7ce7d908c95c155b5.gradio.live/\")\nresult = client.predict(\n        text=\"Hello!!\",\n        api_name=\"/predict\"\n)\nprint(result)\n\nclient = Client(\"https://e7ce7d908c95c155b5.gradio.live/\")\n\n创建 Client 实例：实例化一个 Client 对象，连接到指定的 Gradio 应用 URL。在这个例子中，URL 是 https://e7ce7d908c95c155b5.gradio.live/。\n\nresult = client.predict(\n    text=\"Hello!!\",\n    api_name=\"/predict\"\n)\n\n调用 predict 方法：\n\ntext=\"Hello!!\"：传递一个包含文本 \"Hello!!\" 的参数。\napi_name=\"/predict\"：指定要调用的 API 名称。这个名称通常是在 Gradio 应用中定义的特定端点。\n该方法会将参数发送到 Gradio 应用的 /predict 端点，并返回预测结果。\n\n\nprint(result)\n\n打印结果：将 predict 方法返回的结果打印到控制台。\n\n通过这种方式，你可以方便地与远程 Gradio 应用进行交互，发送请求并获取预测结果。",
     "crumbs": [
-      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Gradio</span>"
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Gradio</span>"
     ]
   },
   {
     "objectID": "gradio.html#在-quarto-中显示",
     "href": "gradio.html#在-quarto-中显示",
-    "title": "19  Gradio",
-    "section": "19.3 在 Quarto 中显示",
-    "text": "19.3 在 Quarto 中显示\n要在 Quarto 中正确显示 Gradio 的输出结果，你需要确保以下几点：\n\nGradio 服务正常运行：你需要在本地或远程服务器上启动 Gradio 服务。\n在 Quarto 文档中嵌入 Gradio 应用：你可以在 Quarto 文档中嵌入一个 iframe 来显示 Gradio 应用的输出。\n\n下面是一个详细的步骤：\n\n19.3.1 1. 启动 Gradio 服务\n首先，确保你的 Gradio 服务正在运行。例如，可以使用上面的代码启动 Gradio 应用。\n\n\n19.3.2 2. 在 Quarto 文档中嵌入 Gradio 应用\n在你的 Quarto 文档中（例如，document.qmd），你可以通过 iframe 嵌入 Gradio 应用。确保你使用的是 .qmd 文件格式，并在其中嵌入 Gradio 的链接。\n下面是一个示例 Quarto 文档：\n# Gradio Application\n\n&lt;iframe src=\"YOUR_GRADIO_LINK_HERE\"&gt;&lt;/iframe&gt;\n将 YOUR_GRADIO_LINK_HERE 替换为 Gradio 应用生成的公开链接。\n\n\n\n\n19.3.3 3. 渲染 Quarto 文档\n使用 Quarto 渲染文档：\nquarto render document.qmd\n这将生成一个 HTML 文件，其中嵌入了你的 Gradio 应用。打开生成的 HTML 文件，即可在浏览器中查看并与 Gradio 应用进行交互。\n还可以参见 Quarto 动态文档：https://quarto.org/docs/interactive/。",
+    "title": "20  Gradio",
+    "section": "20.3 在 Quarto 中显示",
+    "text": "20.3 在 Quarto 中显示\n要在 Quarto 中正确显示 Gradio 的输出结果，你需要确保以下几点：\n\nGradio 服务正常运行：你需要在本地或远程服务器上启动 Gradio 服务。\n在 Quarto 文档中嵌入 Gradio 应用：你可以在 Quarto 文档中嵌入一个 iframe 来显示 Gradio 应用的输出。\n\n下面是一个详细的步骤：\n\n20.3.1 1. 启动 Gradio 服务\n首先，确保你的 Gradio 服务正在运行。例如，可以使用上面的代码启动 Gradio 应用。\n\n\n20.3.2 2. 在 Quarto 文档中嵌入 Gradio 应用\n在你的 Quarto 文档中（例如，document.qmd），你可以通过 iframe 嵌入 Gradio 应用。确保你使用的是 .qmd 文件格式，并在其中嵌入 Gradio 的链接。\n下面是一个示例 Quarto 文档：\n# Gradio Application\n\n&lt;iframe src=\"YOUR_GRADIO_LINK_HERE\"&gt;&lt;/iframe&gt;\n将 YOUR_GRADIO_LINK_HERE 替换为 Gradio 应用生成的公开链接。\n\n\n\n\n20.3.3 3. 渲染 Quarto 文档\n使用 Quarto 渲染文档：\nquarto render document.qmd\n这将生成一个 HTML 文件，其中嵌入了你的 Gradio 应用。打开生成的 HTML 文件，即可在浏览器中查看并与 Gradio 应用进行交互。\n还可以参见 Quarto 动态文档：https://quarto.org/docs/interactive/。",
     "crumbs": [
-      "<span class='chapter-number'>19</span>  <span class='chapter-title'>Gradio</span>"
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Gradio</span>"
     ]
   },
   {
