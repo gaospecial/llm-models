@@ -31,6 +31,7 @@ book:
     - research-summary.qmd
     - llama.qmd
     - batch-async-task.qmd
+    - mongoDB.qmd
     - object-detection-of-microfluidic-chip.qmd
     - gradio.qmd
     - references.qmd
